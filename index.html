@@ -850,6 +850,318 @@ body {
 }
 
 /* ============================================
+   PAGE LOADER
+   ============================================ */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+.page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-logo {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  overflow: hidden;
+}
+.loader-logo .tl { color: #f5f5f5; }
+.loader-logo .tv { color: var(--accent); }
+.loader-bar-wrap {
+  width: 200px;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.loader-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.05s linear;
+}
+.loader-pct {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+}
+
+/* ============================================
+   MOBILE MENU (full-screen overlay)
+   ============================================ */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,0.97);
+  backdrop-filter: blur(24px);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu a {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  position: relative;
+  transition: color 0.3s;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s, transform 0.4s, color 0.3s;
+}
+.mobile-menu.open a { opacity: 1; transform: translateY(0); }
+.mobile-menu.open a:nth-child(1) { transition-delay: 0.05s; }
+.mobile-menu.open a:nth-child(2) { transition-delay: 0.1s; }
+.mobile-menu.open a:nth-child(3) { transition-delay: 0.15s; }
+.mobile-menu.open a:nth-child(4) { transition-delay: 0.2s; }
+.mobile-menu.open a:nth-child(5) { transition-delay: 0.25s; }
+.mobile-menu a:hover { color: var(--accent); }
+.mobile-menu-socials {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 1rem;
+  opacity: 0;
+  transition: opacity 0.4s 0.3s;
+}
+.mobile-menu.open .mobile-menu-socials { opacity: 1; }
+.mobile-menu-socials a {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 1 !important;
+  transform: none !important;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  transition: border-color 0.3s, color 0.3s !important;
+}
+.mobile-menu-socials a:hover { border-color: var(--accent); color: var(--accent) !important; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ============================================
+   WORK GALLERY
+   ============================================ */
+.gallery-section {
+  position: relative;
+  padding: 8rem 2rem;
+  z-index: 1;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+}
+.gallery-item:nth-child(1) { grid-column: span 7; grid-row: span 2; aspect-ratio: unset; min-height: 400px; }
+.gallery-item:nth-child(2) { grid-column: span 5; min-height: 195px; }
+.gallery-item:nth-child(3) { grid-column: span 5; min-height: 195px; }
+.gallery-item:nth-child(4) { grid-column: span 4; min-height: 240px; }
+.gallery-item:nth-child(5) { grid-column: span 4; min-height: 240px; }
+.gallery-item:nth-child(6) { grid-column: span 4; min-height: 240px; }
+.gallery-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease-out);
+}
+.gallery-item:hover .gallery-img { transform: scale(1.05); }
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-tag {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.gallery-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+/* Placeholder tile for items without images */
+.gallery-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: inherit;
+  background: var(--bg-tertiary);
+}
+.gallery-placeholder-icon { font-size: 2.5rem; opacity: 0.4; }
+.gallery-placeholder-label {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+@media (max-width: 768px) {
+  .gallery-grid { grid-template-columns: 1fr 1fr; }
+  .gallery-item:nth-child(1) { grid-column: span 2; min-height: 260px; }
+  .gallery-item:nth-child(2),
+  .gallery-item:nth-child(3) { grid-column: span 1; min-height: 180px; }
+  .gallery-item:nth-child(4),
+  .gallery-item:nth-child(5),
+  .gallery-item:nth-child(6) { grid-column: span 1; min-height: 180px; }
+  .gallery-item:nth-child(6) { grid-column: span 2; }
+}
+@media (max-width: 480px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+  .gallery-item:nth-child(n) { grid-column: span 1; min-height: 220px; }
+}
+
+/* ============================================
+   TESTIMONIALS (left-to-right scroll)
+   ============================================ */
+.testimonials-section {
+  position: relative;
+  padding: 8rem 0;
+  overflow: hidden;
+  z-index: 1;
+}
+.testimonials-section .section-header { padding: 0 2rem; margin-bottom: 4rem; }
+.testi-track-wrap {
+  position: relative;
+  overflow: hidden;
+}
+.testi-track-wrap::before,
+.testi-track-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+.testi-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.testi-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+.testi-track {
+  display: flex;
+  width: max-content;
+  animation: testiScroll 40s linear infinite;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+}
+.testi-track:hover { animation-play-state: paused; }
+@keyframes testiScroll {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+.testi-card {
+  width: 360px;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.testi-card:hover {
+  border-color: rgba(255,107,53,0.3);
+  transform: translateY(-4px);
+}
+.testi-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 1rem;
+}
+.testi-star { color: #f59e0b; font-size: 0.9rem; }
+.testi-quote {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+.testi-quote::before { content: '\201C'; color: var(--accent); font-size: 1.4rem; line-height: 0; vertical-align: -0.4rem; margin-right: 2px; }
+.testi-author {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.testi-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.testi-name {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.testi-role {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.testi-verified {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
@@ -865,9 +1177,29 @@ body {
   .social-icon { width: 40px; height: 40px; }
 }
 </style>
-<base target="_blank">
 </head>
 <body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-logo"><span class="tl">thynk</span><span class="tv">verse</span></div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+  <div class="loader-pct" id="loaderPct">0%</div>
+</div>
+
+<!-- Mobile Full-Screen Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#hero" class="mm-link">Home</a>
+  <a href="#forming" class="mm-link">About</a>
+  <a href="#services" class="mm-link">Services</a>
+  <a href="#gallery" class="mm-link">Work</a>
+  <a href="#contact" class="mm-link">Contact</a>
+  <div class="mobile-menu-socials">
+    <a href="https://wa.me/27826836364" target="_blank">WhatsApp</a>
+    <a href="https://www.instagram.com/thynkverse/" target="_blank">Instagram</a>
+    <a href="https://www.facebook.com/thynkverse" target="_blank">Facebook</a>
+  </div>
+</div>
 
 <!-- Noise -->
 <div class="noise-overlay"></div>
@@ -894,6 +1226,7 @@ body {
     <a href="#hero">Home</a>
     <a href="#forming">About</a>
     <a href="#services">Services</a>
+    <a href="#gallery">Work</a>
     <a href="#contact">Contact</a>
   </nav>
   <div class="call-action">
@@ -938,6 +1271,69 @@ body {
     <h2 class="section-title">Services That Drive Results</h2>
   </div>
   <div class="services-grid" id="servicesGrid"></div>
+</section>
+
+<!-- Work Gallery -->
+<section class="gallery-section" id="gallery">
+  <div class="section-header">
+    <div class="section-eyebrow">Our Work</div>
+    <h2 class="section-title">Built to Impress</h2>
+  </div>
+  <div class="gallery-grid" id="galleryGrid">
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80" alt="Brand Identity Project" loading="lazy" onerror="this.style.display='none'">
+      <div class="gallery-overlay">
+        <div class="gallery-tag">Brand Identity</div>
+        <div class="gallery-title">Visual Identity System</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80" alt="Web Design Project" loading="lazy" onerror="this.style.display='none'">
+      <div class="gallery-overlay">
+        <div class="gallery-tag">Web Design</div>
+        <div class="gallery-title">E-Commerce Platform</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" alt="Social Media Project" loading="lazy" onerror="this.style.display='none'">
+      <div class="gallery-overlay">
+        <div class="gallery-tag">Social Media</div>
+        <div class="gallery-title">Campaign Strategy</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80" alt="UI/UX Project" loading="lazy" onerror="this.style.display='none'">
+      <div class="gallery-overlay">
+        <div class="gallery-tag">UI/UX Design</div>
+        <div class="gallery-title">Mobile App Interface</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80" alt="Digital Strategy" loading="lazy" onerror="this.style.display='none'">
+      <div class="gallery-overlay">
+        <div class="gallery-tag">Digital Strategy</div>
+        <div class="gallery-title">Growth Roadmap</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80" alt="E-Commerce Project" loading="lazy" onerror="this.style.display='none'">
+      <div class="gallery-overlay">
+        <div class="gallery-tag">E-Commerce</div>
+        <div class="gallery-title">Online Store Redesign</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials-section" id="testimonials">
+  <div class="section-header">
+    <div class="section-eyebrow">What Clients Say</div>
+    <h2 class="section-title">Real Words, Real Results</h2>
+  </div>
+  <div class="testi-track-wrap">
+    <div class="testi-track" id="testiTrack"></div>
+  </div>
 </section>
 
 <!-- Marquee -->
@@ -997,6 +1393,105 @@ body {
 <div class="progress-dots" id="progressDots"></div>
 
 <script>
+/* ============================================
+   PAGE LOADER
+   ============================================ */
+(function() {
+  const loader = document.getElementById('pageLoader');
+  const bar = document.getElementById('loaderBar');
+  const pct = document.getElementById('loaderPct');
+  let progress = 0;
+  const interval = setInterval(() => {
+    const inc = progress < 70 ? Math.random() * 12 : Math.random() * 4;
+    progress = Math.min(progress + inc, 95);
+    bar.style.width = progress + '%';
+    pct.textContent = Math.round(progress) + '%';
+  }, 120);
+  window.addEventListener('load', () => {
+    clearInterval(interval);
+    bar.style.width = '100%';
+    pct.textContent = '100%';
+    setTimeout(() => { loader.classList.add('hidden'); }, 500);
+  });
+  setTimeout(() => { loader.classList.add('hidden'); }, 4000);
+})();
+
+/* ============================================
+   MOBILE MENU
+   ============================================ */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+document.querySelectorAll('.mm-link').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+/* ============================================
+   TESTIMONIALS DATA + RENDER
+   ============================================ */
+const testimonials = [
+  {
+    quote: "Working with Thynkverse completely changed how people see our brand. We went from looking like just another small business to something that actually stands out. The logo alone has gotten more compliments than anything we've ever done.",
+    name: "Siyanda Dlamini", role: "Owner, Siya's Kitchen & Catering", initials: "SD", color: "#ff6b35"
+  },
+  {
+    quote: "I was honestly skeptical at first — I've worked with agencies before and always felt like just another client. This was different. They actually listened, pushed back when something wasn't working, and delivered a website I'm genuinely proud to send people to.",
+    name: "Melanie Botha", role: "Director, Botha & Associates Law", initials: "MB", color: "#a78bfa"
+  },
+  {
+    quote: "Our Instagram went from 800 to 6,200 followers in under four months. That's not just numbers — those are real customers. The content they create feels authentic to who we are, not like it was made by a robot.",
+    name: "Kagiso Nkosi", role: "Co-founder, Kasi Threads", initials: "KN", color: "#34d399"
+  },
+  {
+    quote: "They built our e-commerce store in three weeks and it looked better than sites I've seen from companies ten times our size. Setup was smooth, they explained everything, and sales have been up 40% since launch.",
+    name: "Priya Govender", role: "Founder, Bloom Botanicals SA", initials: "PG", color: "#f59e0b"
+  },
+  {
+    quote: "I needed a rebrand fast — new logo, new colours, new everything. Thynkverse came back with concepts in 48 hours and nailed it on the second round. I've already referred them to three other business owners in my network.",
+    name: "Thabo Mahlangu", role: "CEO, Mahlangu Real Estate", initials: "TM", color: "#60a5fa"
+  },
+  {
+    quote: "What I appreciate most is that they don't just do the work and disappear. They check in, they follow up, and when I had a small issue with my site a month after launch, they sorted it out same day. That's rare.",
+    name: "Lindiwe Cele", role: "Founder, LCM Events", initials: "LC", color: "#f472b6"
+  },
+  {
+    quote: "We needed a full digital strategy — not just a pretty website. They mapped out our entire online presence, from Google Business to social ads, and it actually made sense. Revenue from online channels doubled within six months.",
+    name: "Ruan van der Merwe", role: "MD, VDM Construction Group", initials: "RV", color: "#ff6b35"
+  },
+  {
+    quote: "The attention to detail is what gets me. Little things like font choices, how buttons feel on mobile, the way the colours work together — it all adds up to something that feels premium. Our clients notice it too.",
+    name: "Zanele Mokoena", role: "Creative Director, Zanele Studio", initials: "ZM", color: "#34d399"
+  }
+];
+
+const testiTrack = document.getElementById('testiTrack');
+const doubled = [...testimonials, ...testimonials];
+doubled.forEach(t => {
+  const card = document.createElement('div');
+  card.className = 'testi-card';
+  card.innerHTML = `
+    <div class="testi-stars">${'<span class="testi-star">★</span>'.repeat(5)}</div>
+    <p class="testi-quote">${t.quote}</p>
+    <div class="testi-author">
+      <div class="testi-avatar" style="background:${t.color}18;color:${t.color};">${t.initials}</div>
+      <div>
+        <div class="testi-name">${t.name}</div>
+        <div class="testi-role">${t.role}</div>
+      </div>
+      <div class="testi-verified">✓ Verified</div>
+    </div>
+  `;
+  testiTrack.appendChild(card);
+});
+
 /* ============================================
    DATA
    ============================================ */
