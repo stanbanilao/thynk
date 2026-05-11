@@ -2,20 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Thynkverse — Creative Digital Agency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ============================================
-   THYNKVERSE — FINAL COMBINED BUILD
-   ============================================ */
-
 :root {
   --accent: #ff6b35;
   --accent-light: #ff8c5a;
-  --accent-dark: #e55a2b;
   --bg: #0a0a0a;
   --bg-secondary: #111111;
   --bg-tertiary: #1a1a1a;
@@ -25,13 +20,11 @@
   --border: rgba(255,255,255,0.08);
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
-  --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
-
 body {
   background: var(--bg);
   color: var(--text);
@@ -39,16 +32,37 @@ body {
   overflow-x: hidden;
   cursor: none;
 }
-
 ::selection { background: var(--accent); color: #fff; }
-
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
 
 /* ============================================
-   CUSTOM CURSOR + LIQUID RIPPLE
+   CANVASES (behind everything)
+   ============================================ */
+#constellationCanvas, #liquidCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+#liquidCanvas { z-index: 9990; }
+
+/* ============================================
+   NOISE OVERLAY
+   ============================================ */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9995;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   CUSTOM CURSOR (desktop only)
    ============================================ */
 .cursor-ring {
   position: fixed;
@@ -58,7 +72,7 @@ body {
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: width 0.3s var(--transition-smooth), height 0.3s var(--transition-smooth), border-color 0.3s;
+  transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out), border-color 0.3s;
   mix-blend-mode: difference;
 }
 .cursor-ring.hovering {
@@ -85,155 +99,105 @@ body {
   opacity: 0.4;
   transform: translate(-50%, -50%);
 }
-
-/* Liquid Ripple Canvas */
-#liquidCanvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 9990;
-}
-
 @media (pointer: coarse) {
-  .cursor-ring, .cursor-dot, .trail-dot { display: none; }
+  .cursor-ring, .cursor-dot, .trail-dot { display: none !important; }
   body { cursor: auto; }
 }
 
 /* ============================================
-   NOISE OVERLAY
-   ============================================ */
-.noise-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 9995;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* ============================================
-   CONSTELLATION CANVAS
-   ============================================ */
-#constellationCanvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ============================================
-   HEADER / NAV
+   HEADER
    ============================================ */
 .header {
   position: fixed;
   top: 0; left: 0; width: 100%;
   z-index: 100;
-  padding: 1.5rem 3rem;
+  padding: 1rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   transition: background 0.4s, backdrop-filter 0.4s;
 }
 .header.scrolled {
-  background: rgba(10,10,10,0.85);
+  background: rgba(10,10,10,0.9);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
 }
 
 .logo {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--text);
   text-decoration: none;
   display: inline-flex;
   overflow: hidden;
+  z-index: 102;
 }
 .logo .thynk { color: var(--text); }
 .logo .verse {
   color: var(--accent);
   display: inline-block;
-  transition: transform 0.4s var(--transition-smooth);
+  transition: transform 0.4s var(--ease-out);
 }
-.logo:hover .verse {
-  transform: translateY(-4px);
-}
+.logo:hover .verse { transform: translateY(-4px); }
 
-.nav-center {
+/* Hamburger centered */
+.hamburger {
   display: flex;
-  gap: 2.5rem;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 101;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
-.nav-center a {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: color 0.3s;
-  position: relative;
+.hamburger span {
+  width: 24px; height: 2px;
+  background: var(--text);
+  transition: 0.3s;
+  border-radius: 2px;
 }
-.nav-center a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px; left: 0;
-  width: 0; height: 1.5px;
-  background: var(--accent);
-  transition: width 0.3s var(--transition-smooth);
-}
-.nav-center a:hover { color: var(--text); }
-.nav-center a:hover::after { width: 100%; }
 
-/* Call Action Top Right */
+/* Call action always visible */
 .call-action {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  z-index: 102;
 }
 .call-icon {
-  width: 44px; height: 44px;
+  width: 40px; height: 40px;
   border-radius: 50%;
   background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: phoneShake 2.5s ease-in-out infinite;
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
+  animation: phoneShake 1.6s ease-in-out infinite;
+  text-decoration: none;
 }
-.call-icon:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 20px rgba(255,107,53,0.4);
-}
-.call-icon svg {
-  width: 20px; height: 20px;
-  fill: #fff;
-}
+.call-icon svg { width: 18px; height: 18px; fill: #fff; }
+
 @keyframes phoneShake {
-  0%, 100% { transform: rotate(0deg); }
-  5% { transform: rotate(-15deg); }
-  10% { transform: rotate(15deg); }
-  15% { transform: rotate(-10deg); }
-  20% { transform: rotate(10deg); }
-  25% { transform: rotate(0deg); }
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  6% { transform: rotate(-22deg) scale(1.08); }
+  12% { transform: rotate(22deg) scale(1.08); }
+  18% { transform: rotate(-16deg) scale(1.06); }
+  24% { transform: rotate(16deg) scale(1.06); }
+  30% { transform: rotate(-8deg) scale(1.03); }
+  36% { transform: rotate(0deg) scale(1); }
 }
+
 .call-popup {
   position: absolute;
-  top: 50%; right: 55px;
+  top: 50%; right: 50px;
   transform: translateY(-50%);
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.9rem;
   border-radius: 8px;
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--accent);
   white-space: nowrap;
@@ -246,29 +210,44 @@ body {
   transform: translateY(-50%) translateX(-5px);
 }
 
-/* Mobile Menu */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  z-index: 101;
-}
-.hamburger span {
-  width: 24px; height: 2px;
-  background: var(--text);
-  transition: 0.3s;
-}
+.nav-center { display: none; }
 
-@media (max-width: 768px) {
-  .header { padding: 1rem 1.5rem; }
-  .nav-center { display: none; }
-  .hamburger { display: flex; }
-  .call-action { display: none; }
+@media (min-width: 769px) {
+  .header { padding: 1.25rem 2.5rem; }
+  .hamburger { display: none; }
+  .nav-center {
+    display: flex;
+    gap: 2.5rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .nav-center a {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-center a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1.5px;
+    background: var(--accent);
+    transition: width 0.3s var(--ease-out);
+  }
+  .nav-center a:hover { color: var(--text); }
+  .nav-center a:hover::after { width: 100%; }
+  .call-popup { right: 55px; }
 }
 
 /* ============================================
-   HERO SECTION
+   HERO
    ============================================ */
 .hero {
   position: relative;
@@ -279,8 +258,6 @@ body {
   overflow: hidden;
   z-index: 1;
 }
-
-/* Gradient Orbs */
 .orb {
   position: absolute;
   border-radius: 50%;
@@ -288,36 +265,12 @@ body {
   opacity: 0.35;
   pointer-events: none;
 }
-.orb-1 {
-  width: 500px; height: 500px;
-  background: var(--accent);
-  top: -10%; left: -5%;
-  animation: orbFloat1 20s ease-in-out infinite;
-}
-.orb-2 {
-  width: 400px; height: 400px;
-  background: #7c3aed;
-  bottom: -10%; right: -5%;
-  animation: orbFloat2 25s ease-in-out infinite;
-}
-.orb-3 {
-  width: 300px; height: 300px;
-  background: #f59e0b;
-  top: 40%; left: 60%;
-  animation: orbFloat3 18s ease-in-out infinite;
-}
-@keyframes orbFloat1 {
-  0%, 100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(50px, 30px) scale(1.1); }
-}
-@keyframes orbFloat2 {
-  0%, 100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(-40px, -60px) scale(1.15); }
-}
-@keyframes orbFloat3 {
-  0%, 100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(30px, -40px) scale(1.05); }
-}
+.orb-1 { width: 500px; height: 500px; background: var(--accent); top: -10%; left: -5%; animation: orbFloat1 20s ease-in-out infinite; }
+.orb-2 { width: 400px; height: 400px; background: #7c3aed; bottom: -10%; right: -5%; animation: orbFloat2 25s ease-in-out infinite; }
+.orb-3 { width: 300px; height: 300px; background: #f59e0b; top: 40%; left: 60%; animation: orbFloat3 18s ease-in-out infinite; }
+@keyframes orbFloat1 { 0%,100%{transform:translate(0,0)scale(1)}50%{transform:translate(50px,30px)scale(1.1)} }
+@keyframes orbFloat2 { 0%,100%{transform:translate(0,0)scale(1)}50%{transform:translate(-40px,-60px)scale(1.15)} }
+@keyframes orbFloat3 { 0%,100%{transform:translate(0,0)scale(1)}50%{transform:translate(30px,-40px)scale(1.05)} }
 
 .hero-content {
   text-align: center;
@@ -325,7 +278,6 @@ body {
   max-width: 900px;
   padding: 0 2rem;
 }
-
 .hero-eyebrow {
   font-family: var(--font-display);
   font-size: 0.85rem;
@@ -336,7 +288,6 @@ body {
   margin-bottom: 1.5rem;
   min-height: 1.2em;
 }
-
 .hero-title {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 6vw, 5rem);
@@ -344,21 +295,16 @@ body {
   line-height: 1.05;
   margin-bottom: 1.5rem;
 }
-.hero-title .line {
-  display: block;
-  overflow: hidden;
-}
+.hero-title .line { display: block; overflow: hidden; }
 .hero-title .line span {
   display: inline-block;
   transform: translateY(100%);
-  animation: slideUp 1s var(--transition-smooth) forwards;
+  animation: slideUp 1s var(--ease-out) forwards;
 }
 .hero-title .line:nth-child(1) span { animation-delay: 0.2s; }
 .hero-title .line:nth-child(2) span { animation-delay: 0.35s; color: var(--accent); }
 .hero-title .line:nth-child(3) span { animation-delay: 0.5s; }
-@keyframes slideUp {
-  to { transform: translateY(0); }
-}
+@keyframes slideUp { to { transform: translateY(0); } }
 
 .hero-subtitle {
   font-size: 1.1rem;
@@ -369,9 +315,7 @@ body {
   opacity: 0;
   animation: fadeIn 1s 0.7s forwards;
 }
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
+@keyframes fadeIn { to { opacity: 1; } }
 
 .hero-cta {
   display: inline-flex;
@@ -394,11 +338,10 @@ body {
   box-shadow: 0 10px 40px rgba(255,107,53,0.3);
 }
 
-/* Parallax Elements */
 .parallax-element {
   position: absolute;
   pointer-events: none;
-  opacity: 0.15;
+  opacity: 0.12;
   font-family: var(--font-display);
   font-weight: 700;
   color: var(--accent);
@@ -409,11 +352,11 @@ body {
 .pe-3 { font-size: 4rem; top: 60%; left: 15%; }
 
 /* ============================================
-   FORMING WORDS SECTION
+   FORMING WORDS
    ============================================ */
 .forming-section {
   position: relative;
-  min-height: 300vh;
+  min-height: 500vh;
   z-index: 1;
 }
 .forming-sticky {
@@ -425,7 +368,6 @@ body {
   justify-content: center;
   overflow: hidden;
 }
-
 .forming-word-container {
   position: relative;
   width: 100%;
@@ -438,23 +380,25 @@ body {
 .forming-word {
   position: absolute;
   font-family: var(--font-display);
-  font-size: clamp(3rem, 10vw, 8rem);
+  font-size: clamp(2rem, 10vw, 6.5rem);
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   display: flex;
-  gap: 0.1em;
+  gap: 0.06em;
   opacity: 0;
-  transition: opacity 0.5s;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 2;
 }
 .forming-word.active { opacity: 1; }
 .forming-word.fade-out { opacity: 0; }
 
 .forming-letter {
   display: inline-block;
-  transition: transform 0.8s var(--transition-smooth), opacity 0.8s, filter 0.8s;
-  opacity: 0.25;
-  filter: blur(4px);
-  transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.5);
+  transition: transform 1s var(--ease-out), opacity 0.8s, filter 0.8s;
+  opacity: 0.15;
+  filter: blur(3px);
+  transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(var(--sc));
 }
 .forming-letter.formed {
   opacity: 1;
@@ -463,48 +407,91 @@ body {
 }
 
 .word-innovate { color: var(--accent); }
-.word-create { color: #a78bfa; }
-.word-transform { color: #f59e0b; }
+.word-create { color: #c084fc; }
+.word-transform { color: #fbbf24; }
 .word-build { color: #34d399; }
-.word-evolve { color: #ff6b9d; }
+.word-evolve { color: #fb7185; }
 
-/* Orbit Cards */
 .orbit-card {
   position: absolute;
-  width: 140px;
-  padding: 1rem;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  width: 100px;
+  padding: 0.75rem 0.4rem;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
   text-align: center;
-  backdrop-filter: blur(10px);
-  transition: transform 0.4s, border-color 0.4s, background 0.4s;
+  backdrop-filter: blur(14px);
   opacity: 0;
-  transform: scale(0.5) rotate(var(--r));
+  transform: scale(0.5);
+  transition: opacity 0.6s ease, transform 0.6s var(--ease-out), border-color 0.3s;
+  will-change: transform, opacity;
+  z-index: 1;
 }
 .orbit-card.visible {
   opacity: 1;
-  transform: scale(1) rotate(0deg);
+  transform: scale(1);
 }
 .orbit-card:hover {
   border-color: var(--accent);
-  background: rgba(255,107,53,0.05);
+  background: rgba(255,107,53,0.06);
 }
 .orbit-card .oc-icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+  margin-bottom: 0.35rem;
+  display: block;
+  filter: grayscale(0.2);
 }
 .orbit-card .oc-title {
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   font-weight: 600;
   color: var(--text);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+}
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1); }
+}
+.orbit-card.parked {
+  animation: cardFloat 3.5s ease-in-out infinite;
+}
+
+@media (max-width: 400px) {
+  .orbit-card { width: 82px; padding: 0.55rem 0.3rem; border-radius: 10px; }
+  .orbit-card .oc-icon { font-size: 1.1rem; }
+  .orbit-card .oc-title { font-size: 0.55rem; }
+}
+
+/* Progress dots */
+.progress-dots {
+  position: fixed;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  z-index: 50;
+}
+.progress-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  transition: background 0.4s, transform 0.4s, box-shadow 0.4s;
+}
+.progress-dot.active {
+  background: var(--accent);
+  transform: scale(1.5);
+  box-shadow: 0 0 10px rgba(255,107,53,0.4);
+}
+@media (max-width: 768px) {
+  .progress-dots { right: 0.6rem; gap: 0.5rem; }
+  .progress-dot { width: 5px; height: 5px; }
 }
 
 /* ============================================
-   SERVICES SECTION
+   SERVICES
    ============================================ */
 .services-section {
   position: relative;
@@ -557,7 +544,6 @@ body {
 .service-card:nth-child(4) { animation-delay: 3s; }
 .service-card:nth-child(5) { animation-delay: 4s; }
 .service-card:nth-child(6) { animation-delay: 5s; }
-
 @keyframes floatCard {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -566,7 +552,6 @@ body {
   animation-play-state: paused;
   border-color: rgba(255,107,53,0.3);
 }
-
 .service-card::before {
   content: '';
   position: absolute;
@@ -587,7 +572,6 @@ body {
   color: rgba(255,255,255,0.03);
   line-height: 1;
 }
-
 .sc-icon {
   width: 48px; height: 48px;
   border-radius: 12px;
@@ -598,20 +582,17 @@ body {
   margin-bottom: 1rem;
   background: rgba(255,107,53,0.1);
 }
-
 .sc-title {
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
-
 .sc-desc {
   font-size: 0.85rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
-
 .sc-cta {
   display: inline-flex;
   align-items: center;
@@ -651,7 +632,6 @@ body {
   opacity: 1;
   pointer-events: all;
 }
-
 .so-panel {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
@@ -663,12 +643,11 @@ body {
   padding: 3rem;
   position: relative;
   transform: translateY(40px) scale(0.95);
-  transition: transform 0.4s var(--transition-smooth);
+  transition: transform 0.4s var(--ease-out);
 }
 .service-overlay.open .so-panel {
   transform: translateY(0) scale(1);
 }
-
 .so-close {
   position: absolute;
   top: 1.5rem; right: 1.5rem;
@@ -688,10 +667,7 @@ body {
   background: var(--accent);
   border-color: var(--accent);
 }
-
-.so-header {
-  margin-bottom: 2rem;
-}
+.so-header { margin-bottom: 2rem; }
 .so-tag {
   display: inline-block;
   padding: 0.35rem 0.9rem;
@@ -716,10 +692,7 @@ body {
   color: var(--text-secondary);
   line-height: 1.7;
 }
-
-.so-features {
-  margin: 2rem 0;
-}
+.so-features { margin: 2rem 0; }
 .so-features h4 {
   font-family: var(--font-display);
   font-size: 0.9rem;
@@ -729,9 +702,7 @@ body {
   margin-bottom: 1rem;
   color: var(--text);
 }
-.so-features ul {
-  list-style: none;
-}
+.so-features ul { list-style: none; }
 .so-features li {
   padding: 0.5rem 0;
   padding-left: 1.5rem;
@@ -745,7 +716,6 @@ body {
   left: 0;
   color: var(--accent);
 }
-
 .so-whatsapp {
   display: inline-flex;
   align-items: center;
@@ -765,10 +735,7 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(37,211,102,0.3);
 }
-.so-whatsapp svg {
-  width: 20px; height: 20px;
-  fill: #fff;
-}
+.so-whatsapp svg { width: 20px; height: 20px; fill: #fff; }
 
 /* ============================================
    MARQUEE
@@ -823,13 +790,13 @@ body {
   align-items: center;
   gap: 2rem;
 }
-
 .footer-socials {
   display: flex;
   gap: 1.5rem;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-
 .social-icon {
   width: 44px; height: 44px;
   border-radius: 50%;
@@ -842,14 +809,9 @@ body {
   transition: transform 0.3s, border-color 0.3s;
   position: relative;
 }
-.social-icon:hover {
-  transform: translateY(-4px);
-}
-.social-icon svg {
-  width: 18px; height: 18px;
-}
+.social-icon:hover { transform: translateY(-4px); }
+.social-icon svg { width: 18px; height: 18px; }
 
-/* Brand colored blinking */
 .social-wa { border-color: rgba(37,211,102,0.3); animation: blinkWa 2s ease-in-out infinite; }
 .social-wa:hover { background: rgba(37,211,102,0.1); border-color: #25d366; }
 .social-wa svg { fill: #25d366; }
@@ -874,30 +836,12 @@ body {
 .social-tiktok:hover { background: rgba(255,255,255,0.05); border-color: #fff; }
 .social-tiktok svg { fill: #fff; }
 
-@keyframes blinkWa {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
-  50% { box-shadow: 0 0 15px 2px rgba(37,211,102,0.3); }
-}
-@keyframes blinkPhone {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
-  50% { box-shadow: 0 0 15px 2px rgba(59,130,246,0.3); }
-}
-@keyframes blinkEmail {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,53,0); }
-  50% { box-shadow: 0 0 15px 2px rgba(255,107,53,0.3); }
-}
-@keyframes blinkFb {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(24,119,242,0); }
-  50% { box-shadow: 0 0 15px 2px rgba(24,119,242,0.3); }
-}
-@keyframes blinkIg {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(225,48,108,0); }
-  50% { box-shadow: 0 0 15px 2px rgba(225,48,108,0.3); }
-}
-@keyframes blinkTiktok {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-  50% { box-shadow: 0 0 15px 2px rgba(255,255,255,0.2); }
-}
+@keyframes blinkWa { 0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,0)} 50%{box-shadow:0 0 15px 2px rgba(37,211,102,0.3)} }
+@keyframes blinkPhone { 0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0)} 50%{box-shadow:0 0 15px 2px rgba(59,130,246,0.3)} }
+@keyframes blinkEmail { 0%,100%{box-shadow:0 0 0 0 rgba(255,107,53,0)} 50%{box-shadow:0 0 15px 2px rgba(255,107,53,0.3)} }
+@keyframes blinkFb { 0%,100%{box-shadow:0 0 0 0 rgba(24,119,242,0)} 50%{box-shadow:0 0 15px 2px rgba(24,119,242,0.3)} }
+@keyframes blinkIg { 0%,100%{box-shadow:0 0 0 0 rgba(225,48,108,0)} 50%{box-shadow:0 0 15px 2px rgba(225,48,108,0.3)} }
+@keyframes blinkTiktok { 0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0)} 50%{box-shadow:0 0 15px 2px rgba(255,255,255,0.2)} }
 
 .footer-copy {
   font-size: 0.8rem;
@@ -912,12 +856,13 @@ body {
   .services-grid { grid-template-columns: 1fr; }
   .so-panel { padding: 2rem 1.5rem; }
   .parallax-element { display: none; }
-  .orbit-card { display: none; }
-  .forming-word { font-size: clamp(2rem, 12vw, 4rem); }
+  .hero-title { font-size: 2.5rem; }
 }
 @media (max-width: 480px) {
   .hero-title { font-size: 2.2rem; }
   .service-card { padding: 1.25rem; }
+  .footer-socials { gap: 1rem; }
+  .social-icon { width: 40px; height: 40px; }
 }
 </style>
 <base target="_blank">
@@ -944,23 +889,18 @@ body {
   <a href="#" class="logo">
     <span class="thynk">thynk</span><span class="verse">verse</span>
   </a>
-
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   <nav class="nav-center">
     <a href="#hero">Home</a>
     <a href="#forming">About</a>
     <a href="#services">Services</a>
     <a href="#contact">Contact</a>
   </nav>
-
   <div class="call-action">
     <div class="call-popup" id="callPopup">Call Us Now & Innovate</div>
     <a href="tel:+27812795215" class="call-icon" aria-label="Call Us">
       <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
     </a>
-  </div>
-
-  <div class="hamburger" id="hamburger">
-    <span></span><span></span><span></span>
   </div>
 </header>
 
@@ -969,11 +909,9 @@ body {
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
-
   <div class="parallax-element pe-1" data-speed="0.3">TV</div>
   <div class="parallax-element pe-2" data-speed="-0.2">01</div>
   <div class="parallax-element pe-3" data-speed="0.5">✦</div>
-
   <div class="hero-content">
     <div class="hero-eyebrow" id="scrambleText">Creative Digital Agency</div>
     <h1 class="hero-title">
@@ -989,9 +927,7 @@ body {
 <!-- Forming Words -->
 <section class="forming-section" id="forming">
   <div class="forming-sticky">
-    <div class="forming-word-container" id="formingContainer">
-      <!-- Words injected by JS -->
-    </div>
+    <div class="forming-word-container" id="formingContainer"></div>
   </div>
 </section>
 
@@ -1001,10 +937,7 @@ body {
     <div class="section-eyebrow">What We Do</div>
     <h2 class="section-title">Services That Drive Results</h2>
   </div>
-
-  <div class="services-grid" id="servicesGrid">
-    <!-- Cards injected by JS -->
-  </div>
+  <div class="services-grid" id="servicesGrid"></div>
 </section>
 
 <!-- Marquee -->
@@ -1060,137 +993,102 @@ body {
   </div>
 </footer>
 
+<!-- Progress Dots -->
+<div class="progress-dots" id="progressDots"></div>
+
 <script>
 /* ============================================
    DATA
    ============================================ */
 const services = [
   {
-    id: 1,
-    title: "Brand Identity",
+    id: 1, title: "Brand Identity",
     shortDesc: "Logos, visual systems, and brand guidelines that make you unforgettable.",
     fullDesc: "We craft distinctive brand identities that capture your essence and resonate with your audience. From logo design to complete visual systems, we ensure every touchpoint tells your story consistently.",
     features: ["Logo Design & Variations", "Brand Guidelines & Style Guides", "Color Palette & Typography", "Brand Strategy & Positioning", "Collateral Design"],
-    icon: "✦",
-    color: "#ff6b35",
+    icon: "✦", color: "#ff6b35",
     waMsg: "Hi Thynkverse, I'm interested in your Brand Identity service. Can we discuss my project?"
   },
   {
-    id: 2,
-    title: "Web Design & Development",
+    id: 2, title: "Web Design & Development",
     shortDesc: "Responsive, high-performance websites built to convert visitors into customers.",
     fullDesc: "We design and develop stunning, responsive websites that load fast and convert better. From landing pages to complex web applications, we build digital experiences that drive results.",
     features: ["Custom Website Design", "Frontend & Backend Development", "CMS Integration", "E-Commerce Solutions", "Performance Optimization"],
-    icon: "◈",
-    color: "#a78bfa",
+    icon: "◈", color: "#a78bfa",
     waMsg: "Hi Thynkverse, I'm interested in your Web Design & Development service. Can we discuss my project?"
   },
   {
-    id: 3,
-    title: "Social Media Management",
+    id: 3, title: "Social Media Management",
     shortDesc: "Content strategy, scheduling, and community management that grows your following.",
     fullDesc: "We manage your social presence end-to-end. From content creation and scheduling to community engagement and analytics, we turn your social channels into growth engines.",
     features: ["Content Strategy & Calendar", "Post Design & Copywriting", "Community Management", "Paid Social Advertising", "Monthly Analytics Reports"],
-    icon: "◎",
-    color: "#34d399",
+    icon: "◎", color: "#34d399",
     waMsg: "Hi Thynkverse, I'm interested in your Social Media Management service. Can we discuss my project?"
   },
   {
-    id: 4,
-    title: "E-Commerce Solutions",
+    id: 4, title: "E-Commerce Solutions",
     shortDesc: "Online stores that look beautiful and sell more with seamless checkout flows.",
     fullDesc: "We build e-commerce experiences that convert browsers into buyers. From product pages to checkout flows, we optimize every step of the customer journey for maximum revenue.",
     features: ["Store Design & Setup", "Payment Gateway Integration", "Inventory Management", "Conversion Rate Optimization", "Mobile Shopping Experience"],
-    icon: "◉",
-    color: "#f59e0b",
+    icon: "◉", color: "#f59e0b",
     waMsg: "Hi Thynkverse, I'm interested in your E-Commerce Solutions service. Can we discuss my project?"
   },
   {
-    id: 5,
-    title: "UI/UX Design",
+    id: 5, title: "UI/UX Design",
     shortDesc: "User-centered interfaces and experiences that feel intuitive and delightful.",
     fullDesc: "We design user experiences that are intuitive, accessible, and beautiful. Through research-driven design, we create interfaces that users love and businesses benefit from.",
     features: ["User Research & Personas", "Wireframing & Prototyping", "Interface Design", "Usability Testing", "Design Systems"],
-    icon: "◇",
-    color: "#60a5fa",
+    icon: "◇", color: "#60a5fa",
     waMsg: "Hi Thynkverse, I'm interested in your UI/UX Design service. Can we discuss my project?"
   },
   {
-    id: 6,
-    title: "Digital Strategy",
+    id: 6, title: "Digital Strategy",
     shortDesc: "Data-driven roadmaps that align your digital presence with business goals.",
     fullDesc: "We develop comprehensive digital strategies that align your online presence with your business objectives. From market analysis to execution roadmaps, we set you up for sustainable growth.",
     features: ["Market & Competitor Analysis", "Digital Roadmapping", "KPI Definition & Tracking", "Channel Strategy", "Growth Hacking"],
-    icon: "✶",
-    color: "#f472b6",
+    icon: "✶", color: "#f472b6",
     waMsg: "Hi Thynkverse, I'm interested in your Digital Strategy service. Can we discuss my project?"
   }
 ];
 
 const formingWords = [
   { text: "INNOVATE", class: "word-innovate", cards: [
-    { icon: "💡", title: "Ideate" },
-    { icon: "🔍", title: "Research" },
-    { icon: "📐", title: "Concept" },
-    { icon: "🎯", title: "Focus" },
-    { icon: "🚀", title: "Launch" }
+    { icon: "💡", title: "Ideate" }, { icon: "🔍", title: "Research" },
+    { icon: "📐", title: "Concept" }, { icon: "🎯", title: "Focus" }, { icon: "🚀", title: "Launch" }
   ]},
   { text: "CREATE", class: "word-create", cards: [
-    { icon: "🎨", title: "Design" },
-    { icon: "✏️", title: "Sketch" },
-    { icon: "🖌️", title: "Craft" },
-    { icon: "📸", title: "Visuals" },
-    { icon: "🎬", title: "Motion" }
+    { icon: "🎨", title: "Design" }, { icon: "✏️", title: "Sketch" },
+    { icon: "🖌️", title: "Craft" }, { icon: "📸", title: "Visuals" }, { icon: "🎬", title: "Motion" }
   ]},
   { text: "TRANSFORM", class: "word-transform", cards: [
-    { icon: "⚡", title: "Evolve" },
-    { icon: "🔄", title: "Adapt" },
-    { icon: "📈", title: "Scale" },
-    { icon: "🔧", title: "Optimize" },
-    { icon: "🏗️", title: "Restructure" }
+    { icon: "⚡", title: "Evolve" }, { icon: "🔄", title: "Adapt" },
+    { icon: "📈", title: "Scale" }, { icon: "🔧", title: "Optimize" }, { icon: "🏗️", title: "Restructure" }
   ]},
   { text: "BUILD", class: "word-build", cards: [
-    { icon: "💻", title: "Code" },
-    { icon: "📱", title: "Develop" },
-    { icon: "🔗", title: "Integrate" },
-    { icon: "🧪", title: "Test" },
-    { icon: "🚢", title: "Deploy" }
+    { icon: "💻", title: "Code" }, { icon: "📱", title: "Develop" },
+    { icon: "🔗", title: "Integrate" }, { icon: "🧪", title: "Test" }, { icon: "🚢", title: "Deploy" }
   ]},
   { text: "EVOLVE", class: "word-evolve", cards: [
-    { icon: "🌱", title: "Grow" },
-    { icon: "📊", title: "Analyze" },
-    { icon: "🔮", title: "Predict" },
-    { icon: "♻️", title: "Iterate" },
-    { icon: "🏆", title: "Win" }
+    { icon: "🌱", title: "Grow" }, { icon: "📊", title: "Analyze" },
+    { icon: "🔮", title: "Predict" }, { icon: "♻️", title: "Iterate" }, { icon: "🏆", title: "Win" }
   ]}
 ];
 
 /* ============================================
-   CUSTOM CURSOR + LIQUID RIPPLE
+   CUSTOM CURSOR (desktop)
    ============================================ */
 const isTouch = window.matchMedia('(pointer: coarse)').matches;
 
 if (!isTouch) {
   const ring = document.getElementById('cursorRing');
   const dot = document.getElementById('cursorDot');
-  const trails = [
-    document.getElementById('trail1'),
-    document.getElementById('trail2'),
-    document.getElementById('trail3'),
-    document.getElementById('trail4')
-  ];
-
-  let mouseX = 0, mouseY = 0;
-  let ringX = 0, ringY = 0;
+  const trails = [document.getElementById('trail1'), document.getElementById('trail2'), document.getElementById('trail3'), document.getElementById('trail4')];
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
   let trailPos = trails.map(() => ({ x: 0, y: 0 }));
 
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
+  document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
 
-  const interactiveEls = document.querySelectorAll('a, button, .service-card, .orbit-card, .so-close');
-  interactiveEls.forEach(el => {
+  document.querySelectorAll('a, button, .service-card, .orbit-card, .so-close').forEach(el => {
     el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
     el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
   });
@@ -1198,11 +1096,8 @@ if (!isTouch) {
   function animateCursor() {
     ringX += (mouseX - ringX) * 0.15;
     ringY += (mouseY - ringY) * 0.15;
-    ring.style.left = ringX + 'px';
-    ring.style.top = ringY + 'px';
-    dot.style.left = mouseX + 'px';
-    dot.style.top = mouseY + 'px';
-
+    ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+    dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
     trails.forEach((trail, i) => {
       const prev = i === 0 ? { x: mouseX, y: mouseY } : trailPos[i - 1];
       trailPos[i].x += (prev.x - trailPos[i].x) * (0.25 - i * 0.04);
@@ -1210,13 +1105,14 @@ if (!isTouch) {
       trail.style.left = trailPos[i].x + 'px';
       trail.style.top = trailPos[i].y + 'px';
     });
-
     requestAnimationFrame(animateCursor);
   }
   animateCursor();
 }
 
-/* Liquid Ripple */
+/* ============================================
+   LIQUID RIPPLE (mouse + touch)
+   ============================================ */
 const liquidCanvas = document.getElementById('liquidCanvas');
 const lCtx = liquidCanvas.getContext('2d');
 let liquidW, liquidH;
@@ -1230,44 +1126,85 @@ resizeLiquid();
 window.addEventListener('resize', resizeLiquid);
 
 class Ripple {
-  constructor(x, y) {
+  constructor(x, y, isTouchRipple = false) {
     this.x = x; this.y = y;
     this.radius = 2;
-    this.maxRadius = 40 + Math.random() * 30;
-    this.opacity = 0.6;
-    this.speed = 0.8 + Math.random() * 0.5;
+    this.maxRadius = isTouchRipple ? 80 + Math.random() * 60 : 40 + Math.random() * 30;
+    this.opacity = isTouchRipple ? 0.5 : 0.6;
+    this.speed = isTouchRipple ? 1.2 + Math.random() * 0.8 : 0.8 + Math.random() * 0.5;
+    this.isTouch = isTouchRipple;
   }
   update() {
     this.radius += this.speed;
-    this.opacity -= 0.015;
+    this.opacity -= this.isTouch ? 0.008 : 0.015;
   }
   draw(ctx) {
     if (this.opacity <= 0) return;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.strokeStyle = `rgba(255, 107, 53, ${this.opacity})`;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = this.isTouch ? 2 : 1.5;
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius * 0.6, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(255, 140, 90, ${this.opacity * 0.5})`;
-    ctx.lineWidth = 1;
+    ctx.arc(this.x, this.y, this.radius * 0.65, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255, 140, 90, ${this.opacity * 0.4})`;
+    ctx.lineWidth = this.isTouch ? 1.5 : 1;
     ctx.stroke();
+
+    if (this.isTouch) {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius * 0.35, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255, 180, 120, ${this.opacity * 0.25})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
   }
 }
 
+// Desktop mouse ripples
 if (!isTouch) {
-  let lastLiquidX = 0, lastLiquidY = 0;
+  let lastLX = 0, lastLY = 0;
   document.addEventListener('mousemove', (e) => {
-    const dist = Math.hypot(e.clientX - lastLiquidX, e.clientY - lastLiquidY);
+    const dist = Math.hypot(e.clientX - lastLX, e.clientY - lastLY);
     if (dist > 25) {
-      ripples.push(new Ripple(e.clientX, e.clientY));
-      lastLiquidX = e.clientX;
-      lastLiquidY = e.clientY;
+      ripples.push(new Ripple(e.clientX, e.clientY, false));
+      lastLX = e.clientX; lastLY = e.clientY;
     }
   });
 }
+
+// Mobile touch ripples — water drop effect
+let touchRippleCount = 0;
+const MAX_TOUCH_RIPPLES = 8;
+
+document.addEventListener('touchstart', (e) => {
+  for (let i = 0; i < e.touches.length; i++) {
+    const t = e.touches[i];
+    if (touchRippleCount < MAX_TOUCH_RIPPLES) {
+      ripples.push(new Ripple(t.clientX, t.clientY, true));
+      touchRippleCount++;
+      // Secondary ring for dramatic water effect
+      setTimeout(() => {
+        ripples.push(new Ripple(t.clientX, t.clientY, true));
+      }, 150);
+    }
+  }
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+  for (let i = 0; i < e.touches.length; i++) {
+    const t = e.touches[i];
+    if (touchRippleCount < MAX_TOUCH_RIPPLES && Math.random() > 0.7) {
+      ripples.push(new Ripple(t.clientX, t.clientY, true));
+      touchRippleCount++;
+    }
+  }
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+  touchRippleCount = Math.max(0, touchRippleCount - 2);
+});
 
 function animateLiquid() {
   lCtx.clearRect(0, 0, liquidW, liquidH);
@@ -1278,7 +1215,7 @@ function animateLiquid() {
 animateLiquid();
 
 /* ============================================
-   CONSTELLATION (70 PARTICLES)
+   CONSTELLATION (70 particles) + TOUCH SCATTER
    ============================================ */
 const cCanvas = document.getElementById('constellationCanvas');
 const cCtx = cCanvas.getContext('2d');
@@ -1286,6 +1223,8 @@ let cW, cH;
 const PARTICLE_COUNT = 70;
 const CONNECTION_DIST = 150;
 const MOUSE_REPULSE = 120;
+const TOUCH_REPULSE = 180;
+const TOUCH_FORCE = 6;
 
 function resizeConstellation() {
   cW = cCanvas.width = window.innerWidth;
@@ -1295,9 +1234,27 @@ resizeConstellation();
 window.addEventListener('resize', resizeConstellation);
 
 let mouseCX = -1000, mouseCY = -1000;
-document.addEventListener('mousemove', (e) => {
-  mouseCX = e.clientX;
-  mouseCY = e.clientY;
+let touchPoints = []; // Array of active touch points
+
+document.addEventListener('mousemove', (e) => { mouseCX = e.clientX; mouseCY = e.clientY; });
+
+// Touch tracking for constellation scatter
+document.addEventListener('touchstart', (e) => {
+  touchPoints = [];
+  for (let i = 0; i < e.touches.length; i++) {
+    touchPoints.push({ x: e.touches[i].clientX, y: e.touches[i].clientY, force: TOUCH_FORCE });
+  }
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+  touchPoints = [];
+  for (let i = 0; i < e.touches.length; i++) {
+    touchPoints.push({ x: e.touches[i].clientX, y: e.touches[i].clientY, force: TOUCH_FORCE });
+  }
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+  touchPoints = [];
 });
 
 class Particle {
@@ -1307,7 +1264,8 @@ class Particle {
     this.vx = (Math.random() - 0.5) * 0.4;
     this.vy = (Math.random() - 0.5) * 0.4;
     this.size = 1.5 + Math.random() * 2.5;
-    this.opacity = 0.3 + Math.random() * 0.5;
+    this.baseOpacity = 0.3 + Math.random() * 0.5;
+    this.opacity = this.baseOpacity;
   }
   update() {
     this.x += this.vx;
@@ -1315,22 +1273,37 @@ class Particle {
     if (this.x < 0 || this.x > cW) this.vx *= -1;
     if (this.y < 0 || this.y > cH) this.vy *= -1;
 
-    const dx = this.x - mouseCX;
-    const dy = this.y - mouseCY;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    if (dist < MOUSE_REPULSE) {
-      const force = (MOUSE_REPULSE - dist) / MOUSE_REPULSE;
-      this.x += (dx / dist) * force * 3;
-      this.y += (dy / dist) * force * 3;
-      this.opacity = Math.min(0.9, this.opacity + 0.02);
+    // Mouse repulsion
+    const mdx = this.x - mouseCX;
+    const mdy = this.y - mouseCY;
+    const mDist = Math.sqrt(mdx*mdx + mdy*mdy);
+    if (mDist < MOUSE_REPULSE) {
+      const force = (MOUSE_REPULSE - mDist) / MOUSE_REPULSE;
+      this.x += (mdx / mDist) * force * 3;
+      this.y += (mdy / mDist) * force * 3;
+      this.opacity = Math.min(0.9, this.baseOpacity + 0.2);
+    } else {
+      this.opacity += (this.baseOpacity - this.opacity) * 0.05;
     }
+
+    // Touch repulsion (scatter!)
+    touchPoints.forEach(tp => {
+      const tdx = this.x - tp.x;
+      const tdy = this.y - tp.y;
+      const tDist = Math.sqrt(tdx*tdx + tdy*tdy);
+      if (tDist < TOUCH_REPULSE && tDist > 0) {
+        const force = (TOUCH_REPULSE - tDist) / TOUCH_REPULSE;
+        this.x += (tdx / tDist) * force * tp.force;
+        this.y += (tdy / tDist) * force * tp.force;
+        this.opacity = Math.min(1, this.baseOpacity + 0.4);
+      }
+    });
   }
   draw(ctx) {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, 107, 53, ${this.opacity})`;
     ctx.fill();
-
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, 107, 53, ${this.opacity * 0.15})`;
@@ -1342,12 +1315,7 @@ const particles = Array.from({ length: PARTICLE_COUNT }, () => new Particle());
 
 function animateConstellation() {
   cCtx.clearRect(0, 0, cW, cH);
-
-  particles.forEach(p => {
-    p.update();
-    p.draw(cCtx);
-  });
-
+  particles.forEach(p => { p.update(); p.draw(cCtx); });
   for (let i = 0; i < particles.length; i++) {
     for (let j = i + 1; j < particles.length; j++) {
       const dx = particles[i].x - particles[j].x;
@@ -1369,32 +1337,20 @@ function animateConstellation() {
 animateConstellation();
 
 /* ============================================
-   TEXT SCRAMBLE (Hero Eyebrow)
+   TEXT SCRAMBLE
    ============================================ */
 class TextScramble {
-  constructor(el) {
-    this.el = el;
-    this.chars = '!<>-_\/[]{}—=+*^?#________';
-    this.original = el.innerText;
-  }
+  constructor(el) { this.el = el; this.chars = '!<>-_\/[]{}—=+*^?#________'; this.original = el.innerText; }
   scramble() {
-    let iteration = 0;
-    const interval = setInterval(() => {
-      this.el.innerText = this.original
-        .split('')
-        .map((char, i) => {
-          if (i < iteration) return this.original[i];
-          return this.chars[Math.floor(Math.random() * this.chars.length)];
-        })
-        .join('');
-      if (iteration >= this.original.length) clearInterval(interval);
-      iteration += 1/2;
+    let iter = 0;
+    const iv = setInterval(() => {
+      this.el.innerText = this.original.split('').map((c, i) => i < iter ? this.original[i] : this.chars[Math.floor(Math.random() * this.chars.length)]).join('');
+      if (iter >= this.original.length) clearInterval(iv);
+      iter += 0.5;
     }, 30);
   }
 }
-
-const scrambleEl = document.getElementById('scrambleText');
-const scrambler = new TextScramble(scrambleEl);
+const scrambler = new TextScramble(document.getElementById('scrambleText'));
 setTimeout(() => scrambler.scramble(), 500);
 
 /* ============================================
@@ -1402,15 +1358,8 @@ setTimeout(() => scrambler.scramble(), 500);
    ============================================ */
 const header = document.getElementById('header');
 const callPopup = document.getElementById('callPopup');
-
-window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 50);
-});
-
-setInterval(() => {
-  callPopup.classList.add('show');
-  setTimeout(() => callPopup.classList.remove('show'), 2000);
-}, 4000);
+window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 50));
+setInterval(() => { callPopup.classList.add('show'); setTimeout(() => callPopup.classList.remove('show'), 2000); }, 4000);
 
 /* ============================================
    PARALLAX
@@ -1427,92 +1376,189 @@ window.addEventListener('scroll', () => {
 /* ============================================
    FORMING WORDS + ORBIT CARDS
    ============================================ */
-const formingContainer = document.getElementById('formingContainer');
-let wordEls = [];
-let orbitCardEls = [];
+const container = document.getElementById('formingContainer');
+const wordEls = [];
+const allOrbitCards = [];
 
-formingWords.forEach((wordData, wi) => {
+formingWords.forEach((wd, wi) => {
   const wordEl = document.createElement('div');
-  wordEl.className = `forming-word ${wordData.class}`;
-  wordData.text.split('').forEach((char, ci) => {
-    const span = document.createElement('span');
-    span.className = 'forming-letter';
-    span.textContent = char;
-    const angle = (ci / wordData.text.length) * Math.PI * 2;
-    const dist = 200 + Math.random() * 300;
-    span.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
-    span.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
-    span.style.setProperty('--rot', `${(Math.random() - 0.5) * 90}deg`);
-    wordEl.appendChild(span);
+  wordEl.className = `forming-word ${wd.class}`;
+  wd.text.split('').forEach((ch, ci) => {
+    const sp = document.createElement('span');
+    sp.className = 'forming-letter';
+    sp.textContent = ch;
+    const ang = (ci / wd.text.length) * Math.PI * 2 + Math.random() * 0.6;
+    const dist = 160 + Math.random() * 220;
+    sp.style.setProperty('--tx', `${Math.cos(ang) * dist}px`);
+    sp.style.setProperty('--ty', `${Math.sin(ang) * dist}px`);
+    sp.style.setProperty('--rot', `${(Math.random() - 0.5) * 100}deg`);
+    sp.style.setProperty('--sc', `${0.35 + Math.random() * 0.25}`);
+    wordEl.appendChild(sp);
   });
-  formingContainer.appendChild(wordEl);
+  container.appendChild(wordEl);
   wordEls.push(wordEl);
 
-  // Create orbit cards for this word
-  wordData.cards.forEach((card, ci) => {
-    const cardEl = document.createElement('div');
-    cardEl.className = 'orbit-card';
-    cardEl.innerHTML = `<div class="oc-icon">${card.icon}</div><div class="oc-title">${card.title}</div>`;
-    cardEl.dataset.wordIndex = wi;
-    cardEl.dataset.cardIndex = ci;
-    formingContainer.appendChild(cardEl);
-    orbitCardEls.push(cardEl);
+  wd.cards.forEach((cd, ci) => {
+    const cEl = document.createElement('div');
+    cEl.className = 'orbit-card';
+    cEl.innerHTML = `<span class="oc-icon">${cd.icon}</span><div class="oc-title">${cd.title}</div>`;
+    cEl.dataset.wi = wi;
+    cEl.dataset.ci = ci;
+    container.appendChild(cEl);
+    allOrbitCards.push(cEl);
   });
 });
 
-function positionOrbitCards(wordIndex, progress) {
-  const cards = orbitCardEls.filter(c => parseInt(c.dataset.wordIndex) === wordIndex);
-  const centerX = formingContainer.offsetWidth / 2;
-  const centerY = formingContainer.offsetHeight / 2;
-  const radius = 220;
+/* Progress dots */
+const dotsContainer = document.getElementById('progressDots');
+formingWords.forEach(() => { const d = document.createElement('div'); d.className = 'progress-dot'; dotsContainer.appendChild(d); });
+const dots = document.querySelectorAll('.progress-dot');
 
-  cards.forEach((card, i) => {
-    const angle = (progress * Math.PI * 2) + (i / cards.length) * Math.PI * 2;
-    const x = centerX + Math.cos(angle) * radius - 70;
-    const y = centerY + Math.sin(angle) * radius - 40;
-    card.style.left = x + 'px';
-    card.style.top = y + 'px';
+/* Orbit State Machine */
+const STATE = { SCATTERED: 0, FORMING: 1, ORBITING: 2, PAUSED: 3, FADING: 4 };
+let activeWord = -1;
+let cardState = STATE.SCATTERED;
+let orbitAngle = 0;
+let pauseTimer = 0;
+let fadeTimer = 0;
+const ORBIT_SPEED = 0.004;
+const PAUSE_FRAMES = 120;
+const FADE_FRAMES = 40;
+
+function getOrbitRadius() {
+  const w = window.innerWidth;
+  if (w < 380) return 115;
+  if (w < 500) return 130;
+  if (w < 768) return 150;
+  if (w < 1024) return 190;
+  return 230;
+}
+
+function getCardPositions(wordIndex, angle, isParked) {
+  const cx = container.offsetWidth / 2;
+  const cy = container.offsetHeight / 2;
+  const r = getOrbitRadius();
+  const cards = allOrbitCards.filter(c => parseInt(c.dataset.wi) === wordIndex);
+  return cards.map((card, i) => {
+    const baseAngle = angle + (i / cards.length) * Math.PI * 2;
+    let x = cx + Math.cos(baseAngle) * r;
+    let y = cy + Math.sin(baseAngle) * r;
+    if (isParked) {
+      const sway = Math.sin(Date.now() / 1200 + i) * 4;
+      x += Math.cos(baseAngle + Math.PI/2) * sway;
+      y += Math.sin(baseAngle + Math.PI/2) * sway;
+    }
+    return { el: card, x: x - card.offsetWidth/2, y: y - card.offsetHeight/2 };
   });
 }
 
+function updateCardPositions(wordIndex, angle, isParked) {
+  getCardPositions(wordIndex, angle, isParked).forEach(p => {
+    p.el.style.left = p.x + 'px';
+    p.el.style.top = p.y + 'px';
+  });
+}
+
+function animateOrbit() {
+  if (activeWord >= 0 && activeWord < formingWords.length) {
+    const cards = allOrbitCards.filter(c => parseInt(c.dataset.wi) === activeWord);
+    switch (cardState) {
+      case STATE.ORBITING:
+        orbitAngle += ORBIT_SPEED;
+        updateCardPositions(activeWord, orbitAngle, false);
+        if (orbitAngle > Math.PI * 3) {
+          cardState = STATE.PAUSED;
+          pauseTimer = PAUSE_FRAMES;
+          cards.forEach(c => c.classList.add('parked'));
+        }
+        break;
+      case STATE.PAUSED:
+        pauseTimer--;
+        updateCardPositions(activeWord, orbitAngle, true);
+        if (pauseTimer <= 0) {
+          cardState = STATE.FADING;
+          fadeTimer = FADE_FRAMES;
+          cards.forEach(c => c.classList.remove('parked'));
+        }
+        break;
+      case STATE.FADING:
+        fadeTimer--;
+        const fadeOut = fadeTimer / FADE_FRAMES;
+        cards.forEach(c => {
+          c.style.opacity = Math.max(0, fadeOut);
+          c.style.transform = `scale(${0.5 + fadeOut * 0.5})`;
+        });
+        if (fadeTimer <= 0) {
+          cards.forEach(c => { c.classList.remove('visible'); c.style.opacity = ''; c.style.transform = ''; });
+          cardState = STATE.SCATTERED;
+        }
+        break;
+    }
+  }
+  requestAnimationFrame(animateOrbit);
+}
+animateOrbit();
+
+/* Scroll handler */
 const formingSection = document.querySelector('.forming-section');
 window.addEventListener('scroll', () => {
   const rect = formingSection.getBoundingClientRect();
   const sectionH = formingSection.offsetHeight - window.innerHeight;
   const progress = Math.max(0, Math.min(1, -rect.top / sectionH));
-
   const wordCount = formingWords.length;
-  const wordProgress = progress * wordCount;
-  const currentWord = Math.floor(wordProgress);
-  const wordLocal = wordProgress - currentWord;
+  const segProgress = progress * wordCount;
+  const segIndex = Math.min(Math.floor(segProgress), wordCount - 1);
+  const localProg = segProgress - segIndex;
+
+  dots.forEach((d, i) => d.classList.toggle('active', i === segIndex));
 
   wordEls.forEach((el, i) => {
     el.classList.remove('active', 'fade-out');
     const letters = el.querySelectorAll('.forming-letter');
-
-    if (i < currentWord) {
+    if (i < segIndex) {
       el.classList.add('fade-out');
       letters.forEach(l => l.classList.add('formed'));
-    } else if (i === currentWord) {
+    } else if (i === segIndex) {
       el.classList.add('active');
       letters.forEach((l, li) => {
-        const letterThreshold = li / letters.length;
-        if (wordLocal > letterThreshold) {
-          l.classList.add('formed');
-        } else {
-          l.classList.remove('formed');
-        }
+        const threshold = (li + 1) / letters.length;
+        if (localProg >= threshold * 0.65) l.classList.add('formed');
+        else l.classList.remove('formed');
       });
-
-      // Orbit cards for current word
-      const orbitProgress = wordLocal;
-      positionOrbitCards(i, orbitProgress);
-      const cards = orbitCardEls.filter(c => parseInt(c.dataset.wordIndex) === i);
-      cards.forEach(c => c.classList.toggle('visible', wordLocal > 0.2));
     } else {
       letters.forEach(l => l.classList.remove('formed'));
     }
   });
+
+  if (segIndex !== activeWord) {
+    if (activeWord >= 0) {
+      allOrbitCards.filter(c => parseInt(c.dataset.wi) === activeWord)
+        .forEach(c => { c.classList.remove('visible', 'parked'); c.style.opacity = ''; c.style.transform = ''; });
+    }
+    activeWord = segIndex;
+    orbitAngle = 0;
+    cardState = STATE.SCATTERED;
+  }
+
+  if (activeWord >= 0 && cardState === STATE.SCATTERED) {
+    const letters = wordEls[activeWord].querySelectorAll('.forming-letter');
+    const allFormed = Array.from(letters).every(l => l.classList.contains('formed'));
+    if (allFormed) {
+      cardState = STATE.ORBITING;
+      allOrbitCards.filter(c => parseInt(c.dataset.wi) === activeWord).forEach(c => c.classList.add('visible'));
+    }
+  }
+});
+
+window.addEventListener('load', () => window.dispatchEvent(new Event('scroll')));
+let resizeT;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => {
+    if (activeWord >= 0 && (cardState === STATE.ORBITING || cardState === STATE.PAUSED)) {
+      updateCardPositions(activeWord, orbitAngle, cardState === STATE.PAUSED);
+    }
+  }, 150);
 });
 
 /* ============================================
@@ -1533,24 +1579,16 @@ services.forEach(s => {
     <p class="sc-desc">${s.shortDesc}</p>
     <div class="sc-cta">View Details →</div>
   `;
-
-  // 3D Tilt
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const rx = (y - cy) / cy * -12;
-    const ry = (x - cx) / cx * 12;
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const rx = (y - cy) / cy * -12, ry = (x - cx) / cx * 12;
     card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
     card.style.setProperty('--mx', `${(x/rect.width)*100}%`);
     card.style.setProperty('--my', `${(y/rect.height)*100}%`);
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-  });
-
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
   card.addEventListener('click', () => openOverlay(s));
   servicesGrid.appendChild(card);
 });
@@ -1576,24 +1614,9 @@ function openOverlay(service) {
 }
 
 soClose.addEventListener('click', closeOverlay);
-serviceOverlay.addEventListener('click', (e) => {
-  if (e.target === serviceOverlay) closeOverlay();
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeOverlay();
-});
-
-function closeOverlay() {
-  serviceOverlay.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-/* ============================================
-   MARQUEE DUPLICATE FOR SEAMLESS LOOP
-   ============================================ */
-const marqueeTrack = document.getElementById('marqueeTrack');
-// Already duplicated in HTML
-
+serviceOverlay.addEventListener('click', (e) => { if (e.target === serviceOverlay) closeOverlay(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
+function closeOverlay() { serviceOverlay.classList.remove('open'); document.body.style.overflow = ''; }
 </script>
 </body>
 </html>
