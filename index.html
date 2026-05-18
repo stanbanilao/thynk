@@ -173,25 +173,27 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: phoneShake 1.6s ease-in-out infinite;
+  animation: heartbeatShake 1.4s ease-in-out infinite;
   text-decoration: none;
+  transition: transform 0.2s, background-color 0.2s;
 }
 .call-icon svg { width: 18px; height: 18px; fill: #fff; }
 
-@keyframes phoneShake {
+@keyframes heartbeatShake {
   0%, 100% { transform: rotate(0deg) scale(1); }
-  6% { transform: rotate(-22deg) scale(1.08); }
-  12% { transform: rotate(22deg) scale(1.08); }
-  18% { transform: rotate(-16deg) scale(1.06); }
-  24% { transform: rotate(16deg) scale(1.06); }
-  30% { transform: rotate(-8deg) scale(1.03); }
-  36% { transform: rotate(0deg) scale(1); }
+  6% { transform: rotate(-22deg) scale(1.25); }
+  12% { transform: rotate(22deg) scale(1.25); }
+  18% { transform: rotate(-16deg) scale(1.2); }
+  24% { transform: rotate(16deg) scale(1.2); }
+  30% { transform: rotate(-8deg) scale(1.1); }
+  36% { transform: rotate(0deg) scale(1.05); }
+  45% { transform: rotate(0deg) scale(1); }
 }
 
 .call-popup {
   position: absolute;
   top: 50%; right: 50px;
-  transform: translateY(-50%);
+  transform: translateY(-50%) translateX(10px);
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   padding: 0.4rem 0.9rem;
@@ -203,7 +205,7 @@ body {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s, transform 0.3s;
+  transition: opacity 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .call-popup.show {
   opacity: 1;
@@ -275,7 +277,7 @@ body {
 .hero-content {
   text-align: center;
   z-index: 2;
-  max-width: 900px;
+  max-width: 1000px;
   padding: 0 2rem;
 }
 .hero-eyebrow {
@@ -290,16 +292,22 @@ body {
 }
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-size: clamp(2rem, 5.5vw, 4.2rem);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.15;
   margin-bottom: 1.5rem;
+  perspective: 1000px;
 }
-.hero-title .line { display: block; overflow: hidden; }
+.hero-title .line { display: block; overflow: hidden; margin-bottom: 0.2rem;}
 .hero-title .line span {
   display: inline-block;
   transform: translateY(100%);
   animation: slideUp 1s var(--ease-out) forwards;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s;
+}
+.hero-title .line span:hover {
+  transform: scale(1.05) translateY(-5px) rotate(-1deg);
+  color: var(--accent-light);
 }
 .hero-title .line:nth-child(1) span { animation-delay: 0.2s; }
 .hero-title .line:nth-child(2) span { animation-delay: 0.35s; color: var(--accent); }
@@ -307,11 +315,11 @@ body {
 @keyframes slideUp { to { transform: translateY(0); } }
 
 .hero-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--text-secondary);
-  max-width: 500px;
+  max-width: 700px;
   margin: 0 auto 2.5rem;
-  line-height: 1.7;
+  line-height: 1.75;
   opacity: 0;
   animation: fadeIn 1s 0.7s forwards;
 }
@@ -534,7 +542,7 @@ body {
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.1s;
+  transition: transform 0.1s, border-color 0.3s, box-shadow 0.3s;
   transform-style: preserve-3d;
   animation: floatCard 6s ease-in-out infinite;
 }
@@ -544,13 +552,15 @@ body {
 .service-card:nth-child(4) { animation-delay: 3s; }
 .service-card:nth-child(5) { animation-delay: 4s; }
 .service-card:nth-child(6) { animation-delay: 5s; }
+.service-card:nth-child(7) { animation-delay: 0.5s; }
+.service-card:nth-child(8) { animation-delay: 1.5s; }
+
 @keyframes floatCard {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
 .service-card:hover {
   animation-play-state: paused;
-  border-color: rgba(255,107,53,0.3);
 }
 .service-card::before {
   content: '';
@@ -562,6 +572,24 @@ body {
   pointer-events: none;
 }
 .service-card:hover::before { opacity: 1; }
+
+/* Blinking Glow Styles for Service 07 & 08 */
+.service-card-07 {
+  animation: pulseAppDev 3s ease-in-out infinite, floatCard 6s ease-in-out infinite;
+  animation-delay: 0s, 0.5s;
+}
+.service-card-08 {
+  animation: pulseWebhook 2.5s ease-in-out infinite, floatCard 6s ease-in-out infinite;
+  animation-delay: 0s, 1.5s;
+}
+@keyframes pulseAppDev {
+  0%, 100% { border-color: var(--border); box-shadow: 0 0 0 rgba(56, 189, 248, 0); }
+  50% { border-color: rgba(56, 189, 248, 0.4); box-shadow: 0 0 15px rgba(56, 189, 248, 0.15); }
+}
+@keyframes pulseWebhook {
+  0%, 100% { border-color: var(--border); box-shadow: 0 0 0 rgba(45, 239, 126, 0); }
+  50% { border-color: rgba(45, 239, 126, 0.5); box-shadow: 0 0 15px rgba(45, 239, 126, 0.2); }
+}
 
 .sc-number {
   position: absolute;
@@ -581,12 +609,20 @@ body {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   background: rgba(255,107,53,0.1);
+  transition: transform 0.3s;
+}
+.service-card:hover .sc-icon {
+  transform: scale(1.1) rotate(5deg);
 }
 .sc-title {
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  transition: transform 0.3s;
+}
+.service-card:hover .sc-title {
+  transform: translateZ(20px);
 }
 .sc-desc {
   font-size: 0.85rem;
@@ -736,6 +772,256 @@ body {
   box-shadow: 0 8px 30px rgba(37,211,102,0.3);
 }
 .so-whatsapp svg { width: 20px; height: 20px; fill: #fff; }
+
+/* ============================================
+   MISSION & VISION SECTION
+   ============================================ */
+.mv-section {
+  position: relative;
+  padding: 8rem 2rem;
+  overflow: hidden;
+  z-index: 1;
+}
+.mv-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  perspective: 1200px;
+}
+.mv-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 3.5rem 2.5rem;
+  border-radius: 24px;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease, border-color 0.4s;
+  opacity: 0;
+}
+.mv-box.mission-box {
+  transform: translateX(-150px) rotateY(15deg);
+}
+.mv-box.vision-box {
+  transform: translateX(150px) rotateY(-15deg);
+}
+.mv-box.revealed {
+  opacity: 1;
+  transform: translateX(0) rotateY(0);
+}
+.mv-box:hover {
+  border-color: var(--accent);
+  background: rgba(255,107,53,0.02);
+}
+.mv-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+  min-height: 1.2em;
+  transition: color 0.3s;
+}
+.mv-title.scrambled-title {
+  color: var(--accent);
+}
+.mv-desc {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .mv-container { grid-template-columns: 1fr; gap: 1.5rem; }
+  .mv-box.mission-box, .mv-box.vision-box { transform: translateY(80px); }
+  .mv-box.revealed { transform: translateY(0); }
+}
+
+/* ============================================
+   WORK GALLERY (Smaller blocks in continuous scroll)
+   ============================================ */
+.gallery-section {
+  position: relative;
+  padding: 8rem 0;
+  z-index: 1;
+}
+.gallery-section .section-header { padding: 0 2rem; }
+.gallery-track-wrap {
+  position: relative;
+  overflow: hidden;
+  padding: 2rem 0;
+}
+.gallery-track-wrap::before,
+.gallery-track-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 150px;
+  z-index: 2;
+  pointer-events: none;
+}
+.gallery-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.gallery-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+
+.gallery-track {
+  display: flex;
+  width: max-content;
+  animation: galleryScroll 35s linear infinite;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+}
+.gallery-track:hover { animation-play-state: paused; }
+
+@keyframes galleryScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.gallery-item {
+  width: 290px;
+  height: 200px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+}
+.gallery-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease-out);
+}
+.gallery-item:hover .gallery-img { transform: scale(1.08); }
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.2rem;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-tag {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+.gallery-title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* ============================================
+   TESTIMONIALS (left-to-right scroll)
+   ============================================ */
+.testimonials-section {
+  position: relative;
+  padding: 8rem 0;
+  overflow: hidden;
+  z-index: 1;
+}
+.testimonials-section .section-header { padding: 0 2rem; margin-bottom: 4rem; }
+.testi-track-wrap {
+  position: relative;
+  overflow: hidden;
+}
+.testi-track-wrap::before,
+.testi-track-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+.testi-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.testi-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+.testi-track {
+  display: flex;
+  width: max-content;
+  animation: testiScroll 40s linear infinite;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+}
+.testi-track:hover { animation-play-state: paused; }
+@keyframes testiScroll {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+.testi-card {
+  width: 360px;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.testi-card:hover {
+  border-color: rgba(255,107,53,0.3);
+  transform: translateY(-4px);
+}
+.testi-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 1rem;
+}
+.testi-star { color: #f59e0b; font-size: 0.9rem; }
+.testi-quote {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+.testi-quote::before { content: '\201C'; color: var(--accent); font-size: 1.4rem; line-height: 0; vertical-align: -0.4rem; margin-right: 2px; }
+.testi-author {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.testi-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.testi-name {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.testi-role {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.testi-verified {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  opacity: 0.7;
+}
 
 /* ============================================
    MARQUEE
@@ -962,216 +1248,16 @@ body {
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ============================================
-   WORK GALLERY
-   ============================================ */
-.gallery-section {
-  position: relative;
-  padding: 8rem 2rem;
-  z-index: 1;
-}
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: auto;
-  gap: 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.gallery-item {
-  position: relative;
-  overflow: hidden;
-  border-radius: 16px;
-  cursor: pointer;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-}
-.gallery-item:nth-child(1) { grid-column: span 7; grid-row: span 2; aspect-ratio: unset; min-height: 400px; }
-.gallery-item:nth-child(2) { grid-column: span 5; min-height: 195px; }
-.gallery-item:nth-child(3) { grid-column: span 5; min-height: 195px; }
-.gallery-item:nth-child(4) { grid-column: span 4; min-height: 240px; }
-.gallery-item:nth-child(5) { grid-column: span 4; min-height: 240px; }
-.gallery-item:nth-child(6) { grid-column: span 4; min-height: 240px; }
-.gallery-img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s var(--ease-out);
-}
-.gallery-item:hover .gallery-img { transform: scale(1.05); }
-.gallery-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 1.5rem;
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.gallery-item:hover .gallery-overlay { opacity: 1; }
-.gallery-tag {
-  font-family: var(--font-display);
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--accent);
-  margin-bottom: 0.4rem;
-}
-.gallery-title {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-}
-/* Placeholder tile for items without images */
-.gallery-placeholder {
-  width: 100%; height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-height: inherit;
-  background: var(--bg-tertiary);
-}
-.gallery-placeholder-icon { font-size: 2.5rem; opacity: 0.4; }
-.gallery-placeholder-label {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-}
-@media (max-width: 768px) {
-  .gallery-grid { grid-template-columns: 1fr 1fr; }
-  .gallery-item:nth-child(1) { grid-column: span 2; min-height: 260px; }
-  .gallery-item:nth-child(2),
-  .gallery-item:nth-child(3) { grid-column: span 1; min-height: 180px; }
-  .gallery-item:nth-child(4),
-  .gallery-item:nth-child(5),
-  .gallery-item:nth-child(6) { grid-column: span 1; min-height: 180px; }
-  .gallery-item:nth-child(6) { grid-column: span 2; }
-}
-@media (max-width: 480px) {
-  .gallery-grid { grid-template-columns: 1fr; }
-  .gallery-item:nth-child(n) { grid-column: span 1; min-height: 220px; }
-}
-
-/* ============================================
-   TESTIMONIALS (left-to-right scroll)
-   ============================================ */
-.testimonials-section {
-  position: relative;
-  padding: 8rem 0;
-  overflow: hidden;
-  z-index: 1;
-}
-.testimonials-section .section-header { padding: 0 2rem; margin-bottom: 4rem; }
-.testi-track-wrap {
-  position: relative;
-  overflow: hidden;
-}
-.testi-track-wrap::before,
-.testi-track-wrap::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 120px;
-  z-index: 2;
-  pointer-events: none;
-}
-.testi-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
-.testi-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
-.testi-track {
-  display: flex;
-  width: max-content;
-  animation: testiScroll 40s linear infinite;
-  gap: 1.5rem;
-  padding: 1rem 1.5rem;
-}
-.testi-track:hover { animation-play-state: paused; }
-@keyframes testiScroll {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0%); }
-}
-.testi-card {
-  width: 360px;
-  flex-shrink: 0;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 2rem;
-  transition: border-color 0.3s, transform 0.3s;
-}
-.testi-card:hover {
-  border-color: rgba(255,107,53,0.3);
-  transform: translateY(-4px);
-}
-.testi-stars {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 1rem;
-}
-.testi-star { color: #f59e0b; font-size: 0.9rem; }
-.testi-quote {
-  font-size: 0.95rem;
-  line-height: 1.75;
-  color: var(--text-secondary);
-  margin-bottom: 1.5rem;
-  font-style: italic;
-}
-.testi-quote::before { content: '\201C'; color: var(--accent); font-size: 1.4rem; line-height: 0; vertical-align: -0.4rem; margin-right: 2px; }
-.testi-author {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-}
-.testi-avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.testi-name {
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-}
-.testi-role {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-.testi-verified {
-  margin-left: auto;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--accent);
-  opacity: 0.7;
-}
-
-/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
   .services-grid { grid-template-columns: 1fr; }
   .so-panel { padding: 2rem 1.5rem; }
   .parallax-element { display: none; }
-  .hero-title { font-size: 2.5rem; }
+  .hero-title { font-size: 2.2rem; }
 }
 @media (max-width: 480px) {
-  .hero-title { font-size: 2.2rem; }
+  .hero-title { font-size: 1.95rem; }
   .service-card { padding: 1.25rem; }
   .footer-socials { gap: 1rem; }
   .social-icon { width: 40px; height: 40px; }
@@ -1248,11 +1334,11 @@ body {
   <div class="hero-content">
     <div class="hero-eyebrow" id="scrambleText">Creative Digital Agency</div>
     <h1 class="hero-title">
-      <span class="line"><span>We Build</span></span>
-      <span class="line"><span>Digital</span></span>
-      <span class="line"><span>Experiences</span></span>
+      <span class="line"><span>Digital experiences</span></span>
+      <span class="line"><span>that transform brands.</span></span>
+      <span class="line"><span>Growth engineered across every dimension.</span></span>
     </h1>
-    <p class="hero-subtitle">Strategy, design, and technology that transforms brands and drives growth across South Africa.</p>
+    <p class="hero-subtitle">Strategy, design, and technology engineered for performance. Marketing, advertising, business optimization, and financial solutions that actually move the needle across South Africa.</p>
     <a href="#services" class="hero-cta">Explore Our Work →</a>
   </div>
 </section>
@@ -1273,53 +1359,113 @@ body {
   <div class="services-grid" id="servicesGrid"></div>
 </section>
 
-<!-- Work Gallery -->
+<!-- Mission & Vision Section (NEW with slide-in and dynamic text scramble) -->
+<section class="mv-section" id="mission-vision">
+  <div class="mv-container">
+    <div class="mv-box mission-box" id="missionBox">
+      <h3 class="mv-title scrambled-title" id="scrambleMission">MISSION</h3>
+      <p class="mv-desc">To transform South African brands into future-ready market leaders by replacing isolated campaigns with connected growth systems. We unify strategy, design, technology, and financial optimization into a single, always-on engine—grounded in SMART principles (Specific, Measurable, Attainable, Relevant, Time-based) and driven by 365-day continuous iteration, full-spectrum execution, and transparent ROI tracking.</p>
+    </div>
+    <div class="mv-box vision-box" id="visionBox">
+      <h3 class="mv-title scrambled-title" id="scrambleVision">VISION</h3>
+      <p class="mv-desc">A business landscape where creative ambition and measurable performance operate as one seamless ecosystem. Where every decision is data-informed, every initiative compounds, and growth never sleeps.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Work Gallery (Updated smaller blocks in continuous slider format) -->
 <section class="gallery-section" id="gallery">
   <div class="section-header">
     <div class="section-eyebrow">Our Work</div>
     <h2 class="section-title">Built to Impress</h2>
   </div>
-  <div class="gallery-grid" id="galleryGrid">
-    <div class="gallery-item">
-      <img class="gallery-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80" alt="Brand Identity Project" loading="lazy" onerror="this.style.display='none'">
-      <div class="gallery-overlay">
-        <div class="gallery-tag">Brand Identity</div>
-        <div class="gallery-title">Visual Identity System</div>
+  <div class="gallery-track-wrap">
+    <div class="gallery-track" id="galleryTrack">
+      <!-- 1st Copy -->
+      <div class="gallery-item" onclick="openWorkDetail('Brand Identity', 'Visual Identity System', 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80" alt="Brand Identity" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">Brand Identity</div>
+          <div class="gallery-title">Visual Identity System</div>
+        </div>
       </div>
-    </div>
-    <div class="gallery-item">
-      <img class="gallery-img" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80" alt="Web Design Project" loading="lazy" onerror="this.style.display='none'">
-      <div class="gallery-overlay">
-        <div class="gallery-tag">Web Design</div>
-        <div class="gallery-title">E-Commerce Platform</div>
+      <div class="gallery-item" onclick="openWorkDetail('Web Design', 'E-Commerce Platform', 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80" alt="Web Design" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">Web Design</div>
+          <div class="gallery-title">E-Commerce Platform</div>
+        </div>
       </div>
-    </div>
-    <div class="gallery-item">
-      <img class="gallery-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" alt="Social Media Project" loading="lazy" onerror="this.style.display='none'">
-      <div class="gallery-overlay">
-        <div class="gallery-tag">Social Media</div>
-        <div class="gallery-title">Campaign Strategy</div>
+      <div class="gallery-item" onclick="openWorkDetail('Social Media', 'Campaign Strategy', 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" alt="Social Media" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">Social Media</div>
+          <div class="gallery-title">Campaign Strategy</div>
+        </div>
       </div>
-    </div>
-    <div class="gallery-item">
-      <img class="gallery-img" src="https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80" alt="UI/UX Project" loading="lazy" onerror="this.style.display='none'">
-      <div class="gallery-overlay">
-        <div class="gallery-tag">UI/UX Design</div>
-        <div class="gallery-title">Mobile App Interface</div>
+      <div class="gallery-item" onclick="openWorkDetail('UI/UX Design', 'Mobile App Interface', 'https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80" alt="UI/UX" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">UI/UX Design</div>
+          <div class="gallery-title">Mobile App Interface</div>
+        </div>
       </div>
-    </div>
-    <div class="gallery-item">
-      <img class="gallery-img" src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80" alt="Digital Strategy" loading="lazy" onerror="this.style.display='none'">
-      <div class="gallery-overlay">
-        <div class="gallery-tag">Digital Strategy</div>
-        <div class="gallery-title">Growth Roadmap</div>
+      <div class="gallery-item" onclick="openWorkDetail('Digital Strategy', 'Growth Roadmap', 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80" alt="Strategy" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">Digital Strategy</div>
+          <div class="gallery-title">Growth Roadmap</div>
+        </div>
       </div>
-    </div>
-    <div class="gallery-item">
-      <img class="gallery-img" src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80" alt="E-Commerce Project" loading="lazy" onerror="this.style.display='none'">
-      <div class="gallery-overlay">
-        <div class="gallery-tag">E-Commerce</div>
-        <div class="gallery-title">Online Store Redesign</div>
+      <div class="gallery-item" onclick="openWorkDetail('E-Commerce', 'Online Store Redesign', 'https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80" alt="E-Commerce" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">E-Commerce</div>
+          <div class="gallery-title">Online Store Redesign</div>
+        </div>
+      </div>
+      <!-- 2nd Copy (Duplicated for Seamless Marquee) -->
+      <div class="gallery-item" onclick="openWorkDetail('Brand Identity', 'Visual Identity System', 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80" alt="Brand Identity" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">Brand Identity</div>
+          <div class="gallery-title">Visual Identity System</div>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openWorkDetail('Web Design', 'E-Commerce Platform', 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80" alt="Web Design" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">Web Design</div>
+          <div class="gallery-title">E-Commerce Platform</div>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openWorkDetail('Social Media', 'Campaign Strategy', 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" alt="Social Media" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">Social Media</div>
+          <div class="gallery-title">Campaign Strategy</div>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openWorkDetail('UI/UX Design', 'Mobile App Interface', 'https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80" alt="UI/UX" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">UI/UX Design</div>
+          <div class="gallery-title">Mobile App Interface</div>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openWorkDetail('Digital Strategy', 'Growth Roadmap', 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80" alt="Strategy" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">Digital Strategy</div>
+          <div class="gallery-title">Growth Roadmap</div>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openWorkDetail('E-Commerce', 'Online Store Redesign', 'https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80')">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80" alt="E-Commerce" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-tag">E-Commerce</div>
+          <div class="gallery-title">Online Store Redesign</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1543,6 +1689,22 @@ const services = [
     features: ["Market & Competitor Analysis", "Digital Roadmapping", "KPI Definition & Tracking", "Channel Strategy", "Growth Hacking"],
     icon: "✶", color: "#f472b6",
     waMsg: "Hi Thynkverse, I'm interested in your Digital Strategy service. Can we discuss my project?"
+  },
+  {
+    id: 7, title: "Web & Mobile App Development",
+    shortDesc: "Custom, high-performance web and native mobile applications built for scale and seamless user experiences.",
+    fullDesc: "We engineer robust, scalable applications tailored to your operational needs. From initial wireframing to full deployment, we deliver intuitive digital products that solve complex problems and engage users across all devices.",
+    features: ["Native iOS & Android Applications", "Progressive Web Apps (PWAs)", "Custom API Integration & Development", "Cloud Infrastructure & Hosting", "User-Centric Interface Architecture"],
+    icon: "❖", color: "#38bdf8",
+    waMsg: "Hi Thynkverse, I'm interested in your Web & Mobile App Development service. Can we discuss my project?"
+  },
+  {
+    id: 8, title: "Webhooks & WhatsApp Automation",
+    shortDesc: "Intelligent automated workflows connecting your WhatsApp Business directly to your customers and internal systems.",
+    fullDesc: "Streamline your customer communication with powerful webhook integrations and WhatsApp Business API automation. We build smart, keyword-driven auto-responders and seamless data bridges that keep your business connected 24/7, reducing manual intervention while scaling your response rates.",
+    features: ["WhatsApp Business API Setup & Configuration", "Keyword-Driven Auto-Responders & Chatbots", "CRM & Webhook Data Integration", "Automated Customer Onboarding Flows", "24/7 Query Resolution Systems"],
+    icon: "⇄", color: "#2def7e",
+    waMsg: "Hi Thynkverse, I'm interested in your Webhooks & WhatsApp Automation service. Can we discuss my project?"
   }
 ];
 
@@ -1583,7 +1745,7 @@ if (!isTouch) {
 
   document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
 
-  document.querySelectorAll('a, button, .service-card, .orbit-card, .so-close').forEach(el => {
+  document.querySelectorAll('a, button, .service-card, .orbit-card, .so-close, .gallery-item').forEach(el => {
     el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
     el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
   });
@@ -1606,7 +1768,7 @@ if (!isTouch) {
 }
 
 /* ============================================
-   LIQUID RIPPLE (mouse + touch)
+   LIQUID RIPPLE (Enhanced Touch Wave Effects)
    ============================================ */
 const liquidCanvas = document.getElementById('liquidCanvas');
 const lCtx = liquidCanvas.getContext('2d');
@@ -1624,33 +1786,37 @@ class Ripple {
   constructor(x, y, isTouchRipple = false) {
     this.x = x; this.y = y;
     this.radius = 2;
-    this.maxRadius = isTouchRipple ? 80 + Math.random() * 60 : 40 + Math.random() * 30;
-    this.opacity = isTouchRipple ? 0.5 : 0.6;
-    this.speed = isTouchRipple ? 1.2 + Math.random() * 0.8 : 0.8 + Math.random() * 0.5;
+    // Massive touch ripple radius multiplier for a realistic water-slap feel
+    this.maxRadius = isTouchRipple ? 120 + Math.random() * 60 : 40 + Math.random() * 30;
+    this.opacity = isTouchRipple ? 0.7 : 0.6;
+    this.speed = isTouchRipple ? 1.6 + Math.random() * 1.0 : 0.8 + Math.random() * 0.5;
     this.isTouch = isTouchRipple;
   }
   update() {
     this.radius += this.speed;
-    this.opacity -= this.isTouch ? 0.008 : 0.015;
+    this.opacity -= this.isTouch ? 0.006 : 0.015;
   }
   draw(ctx) {
     if (this.opacity <= 0) return;
+    // Outer ripple ring
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.strokeStyle = `rgba(255, 107, 53, ${this.opacity})`;
-    ctx.lineWidth = this.isTouch ? 2 : 1.5;
+    ctx.lineWidth = this.isTouch ? 3.0 : 1.5;
     ctx.stroke();
 
+    // Core wave ring
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius * 0.65, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(255, 140, 90, ${this.opacity * 0.4})`;
-    ctx.lineWidth = this.isTouch ? 1.5 : 1;
+    ctx.strokeStyle = `rgba(255, 140, 90, ${this.opacity * 0.55})`;
+    ctx.lineWidth = this.isTouch ? 2.0 : 1.0;
     ctx.stroke();
 
     if (this.isTouch) {
+      // Tertiary micro reflection ripple
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius * 0.35, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(255, 180, 120, ${this.opacity * 0.25})`;
+      ctx.strokeStyle = `rgba(255, 180, 120, ${this.opacity * 0.35})`;
       ctx.lineWidth = 1;
       ctx.stroke();
     }
@@ -1669,9 +1835,9 @@ if (!isTouch) {
   });
 }
 
-// Mobile touch ripples — water drop effect
+// Mobile touch ripples — realistic water drop wave effects
 let touchRippleCount = 0;
-const MAX_TOUCH_RIPPLES = 8;
+const MAX_TOUCH_RIPPLES = 12;
 
 document.addEventListener('touchstart', (e) => {
   for (let i = 0; i < e.touches.length; i++) {
@@ -1679,10 +1845,10 @@ document.addEventListener('touchstart', (e) => {
     if (touchRippleCount < MAX_TOUCH_RIPPLES) {
       ripples.push(new Ripple(t.clientX, t.clientY, true));
       touchRippleCount++;
-      // Secondary ring for dramatic water effect
+      // Secondary shockwave delay
       setTimeout(() => {
         ripples.push(new Ripple(t.clientX, t.clientY, true));
-      }, 150);
+      }, 120);
     }
   }
 }, { passive: true });
@@ -1690,7 +1856,7 @@ document.addEventListener('touchstart', (e) => {
 document.addEventListener('touchmove', (e) => {
   for (let i = 0; i < e.touches.length; i++) {
     const t = e.touches[i];
-    if (touchRippleCount < MAX_TOUCH_RIPPLES && Math.random() > 0.7) {
+    if (touchRippleCount < MAX_TOUCH_RIPPLES && Math.random() > 0.65) {
       ripples.push(new Ripple(t.clientX, t.clientY, true));
       touchRippleCount++;
     }
@@ -1849,12 +2015,17 @@ const scrambler = new TextScramble(document.getElementById('scrambleText'));
 setTimeout(() => scrambler.scramble(), 500);
 
 /* ============================================
-   HEADER SCROLL + CALL POPUP
+   HEADER SCROLL + CALL POPUP (High Frequency)
    ============================================ */
 const header = document.getElementById('header');
 const callPopup = document.getElementById('callPopup');
 window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 50));
-setInterval(() => { callPopup.classList.add('show'); setTimeout(() => callPopup.classList.remove('show'), 2000); }, 4000);
+
+// Faster Call Us Alert Loop
+setInterval(() => { 
+  callPopup.classList.add('show'); 
+  setTimeout(() => callPopup.classList.remove('show'), 1500); // 1.5 seconds visible
+}, 3500); // 2.0 seconds hidden delay (Total period 3.5s)
 
 /* ============================================
    PARALLAX
@@ -2066,7 +2237,15 @@ const soClose = document.getElementById('soClose');
 
 services.forEach(s => {
   const card = document.createElement('div');
-  card.className = 'service-card';
+  // Assign pulsing classes to 07 and 08
+  if (s.id === 7) {
+    card.className = 'service-card service-card-07';
+  } else if (s.id === 8) {
+    card.className = 'service-card service-card-08';
+  } else {
+    card.className = 'service-card';
+  }
+  
   card.innerHTML = `
     <div class="sc-number">0${s.id}</div>
     <div class="sc-icon" style="background: ${s.color}15; color: ${s.color};">${s.icon}</div>
@@ -2112,6 +2291,58 @@ soClose.addEventListener('click', closeOverlay);
 serviceOverlay.addEventListener('click', (e) => { if (e.target === serviceOverlay) closeOverlay(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
 function closeOverlay() { serviceOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+/* ============================================
+   MISSION & VISION INTERSECTION ANIMATION
+   ============================================ */
+const missionBox = document.getElementById('missionBox');
+const visionBox = document.getElementById('visionBox');
+const scrambleMission = document.getElementById('scrambleMission');
+const scrambleVision = document.getElementById('scrambleVision');
+
+// Setup Scramble Instances
+const missionScramble = new TextScramble(scrambleMission);
+const visionScramble = new TextScramble(scrambleVision);
+
+let animationTriggered = false;
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !animationTriggered) {
+      animationTriggered = true;
+      missionBox.classList.add('revealed');
+      visionBox.classList.add('revealed');
+      
+      // Trigger digit decipher alphabet transitions on reveal
+      setTimeout(() => missionScramble.scramble(), 250);
+      setTimeout(() => visionScramble.scramble(), 500);
+    }
+  });
+}, { threshold: 0.15 });
+
+observer.observe(document.getElementById('mission-vision'));
+
+/* ============================================
+   WORK GALLERY OVERLAY HANDLER
+   ============================================ */
+function openWorkDetail(tag, title, imgUrl) {
+  soContent.innerHTML = `
+    <div class="so-header">
+      <span class="so-tag">${tag}</span>
+      <h2 class="so-title">${title}</h2>
+    </div>
+    <div style="margin: 1.5rem 0; border-radius: 16px; overflow: hidden; height: 300px; border: 1px solid var(--border)">
+      <img src="${imgUrl}" style="width: 100%; height: 100%; object-fit: cover;" alt="${title}" onerror="this.src='https://placehold.co/600x400/111/fff?text=Project'">
+    </div>
+    <p class="so-desc" style="margin-bottom: 2rem;">A world-class creative showcase built to redefine performance across South Africa. Engineered with seamless scalability, clean visual assets, and transparent results tracing.</p>
+    <a href="https://wa.me/27826836364?text=${encodeURIComponent('Hi Thynkverse, I saw your ' + title + ' (' + tag + ') project. I\'d love to discuss my brand with you.')}" target="_blank" class="so-whatsapp">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Inquire about this work
+    </a>
+  `;
+  serviceOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 </script>
 </body>
 </html>
