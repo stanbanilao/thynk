@@ -105,7 +105,7 @@ body {
 }
 
 /* ============================================
-   HEADER
+   HEADER & ACTIONS
    ============================================ */
 .header {
   position: fixed;
@@ -141,7 +141,6 @@ body {
 }
 .logo:hover .verse { transform: translateY(-4px); }
 
-/* Hamburger centered */
 .hamburger {
   display: flex;
   flex-direction: column;
@@ -159,57 +158,60 @@ body {
   border-radius: 2px;
 }
 
-/* Call action always visible */
-.call-action {
-  position: relative;
+/* Call and WhatsApp Alternating Action Container */
+.header-actions {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
   z-index: 102;
 }
-.call-icon {
+.action-icon {
   width: 40px; height: 40px;
   border-radius: 50%;
-  background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: heartbeatShake 1.4s ease-in-out infinite;
   text-decoration: none;
-  transition: transform 0.2s, background-color 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.call-icon svg { width: 18px; height: 18px; fill: #fff; }
-
-@keyframes heartbeatShake {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  6% { transform: rotate(-22deg) scale(1.25); }
-  12% { transform: rotate(22deg) scale(1.25); }
-  18% { transform: rotate(-16deg) scale(1.2); }
-  24% { transform: rotate(16deg) scale(1.2); }
-  30% { transform: rotate(-8deg) scale(1.1); }
-  36% { transform: rotate(0deg) scale(1.05); }
-  45% { transform: rotate(0deg) scale(1); }
+.action-icon svg {
+  width: 18px; height: 18px;
+  fill: #fff;
 }
 
-.call-popup {
-  position: absolute;
-  top: 50%; right: 50px;
-  transform: translateY(-50%) translateX(10px);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  padding: 0.4rem 0.9rem;
-  border-radius: 8px;
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--accent);
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* Heartbeat and shaking animations coordinated on a unified 3s timeline */
+.call-icon {
+  background: var(--accent);
+  animation: phoneHeartbeatShake 3s ease-in-out infinite;
 }
-.call-popup.show {
-  opacity: 1;
-  transform: translateY(-50%) translateX(-5px);
+.header-wa-icon {
+  background: #25d366;
+  animation: waAlternatingPulse 3s ease-in-out infinite;
+}
+
+@keyframes phoneHeartbeatShake {
+  /* Dynamic Active Phase: Shakes & Pumps */
+  0% { transform: scale(1) rotate(0deg); }
+  5% { transform: scale(1.25) rotate(-22deg); }
+  10% { transform: scale(1.25) rotate(22deg); }
+  15% { transform: scale(1.2) rotate(-16deg); }
+  20% { transform: scale(1.2) rotate(16deg); }
+  25% { transform: scale(1.15) rotate(-8deg); }
+  30% { transform: scale(1.15) rotate(8deg); }
+  35% { transform: scale(1) rotate(0deg); }
+  /* Quiet phase while WhatsApp performs its animation */
+  50%, 100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes waAlternatingPulse {
+  /* Quiet phase while Telephone is shaking */
+  0%, 50% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37,211,102,0); }
+  /* Active Phase: Rhythmic organic breathing & expansion */
+  60% { transform: scale(1.28); box-shadow: 0 0 15px 4px rgba(37,211,102,0.4); }
+  70% { transform: scale(1.1); box-shadow: 0 0 10px 2px rgba(37,211,102,0.2); }
+  80% { transform: scale(1.25); box-shadow: 0 0 15px 4px rgba(37,211,102,0.4); }
+  90%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37,211,102,0); }
 }
 
 .nav-center { display: none; }
@@ -245,7 +247,6 @@ body {
   }
   .nav-center a:hover { color: var(--text); }
   .nav-center a:hover::after { width: 100%; }
-  .call-popup { right: 55px; }
 }
 
 /* ============================================
@@ -277,7 +278,7 @@ body {
 .hero-content {
   text-align: center;
   z-index: 2;
-  max-width: 1000px;
+  max-width: 950px;
   padding: 0 2rem;
 }
 .hero-eyebrow {
@@ -292,22 +293,21 @@ body {
 }
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5.5vw, 4.2rem);
+  font-size: clamp(2.3rem, 5.5vw, 4.2rem);
   font-weight: 700;
   line-height: 1.15;
-  margin-bottom: 1.5rem;
-  perspective: 1000px;
+  margin-bottom: 1.8rem;
 }
-.hero-title .line { display: block; overflow: hidden; margin-bottom: 0.2rem;}
+.hero-title .line { display: block; overflow: hidden; margin-bottom: 0.3rem; }
 .hero-title .line span {
   display: inline-block;
   transform: translateY(100%);
   animation: slideUp 1s var(--ease-out) forwards;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.hero-title .line span:hover {
-  transform: scale(1.05) translateY(-5px) rotate(-1deg);
-  color: var(--accent-light);
+.hero-title .line:hover span {
+  transform: scale(1.05) translateY(-5px);
+  text-shadow: 0 0 25px rgba(255,107,53,0.3);
 }
 .hero-title .line:nth-child(1) span { animation-delay: 0.2s; }
 .hero-title .line:nth-child(2) span { animation-delay: 0.35s; color: var(--accent); }
@@ -315,9 +315,9 @@ body {
 @keyframes slideUp { to { transform: translateY(0); } }
 
 .hero-subtitle {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
-  max-width: 700px;
+  max-width: 680px;
   margin: 0 auto 2.5rem;
   line-height: 1.75;
   opacity: 0;
@@ -499,7 +499,7 @@ body {
 }
 
 /* ============================================
-   SERVICES
+   SERVICES SECTION
    ============================================ */
 .services-section {
   position: relative;
@@ -546,19 +546,6 @@ body {
   transform-style: preserve-3d;
   animation: floatCard 6s ease-in-out infinite;
 }
-.service-card:nth-child(1) { animation-delay: 0s; }
-.service-card:nth-child(2) { animation-delay: 1s; }
-.service-card:nth-child(3) { animation-delay: 2s; }
-.service-card:nth-child(4) { animation-delay: 3s; }
-.service-card:nth-child(5) { animation-delay: 4s; }
-.service-card:nth-child(6) { animation-delay: 5s; }
-.service-card:nth-child(7) { animation-delay: 0.5s; }
-.service-card:nth-child(8) { animation-delay: 1.5s; }
-
-@keyframes floatCard {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
 .service-card:hover {
   animation-play-state: paused;
 }
@@ -573,18 +560,17 @@ body {
 }
 .service-card:hover::before { opacity: 1; }
 
-/* Blinking Glow Styles for Service 07 & 08 */
+/* Custom glowing pulse animations for services 07 and 08 */
 .service-card-07 {
-  animation: pulseAppDev 3s ease-in-out infinite, floatCard 6s ease-in-out infinite;
-  animation-delay: 0s, 0.5s;
+  animation: floatCard 6s ease-in-out infinite, pulseAppDev 3s ease-in-out infinite !important;
 }
 .service-card-08 {
-  animation: pulseWebhook 2.5s ease-in-out infinite, floatCard 6s ease-in-out infinite;
-  animation-delay: 0s, 1.5s;
+  animation: floatCard 6s ease-in-out infinite, pulseWebhook 2s ease-in-out infinite !important;
 }
+
 @keyframes pulseAppDev {
   0%, 100% { border-color: var(--border); box-shadow: 0 0 0 rgba(56, 189, 248, 0); }
-  50% { border-color: rgba(56, 189, 248, 0.4); box-shadow: 0 0 15px rgba(56, 189, 248, 0.15); }
+  50% { border-color: rgba(56, 189, 248, 0.45); box-shadow: 0 0 15px rgba(56, 189, 248, 0.15); }
 }
 @keyframes pulseWebhook {
   0%, 100% { border-color: var(--border); box-shadow: 0 0 0 rgba(45, 239, 126, 0); }
@@ -608,21 +594,12 @@ body {
   justify-content: center;
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  background: rgba(255,107,53,0.1);
-  transition: transform 0.3s;
-}
-.service-card:hover .sc-icon {
-  transform: scale(1.1) rotate(5deg);
 }
 .sc-title {
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  transition: transform 0.3s;
-}
-.service-card:hover .sc-title {
-  transform: translateZ(20px);
 }
 .sc-desc {
   font-size: 0.85rem;
@@ -649,7 +626,281 @@ body {
   transform: translateY(0);
 }
 
-/* Service Overlay */
+/* ============================================
+   MISSION & VISION SECTION (NEW)
+   ============================================ */
+.mv-section {
+  padding: 8rem 2rem;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+.mv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.mv-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 3.5rem 2.5rem;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease, border-color 0.4s;
+  opacity: 0;
+  position: relative;
+}
+.mv-card:hover {
+  border-color: var(--accent);
+  background: rgba(255, 107, 53, 0.02);
+}
+/* Side slider positions before collision triggers */
+.mv-card.mission-card {
+  transform: translateX(-150px);
+}
+.mv-card.vision-card {
+  transform: translateX(150px);
+}
+.mv-card.collided {
+  transform: translateX(0);
+  opacity: 1;
+}
+.mv-title {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.1em;
+  display: inline-block;
+  min-height: 1.2em;
+}
+.mv-title-decor {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  font-family: var(--font-body);
+}
+.mv-desc {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+@media (max-width: 768px) {
+  .mv-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .mv-card.mission-card, .mv-card.vision-card {
+    transform: translateY(100px);
+  }
+  .mv-card.collided {
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   WORK GALLERY (BUILT TO IMPRESS - INF SCROLL)
+   ============================================ */
+.gallery-section {
+  position: relative;
+  padding: 8rem 0;
+  z-index: 1;
+  overflow: hidden;
+}
+.gallery-section .section-header {
+  padding: 0 2rem;
+}
+.gallery-track-wrap {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 2rem 0;
+}
+/* Left & Right cinematic fading overlays */
+.gallery-track-wrap::before,
+.gallery-track-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 150px;
+  z-index: 2;
+  pointer-events: none;
+}
+.gallery-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.gallery-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+
+.gallery-track {
+  display: flex;
+  width: max-content;
+  gap: 1.5rem;
+  animation: galleryScroll 45s linear infinite;
+  padding: 1rem 1.5rem;
+}
+.gallery-track:hover {
+  animation-play-state: paused;
+}
+@keyframes galleryScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.gallery-card-item {
+  width: 320px;
+  height: 230px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.gallery-card-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease-out);
+}
+.gallery-card-item:hover img {
+  transform: scale(1.08);
+}
+.gallery-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.gallery-card-item:hover class-item-overlay,
+.gallery-card-item:hover .gallery-item-overlay {
+  opacity: 1;
+}
+.gallery-card-tag {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.gallery-card-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* ============================================
+   TESTIMONIALS
+   ============================================ */
+.testimonials-section {
+  position: relative;
+  padding: 8rem 0;
+  overflow: hidden;
+  z-index: 1;
+}
+.testimonials-section .section-header { padding: 0 2rem; margin-bottom: 4rem; }
+.testi-track-wrap {
+  position: relative;
+  overflow: hidden;
+}
+.testi-track-wrap::before,
+.testi-track-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+.testi-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.testi-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+.testi-track {
+  display: flex;
+  width: max-content;
+  animation: testiScroll 40s linear infinite;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+}
+.testi-track:hover { animation-play-state: paused; }
+@keyframes testiScroll {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+.testi-card {
+  width: 360px;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.testi-card:hover {
+  border-color: rgba(255,107,53,0.3);
+  transform: translateY(-4px);
+}
+.testi-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 1rem;
+}
+.testi-star { color: #f59e0b; font-size: 0.9rem; }
+.testi-quote {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+.testi-quote::before { content: '\201C'; color: var(--accent); font-size: 1.4rem; line-height: 0; vertical-align: -0.4rem; margin-right: 2px; }
+.testi-author {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.testi-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.testi-name {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.testi-role {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.testi-verified {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* ============================================
+   SERVICE & PORTFOLIO OVERLAYS
+   ============================================ */
 .service-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -773,254 +1024,31 @@ body {
 }
 .so-whatsapp svg { width: 20px; height: 20px; fill: #fff; }
 
-/* ============================================
-   MISSION & VISION SECTION
-   ============================================ */
-.mv-section {
-  position: relative;
-  padding: 8rem 2rem;
-  overflow: hidden;
-  z-index: 1;
-}
-.mv-container {
-  max-width: 1200px;
-  margin: 0 auto;
+/* Case Study details styling */
+.cs-detail-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2.5rem;
-  perspective: 1200px;
-}
-.mv-box {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  padding: 3.5rem 2.5rem;
-  border-radius: 24px;
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease, border-color 0.4s;
-  opacity: 0;
-}
-.mv-box.mission-box {
-  transform: translateX(-150px) rotateY(15deg);
-}
-.mv-box.vision-box {
-  transform: translateX(150px) rotateY(-15deg);
-}
-.mv-box.revealed {
-  opacity: 1;
-  transform: translateX(0) rotateY(0);
-}
-.mv-box:hover {
-  border-color: var(--accent);
-  background: rgba(255,107,53,0.02);
-}
-.mv-title {
-  font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.05em;
-  min-height: 1.2em;
-  transition: color 0.3s;
-}
-.mv-title.scrambled-title {
-  color: var(--accent);
-}
-.mv-desc {
-  font-size: 0.95rem;
-  line-height: 1.85;
-  color: var(--text-secondary);
-}
-
-@media (max-width: 768px) {
-  .mv-container { grid-template-columns: 1fr; gap: 1.5rem; }
-  .mv-box.mission-box, .mv-box.vision-box { transform: translateY(80px); }
-  .mv-box.revealed { transform: translateY(0); }
-}
-
-/* ============================================
-   WORK GALLERY (Smaller blocks in continuous scroll)
-   ============================================ */
-.gallery-section {
-  position: relative;
-  padding: 8rem 0;
-  z-index: 1;
-}
-.gallery-section .section-header { padding: 0 2rem; }
-.gallery-track-wrap {
-  position: relative;
-  overflow: hidden;
-  padding: 2rem 0;
-}
-.gallery-track-wrap::before,
-.gallery-track-wrap::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 150px;
-  z-index: 2;
-  pointer-events: none;
-}
-.gallery-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
-.gallery-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
-
-.gallery-track {
-  display: flex;
-  width: max-content;
-  animation: galleryScroll 35s linear infinite;
+  grid-template-columns: 1fr;
   gap: 1.5rem;
-  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
 }
-.gallery-track:hover { animation-play-state: paused; }
-
-@keyframes galleryScroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.gallery-item {
-  width: 290px;
-  height: 200px;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-  border-radius: 16px;
-  cursor: pointer;
-  background: var(--bg-secondary);
+.cs-detail-box {
+  background: rgba(255,255,255,0.02);
   border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
 }
-.gallery-img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s var(--ease-out);
-}
-.gallery-item:hover .gallery-img { transform: scale(1.08); }
-.gallery-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 1.2rem;
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.gallery-item:hover .gallery-overlay { opacity: 1; }
-.gallery-tag {
+.cs-detail-box h5 {
   font-family: var(--font-display);
-  font-size: 0.65rem;
-  font-weight: 600;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
   color: var(--accent);
-  margin-bottom: 0.3rem;
-}
-.gallery-title {
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-/* ============================================
-   TESTIMONIALS (left-to-right scroll)
-   ============================================ */
-.testimonials-section {
-  position: relative;
-  padding: 8rem 0;
-  overflow: hidden;
-  z-index: 1;
-}
-.testimonials-section .section-header { padding: 0 2rem; margin-bottom: 4rem; }
-.testi-track-wrap {
-  position: relative;
-  overflow: hidden;
-}
-.testi-track-wrap::before,
-.testi-track-wrap::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 120px;
-  z-index: 2;
-  pointer-events: none;
-}
-.testi-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
-.testi-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
-.testi-track {
-  display: flex;
-  width: max-content;
-  animation: testiScroll 40s linear infinite;
-  gap: 1.5rem;
-  padding: 1rem 1.5rem;
-}
-.testi-track:hover { animation-play-state: paused; }
-@keyframes testiScroll {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0%); }
-}
-.testi-card {
-  width: 360px;
-  flex-shrink: 0;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 2rem;
-  transition: border-color 0.3s, transform 0.3s;
-}
-.testi-card:hover {
-  border-color: rgba(255,107,53,0.3);
-  transform: translateY(-4px);
-}
-.testi-stars {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 1rem;
-}
-.testi-star { color: #f59e0b; font-size: 0.9rem; }
-.testi-quote {
-  font-size: 0.95rem;
-  line-height: 1.75;
-  color: var(--text-secondary);
-  margin-bottom: 1.5rem;
-  font-style: italic;
-}
-.testi-quote::before { content: '\201C'; color: var(--accent); font-size: 1.4rem; line-height: 0; vertical-align: -0.4rem; margin-right: 2px; }
-.testi-author {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-}
-.testi-avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.testi-name {
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-}
-.testi-role {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-.testi-verified {
-  margin-left: auto;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--accent);
-  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+.cs-detail-box p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 /* ============================================
@@ -1053,10 +1081,6 @@ body {
 .marquee-item:hover {
   color: var(--accent);
   -webkit-text-stroke: 1px var(--accent);
-}
-@keyframes marqueeScroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
 }
 
 /* ============================================
@@ -1248,16 +1272,17 @@ body {
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ============================================
-   RESPONSIVE
+   RESPONSIVE MODIFIERS
    ============================================ */
 @media (max-width: 768px) {
   .services-grid { grid-template-columns: 1fr; }
-  .so-panel { padding: 2rem 1.5rem; }
+  .so-panel { padding: 2.2rem 1.5rem; }
   .parallax-element { display: none; }
-  .hero-title { font-size: 2.2rem; }
+  .hero-title { font-size: 2.3rem; }
+  .gallery-card-item { width: 260px; height: 190px; }
 }
 @media (max-width: 480px) {
-  .hero-title { font-size: 1.95rem; }
+  .hero-title { font-size: 2rem; }
   .service-card { padding: 1.25rem; }
   .footer-socials { gap: 1rem; }
   .social-icon { width: 40px; height: 40px; }
@@ -1315,10 +1340,14 @@ body {
     <a href="#gallery">Work</a>
     <a href="#contact">Contact</a>
   </nav>
-  <div class="call-action">
-    <div class="call-popup" id="callPopup">Call Us Now & Innovate</div>
-    <a href="tel:+27812795215" class="call-icon" aria-label="Call Us">
+  
+  <!-- Coordinated Action Icons (alternating shake/pulse) -->
+  <div class="header-actions">
+    <a href="tel:+27812795215" class="action-icon call-icon" aria-label="Call Us">
       <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+    </a>
+    <a href="https://wa.me/27826836364" target="_blank" class="action-icon header-wa-icon" aria-label="WhatsApp Us">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
   </div>
 </header>
@@ -1359,114 +1388,29 @@ body {
   <div class="services-grid" id="servicesGrid"></div>
 </section>
 
-<!-- Mission & Vision Section (NEW with slide-in and dynamic text scramble) -->
-<section class="mv-section" id="mission-vision">
-  <div class="mv-container">
-    <div class="mv-box mission-box" id="missionBox">
-      <h3 class="mv-title scrambled-title" id="scrambleMission">MISSION</h3>
+<!-- Mission & Vision (NEW Sliding Collision Section) -->
+<section class="mv-section" id="missionVision">
+  <div class="mv-grid">
+    <div class="mv-card mission-card" id="missionCard">
+      <h3 class="mv-title" id="scrambleMission"><span class="mv-title-decor">//</span>MISSION</h3>
       <p class="mv-desc">To transform South African brands into future-ready market leaders by replacing isolated campaigns with connected growth systems. We unify strategy, design, technology, and financial optimization into a single, always-on engine—grounded in SMART principles (Specific, Measurable, Attainable, Relevant, Time-based) and driven by 365-day continuous iteration, full-spectrum execution, and transparent ROI tracking.</p>
     </div>
-    <div class="mv-box vision-box" id="visionBox">
-      <h3 class="mv-title scrambled-title" id="scrambleVision">VISION</h3>
+    <div class="mv-card vision-card" id="visionCard">
+      <h3 class="mv-title" id="scrambleVision"><span class="mv-title-decor">//</span>VISION</h3>
       <p class="mv-desc">A business landscape where creative ambition and measurable performance operate as one seamless ecosystem. Where every decision is data-informed, every initiative compounds, and growth never sleeps.</p>
     </div>
   </div>
 </section>
 
-<!-- Work Gallery (Updated smaller blocks in continuous slider format) -->
+<!-- Work Gallery (BUILT TO IMPRESS - INF SCROLL) -->
 <section class="gallery-section" id="gallery">
   <div class="section-header">
     <div class="section-eyebrow">Our Work</div>
     <h2 class="section-title">Built to Impress</h2>
   </div>
   <div class="gallery-track-wrap">
-    <div class="gallery-track" id="galleryTrack">
-      <!-- 1st Copy -->
-      <div class="gallery-item" onclick="openWorkDetail('Brand Identity', 'Visual Identity System', 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80" alt="Brand Identity" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">Brand Identity</div>
-          <div class="gallery-title">Visual Identity System</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('Web Design', 'E-Commerce Platform', 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80" alt="Web Design" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">Web Design</div>
-          <div class="gallery-title">E-Commerce Platform</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('Social Media', 'Campaign Strategy', 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" alt="Social Media" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">Social Media</div>
-          <div class="gallery-title">Campaign Strategy</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('UI/UX Design', 'Mobile App Interface', 'https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80" alt="UI/UX" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">UI/UX Design</div>
-          <div class="gallery-title">Mobile App Interface</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('Digital Strategy', 'Growth Roadmap', 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80" alt="Strategy" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">Digital Strategy</div>
-          <div class="gallery-title">Growth Roadmap</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('E-Commerce', 'Online Store Redesign', 'https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80" alt="E-Commerce" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">E-Commerce</div>
-          <div class="gallery-title">Online Store Redesign</div>
-        </div>
-      </div>
-      <!-- 2nd Copy (Duplicated for Seamless Marquee) -->
-      <div class="gallery-item" onclick="openWorkDetail('Brand Identity', 'Visual Identity System', 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80" alt="Brand Identity" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">Brand Identity</div>
-          <div class="gallery-title">Visual Identity System</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('Web Design', 'E-Commerce Platform', 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80" alt="Web Design" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">Web Design</div>
-          <div class="gallery-title">E-Commerce Platform</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('Social Media', 'Campaign Strategy', 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80" alt="Social Media" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">Social Media</div>
-          <div class="gallery-title">Campaign Strategy</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('UI/UX Design', 'Mobile App Interface', 'https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600&q=80" alt="UI/UX" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">UI/UX Design</div>
-          <div class="gallery-title">Mobile App Interface</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('Digital Strategy', 'Growth Roadmap', 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80" alt="Strategy" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">Digital Strategy</div>
-          <div class="gallery-title">Growth Roadmap</div>
-        </div>
-      </div>
-      <div class="gallery-item" onclick="openWorkDetail('E-Commerce', 'Online Store Redesign', 'https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80')">
-        <img class="gallery-img" src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=600&q=80" alt="E-Commerce" loading="lazy">
-        <div class="gallery-overlay">
-          <div class="gallery-tag">E-Commerce</div>
-          <div class="gallery-title">Online Store Redesign</div>
-        </div>
-      </div>
+    <div class="gallery-track" id="galleryMarqueeTrack">
+      <!-- Generated elastically dynamically from JS -->
     </div>
   </div>
 </section>
@@ -1500,7 +1444,7 @@ body {
   </div>
 </section>
 
-<!-- Service Overlay -->
+<!-- Service Overlay (Shared Popup Modal) -->
 <div class="service-overlay" id="serviceOverlay">
   <div class="so-panel">
     <button class="so-close" id="soClose">×</button>
@@ -1525,7 +1469,7 @@ body {
         <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
       </a>
       <a href="https://www.instagram.com/thynkverse/" target="_blank" class="social-icon social-ig" aria-label="Instagram">
-        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
       </a>
       <a href="https://www.tiktok.com/@thynkverse" target="_blank" class="social-icon social-tiktok" aria-label="TikTok">
         <svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
@@ -1581,7 +1525,7 @@ document.querySelectorAll('.mm-link').forEach(link => {
 });
 
 /* ============================================
-   TESTIMONIALS DATA + RENDER
+   TESTIMONIALS DATA & RENDER
    ============================================ */
 const testimonials = [
   {
@@ -1619,8 +1563,8 @@ const testimonials = [
 ];
 
 const testiTrack = document.getElementById('testiTrack');
-const doubled = [...testimonials, ...testimonials];
-doubled.forEach(t => {
+const doubledTesti = [...testimonials, ...testimonials];
+doubledTesti.forEach(t => {
   const card = document.createElement('div');
   card.className = 'testi-card';
   card.innerHTML = `
@@ -1639,7 +1583,7 @@ doubled.forEach(t => {
 });
 
 /* ============================================
-   DATA
+   SERVICES DATA (With 07 and 08 Added)
    ============================================ */
 const services = [
   {
@@ -1694,15 +1638,15 @@ const services = [
     id: 7, title: "Web & Mobile App Development",
     shortDesc: "Custom, high-performance web and native mobile applications built for scale and seamless user experiences.",
     fullDesc: "We engineer robust, scalable applications tailored to your operational needs. From initial wireframing to full deployment, we deliver intuitive digital products that solve complex problems and engage users across all devices.",
-    features: ["Native iOS & Android Applications", "Progressive Web Apps (PWAs)", "Custom API Integration & Development", "Cloud Infrastructure & Hosting", "User-Centric Interface Architecture"],
+    features: ["Native iOS & Android Apps", "Progressive Web Apps (PWAs)", "Custom API Integrations", "Cloud Infrastructure Architecture", "Responsive Interface Layouts"],
     icon: "❖", color: "#38bdf8",
     waMsg: "Hi Thynkverse, I'm interested in your Web & Mobile App Development service. Can we discuss my project?"
   },
   {
     id: 8, title: "Webhooks & WhatsApp Automation",
-    shortDesc: "Intelligent automated workflows connecting your WhatsApp Business directly to your customers and internal systems.",
-    fullDesc: "Streamline your customer communication with powerful webhook integrations and WhatsApp Business API automation. We build smart, keyword-driven auto-responders and seamless data bridges that keep your business connected 24/7, reducing manual intervention while scaling your response rates.",
-    features: ["WhatsApp Business API Setup & Configuration", "Keyword-Driven Auto-Responders & Chatbots", "CRM & Webhook Data Integration", "Automated Customer Onboarding Flows", "24/7 Query Resolution Systems"],
+    shortDesc: "Intelligent automated workflows connecting your WhatsApp Business directly to your customers.",
+    fullDesc: "Streamline your customer communication with powerful webhook integrations and WhatsApp Business API automation. We build smart, keyword-driven auto-responders and seamless data bridges that keep your business connected 24/7.",
+    features: ["WhatsApp Business API Setup", "Keyword-Driven Chatbots", "CRM Webhook Integration", "Automated Onboarding Flows", "24/7 Live Customer Resolution"],
     icon: "⇄", color: "#2def7e",
     waMsg: "Hi Thynkverse, I'm interested in your Webhooks & WhatsApp Automation service. Can we discuss my project?"
   }
@@ -1732,6 +1676,75 @@ const formingWords = [
 ];
 
 /* ============================================
+   PORTFOLIO (BUILT TO IMPRESS DATA & IMAGES)
+   ============================================ */
+const portfolioProjects = [
+  {
+    id: 1,
+    title: "Visual Identity System",
+    tag: "Brand Identity",
+    imgUrl: "Brand Identity - Visiual Identity System.jpg",
+    problem: "The client suffered from low market positioning, looking like a standard entry agency and unable to command premium margins.",
+    engineering: "Constructed a comprehensive modern branding grid, applying rich Violet Core and Neon Black canvas tokens for visual dominance.",
+    result: "Successfully established a high-authority position yielding over 2.4M organic campaign impressions."
+  },
+  {
+    id: 2,
+    title: "E-Commerce Platform",
+    tag: "Web Design",
+    imgUrl: "Web Design - E-Commerce Platform.jpg",
+    problem: "Sluggish load speeds on dynamic mobile viewports triggered a staggering 70% cart abandonment rate.",
+    engineering: "Coded custom frontend logic, implemented rapid-load image delivery pipelines, and engineered clean product display grids.",
+    result: "Dramatically slashed bounce rates and catalyzed immediate conversion spikes for the Lumina brand launch."
+  },
+  {
+    id: 3,
+    title: "Campaign Strategy",
+    tag: "Social Media",
+    imgUrl: "Social Media - Campaign Strategy.jpg",
+    problem: "Stale, over-corporate content systems completely failed to establish meaningful interactive relationships with target consumer demographics.",
+    engineering: "Divided content strategy into 4 highly creative core pillars and automated distribution weighted specifically to TikTok and Instagram.",
+    result: "Surpassed initial Q3 reach targets to engage over 250k users at an incredible 18% interaction metric."
+  },
+  {
+    id: 4,
+    title: "Mobile App Interface",
+    tag: "UI/UX Design",
+    imgUrl: "UI UX Design - Mobile App Interface.jpg",
+    problem: "Confusing financial interface architectures led to massive registrant dropping during sensitive verification processes.",
+    engineering: "Redesigned entire step-by-step verification flows using flat visual meters, real-time stage tracking, and immediate transaction feedback overlays.",
+    result: "Engineered a gorgeous, user-centric mobile app interface mockup perfectly simplified and ready for scale."
+  },
+  {
+    id: 5,
+    title: "Growth Roadmap",
+    tag: "Digital Strategy",
+    imgUrl: "Digital Strategy - Growth Roadmap.jpg",
+    problem: "The firm was burning advertising capital through disjointed marketing spend running across separate, isolated channels.",
+    engineering: "Architected a unified digital growth roadmap starting from tech-stack audits straight through to multi-quarter optimization metrics.",
+    result: "Successfully generated a stunning +240% increase in traffic and an exponential +312% compounding revenue loop."
+  },
+  {
+    id: 6,
+    title: "Online Store Redesign",
+    tag: "E-Commerce",
+    imgUrl: "E-commerce - online store redesign.jpg",
+    problem: "Cluttered navigational layouts and heavy static imagery made shopping confusing for users trying to browse inventories.",
+    engineering: "Implemented precise filtering parameters, built clean custom image blocks, and embedded custom visual components.",
+    result: "Transformed static pages into high-speed, performance-optimized, and visually stunning sales systems."
+  },
+  {
+    id: 7,
+    title: "Business Flow Funnel",
+    tag: "Business Strategy",
+    imgUrl: "Business Strategy - Business Funnel.jpg",
+    problem: "Manual administrative handoffs was delaying contracts and causing the sales team to lose warm, incoming client leads.",
+    engineering: "Mapped out and automated secure, automated data webhooks running directly from capture through to final team delivery portals.",
+    result: "Dramatically minimized operational friction while optimizing sales pipeline velocity down to a 3.5% conversion cycle."
+  }
+];
+
+/* ============================================
    CUSTOM CURSOR (desktop)
    ============================================ */
 const isTouch = window.matchMedia('(pointer: coarse)').matches;
@@ -1745,10 +1758,13 @@ if (!isTouch) {
 
   document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
 
-  document.querySelectorAll('a, button, .service-card, .orbit-card, .so-close, .gallery-item').forEach(el => {
-    el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
-    el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
-  });
+  function setupCursorHover() {
+    document.querySelectorAll('a, button, .service-card, .gallery-card-item, .orbit-card, .so-close, .action-icon').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+    });
+  }
+  setupCursorHover();
 
   function animateCursor() {
     ringX += (mouseX - ringX) * 0.15;
@@ -1768,7 +1784,7 @@ if (!isTouch) {
 }
 
 /* ============================================
-   LIQUID RIPPLE (Enhanced Touch Wave Effects)
+   LIQUID RIPPLE (water touch / wave effect)
    ============================================ */
 const liquidCanvas = document.getElementById('liquidCanvas');
 const lCtx = liquidCanvas.getContext('2d');
@@ -1786,38 +1802,35 @@ class Ripple {
   constructor(x, y, isTouchRipple = false) {
     this.x = x; this.y = y;
     this.radius = 2;
-    // Massive touch ripple radius multiplier for a realistic water-slap feel
-    this.maxRadius = isTouchRipple ? 120 + Math.random() * 60 : 40 + Math.random() * 30;
+    // Massive wave effect - larger radius so letters get heavily impacted visually
+    this.maxRadius = isTouchRipple ? 180 + Math.random() * 80 : 80 + Math.random() * 40;
     this.opacity = isTouchRipple ? 0.7 : 0.6;
-    this.speed = isTouchRipple ? 1.6 + Math.random() * 1.0 : 0.8 + Math.random() * 0.5;
+    this.speed = isTouchRipple ? 2.5 + Math.random() * 1.5 : 1.2 + Math.random() * 0.8;
     this.isTouch = isTouchRipple;
   }
   update() {
     this.radius += this.speed;
-    this.opacity -= this.isTouch ? 0.006 : 0.015;
+    this.opacity -= this.isTouch ? 0.006 : 0.012;
   }
   draw(ctx) {
     if (this.opacity <= 0) return;
-    // Outer ripple ring
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.strokeStyle = `rgba(255, 107, 53, ${this.opacity})`;
-    ctx.lineWidth = this.isTouch ? 3.0 : 1.5;
+    ctx.lineWidth = this.isTouch ? 3.5 : 1.5;
     ctx.stroke();
 
-    // Core wave ring
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius * 0.65, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(255, 140, 90, ${this.opacity * 0.55})`;
-    ctx.lineWidth = this.isTouch ? 2.0 : 1.0;
+    ctx.strokeStyle = `rgba(255, 140, 90, ${this.opacity * 0.4})`;
+    ctx.lineWidth = this.isTouch ? 2.5 : 1;
     ctx.stroke();
 
     if (this.isTouch) {
-      // Tertiary micro reflection ripple
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius * 0.35, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(255, 180, 120, ${this.opacity * 0.35})`;
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = `rgba(255, 180, 120, ${this.opacity * 0.25})`;
+      ctx.lineWidth = 1.5;
       ctx.stroke();
     }
   }
@@ -1831,11 +1844,12 @@ if (!isTouch) {
     if (dist > 25) {
       ripples.push(new Ripple(e.clientX, e.clientY, false));
       lastLX = e.clientX; lastLY = e.clientY;
+      rippleTextSlightly(e.clientX, e.clientY);
     }
   });
 }
 
-// Mobile touch ripples — realistic water drop wave effects
+// Mobile touch ripples — larger splash water effect
 let touchRippleCount = 0;
 const MAX_TOUCH_RIPPLES = 12;
 
@@ -1845,10 +1859,11 @@ document.addEventListener('touchstart', (e) => {
     if (touchRippleCount < MAX_TOUCH_RIPPLES) {
       ripples.push(new Ripple(t.clientX, t.clientY, true));
       touchRippleCount++;
-      // Secondary shockwave delay
+      rippleTextSlightly(t.clientX, t.clientY);
+      // Secondary dramatic ring delay
       setTimeout(() => {
         ripples.push(new Ripple(t.clientX, t.clientY, true));
-      }, 120);
+      }, 180);
     }
   }
 }, { passive: true });
@@ -1856,9 +1871,10 @@ document.addEventListener('touchstart', (e) => {
 document.addEventListener('touchmove', (e) => {
   for (let i = 0; i < e.touches.length; i++) {
     const t = e.touches[i];
-    if (touchRippleCount < MAX_TOUCH_RIPPLES && Math.random() > 0.65) {
+    if (touchRippleCount < MAX_TOUCH_RIPPLES && Math.random() > 0.6) {
       ripples.push(new Ripple(t.clientX, t.clientY, true));
       touchRippleCount++;
+      rippleTextSlightly(t.clientX, t.clientY);
     }
   }
 }, { passive: true });
@@ -1866,6 +1882,26 @@ document.addEventListener('touchmove', (e) => {
 document.addEventListener('touchend', () => {
   touchRippleCount = Math.max(0, touchRippleCount - 2);
 });
+
+// Animate letters physically warping with elastic offsets when touched/passed
+function rippleTextSlightly(mx, my) {
+  const letters = document.querySelectorAll('.hero-title span, .mv-title, .sc-title');
+  letters.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dist = Math.hypot(mx - cx, my - cy);
+    if (dist < 220) {
+      const force = (220 - dist) / 220;
+      const angle = Math.atan2(cy - my, cx - mx);
+      const tx = Math.cos(angle) * force * 15;
+      const ty = Math.sin(angle) * force * 15;
+      el.style.transform = `translate(${tx}px, ${ty}px) scale(${1 + force * 0.12})`;
+    } else {
+      el.style.transform = '';
+    }
+  });
+}
 
 function animateLiquid() {
   lCtx.clearRect(0, 0, liquidW, liquidH);
@@ -1876,7 +1912,7 @@ function animateLiquid() {
 animateLiquid();
 
 /* ============================================
-   CONSTELLATION (70 particles) + TOUCH SCATTER
+   CONSTELLATION (70 particles)
    ============================================ */
 const cCanvas = document.getElementById('constellationCanvas');
 const cCtx = cCanvas.getContext('2d');
@@ -1895,11 +1931,10 @@ resizeConstellation();
 window.addEventListener('resize', resizeConstellation);
 
 let mouseCX = -1000, mouseCY = -1000;
-let touchPoints = []; // Array of active touch points
+let touchPoints = [];
 
 document.addEventListener('mousemove', (e) => { mouseCX = e.clientX; mouseCY = e.clientY; });
 
-// Touch tracking for constellation scatter
 document.addEventListener('touchstart', (e) => {
   touchPoints = [];
   for (let i = 0; i < e.touches.length; i++) {
@@ -1914,9 +1949,7 @@ document.addEventListener('touchmove', (e) => {
   }
 }, { passive: true });
 
-document.addEventListener('touchend', () => {
-  touchPoints = [];
-});
+document.addEventListener('touchend', () => { touchPoints = []; });
 
 class Particle {
   constructor() {
@@ -1947,7 +1980,7 @@ class Particle {
       this.opacity += (this.baseOpacity - this.opacity) * 0.05;
     }
 
-    // Touch repulsion (scatter!)
+    // Touch repulsion
     touchPoints.forEach(tp => {
       const tdx = this.x - tp.x;
       const tdy = this.y - tp.y;
@@ -2015,20 +2048,13 @@ const scrambler = new TextScramble(document.getElementById('scrambleText'));
 setTimeout(() => scrambler.scramble(), 500);
 
 /* ============================================
-   HEADER SCROLL + CALL POPUP (High Frequency)
+   HEADER SCROLL LIMIT
    ============================================ */
 const header = document.getElementById('header');
-const callPopup = document.getElementById('callPopup');
 window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 50));
 
-// Faster Call Us Alert Loop
-setInterval(() => { 
-  callPopup.classList.add('show'); 
-  setTimeout(() => callPopup.classList.remove('show'), 1500); // 1.5 seconds visible
-}, 3500); // 2.0 seconds hidden delay (Total period 3.5s)
-
 /* ============================================
-   PARALLAX
+   PARALLAX BACKGROUND
    ============================================ */
 const parallaxEls = document.querySelectorAll('.parallax-element');
 window.addEventListener('scroll', () => {
@@ -2075,7 +2101,7 @@ formingWords.forEach((wd, wi) => {
   });
 });
 
-/* Progress dots */
+/* Progress dots initialization */
 const dotsContainer = document.getElementById('progressDots');
 formingWords.forEach(() => { const d = document.createElement('div'); d.className = 'progress-dot'; dotsContainer.appendChild(d); });
 const dots = document.querySelectorAll('.progress-dot');
@@ -2228,7 +2254,7 @@ window.addEventListener('resize', () => {
 });
 
 /* ============================================
-   SERVICES GRID + 3D TILT + OVERLAY
+   SERVICES GRID + 3D TILT
    ============================================ */
 const servicesGrid = document.getElementById('servicesGrid');
 const serviceOverlay = document.getElementById('serviceOverlay');
@@ -2237,15 +2263,13 @@ const soClose = document.getElementById('soClose');
 
 services.forEach(s => {
   const card = document.createElement('div');
-  // Assign pulsing classes to 07 and 08
-  if (s.id === 7) {
-    card.className = 'service-card service-card-07';
-  } else if (s.id === 8) {
-    card.className = 'service-card service-card-08';
-  } else {
-    card.className = 'service-card';
-  }
+  // Dynamic glow classes assigned to new services
+  let pulseClass = '';
+  if (s.id === 7) pulseClass = ' service-card-07';
+  if (s.id === 8) pulseClass = ' service-card-08';
   
+  card.className = 'service-card' + pulseClass;
+  card.style.animationDelay = `${(s.id - 1) * 0.5}s`;
   card.innerHTML = `
     <div class="sc-number">0${s.id}</div>
     <div class="sc-icon" style="background: ${s.color}15; color: ${s.color};">${s.icon}</div>
@@ -2253,6 +2277,7 @@ services.forEach(s => {
     <p class="sc-desc">${s.shortDesc}</p>
     <div class="sc-cta">View Details →</div>
   `;
+  
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left, y = e.clientY - rect.top;
@@ -2293,49 +2318,84 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverl
 function closeOverlay() { serviceOverlay.classList.remove('open'); document.body.style.overflow = ''; }
 
 /* ============================================
-   MISSION & VISION INTERSECTION ANIMATION
+   MISSION & VISION SCROLL ALIGNMENT & DECYPHER
    ============================================ */
-const missionBox = document.getElementById('missionBox');
-const visionBox = document.getElementById('visionBox');
+const missionCard = document.getElementById('missionCard');
+const visionCard = document.getElementById('visionCard');
 const scrambleMission = document.getElementById('scrambleMission');
 const scrambleVision = document.getElementById('scrambleVision');
 
-// Setup Scramble Instances
-const missionScramble = new TextScramble(scrambleMission);
-const visionScramble = new TextScramble(scrambleVision);
-
-let animationTriggered = false;
-
-const observer = new IntersectionObserver((entries) => {
+const mvObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting && !animationTriggered) {
-      animationTriggered = true;
-      missionBox.classList.add('revealed');
-      visionBox.classList.add('revealed');
+    if (entry.isIntersecting) {
+      missionCard.classList.add('collided');
+      visionCard.classList.add('collided');
       
-      // Trigger digit decipher alphabet transitions on reveal
-      setTimeout(() => missionScramble.scramble(), 250);
-      setTimeout(() => visionScramble.scramble(), 500);
+      // Trigger scramble on titles once
+      if (!scrambleMission.dataset.triggered) {
+        scrambleMission.dataset.triggered = "true";
+        new TextScramble(scrambleMission).scramble();
+      }
+      if (!scrambleVision.dataset.triggered) {
+        scrambleVision.dataset.triggered = "true";
+        new TextScramble(scrambleVision).scramble();
+      }
     }
   });
 }, { threshold: 0.15 });
 
-observer.observe(document.getElementById('mission-vision'));
+mvObserver.observe(document.getElementById('missionVision'));
 
 /* ============================================
-   WORK GALLERY OVERLAY HANDLER
+   WORK GALLERY (DYNAMICS & SCROLL)
    ============================================ */
-function openWorkDetail(tag, title, imgUrl) {
+const galleryMarqueeTrack = document.getElementById('galleryMarqueeTrack');
+
+// Double arrays for seamless infinite carousel loop matching testimonials
+const doubledProjects = [...portfolioProjects, ...portfolioProjects];
+
+doubledProjects.forEach((p, idx) => {
+  const item = document.createElement('div');
+  item.className = 'gallery-card-item';
+  item.innerHTML = `
+    <img src="${p.imgUrl}" alt="${p.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&q=80'">
+    <div class="gallery-item-overlay">
+      <div class="gallery-card-tag">${p.tag}</div>
+      <div class="gallery-card-title">${p.title}</div>
+    </div>
+  `;
+  item.addEventListener('click', () => openCaseStudy(p));
+  galleryMarqueeTrack.appendChild(item);
+});
+
+if (!isTouch) {
+  setupCursorHover();
+}
+
+function openCaseStudy(p) {
+  // Pre-fill the WhatsApp inquire text dynamically with the project title and category
+  const waLink = `https://wa.me/27826836364?text=${encodeURIComponent(`Hi Thynkverse, I am interested in inquiring about your "${p.tag} - ${p.title}" project showcase. Let's discuss!`)}`;
+  
   soContent.innerHTML = `
     <div class="so-header">
-      <span class="so-tag">${tag}</span>
-      <h2 class="so-title">${title}</h2>
+      <span class="so-tag">${p.tag} CASE STUDY</span>
+      <h2 class="so-title">${p.title}</h2>
     </div>
-    <div style="margin: 1.5rem 0; border-radius: 16px; overflow: hidden; height: 300px; border: 1px solid var(--border)">
-      <img src="${imgUrl}" style="width: 100%; height: 100%; object-fit: cover;" alt="${title}" onerror="this.src='https://placehold.co/600x400/111/fff?text=Project'">
+    <div class="cs-detail-grid">
+      <div class="cs-detail-box">
+        <h5>THE PROBLEM</h5>
+        <p>${p.problem}</p>
+      </div>
+      <div class="cs-detail-box">
+        <h5>THE ENGINEERING</h5>
+        <p>${p.engineering}</p>
+      </div>
+      <div class="cs-detail-box">
+        <h5>THE RESULTS</h5>
+        <p>${p.result}</p>
+      </div>
     </div>
-    <p class="so-desc" style="margin-bottom: 2rem;">A world-class creative showcase built to redefine performance across South Africa. Engineered with seamless scalability, clean visual assets, and transparent results tracing.</p>
-    <a href="https://wa.me/27826836364?text=${encodeURIComponent('Hi Thynkverse, I saw your ' + title + ' (' + tag + ') project. I\'d love to discuss my brand with you.')}" target="_blank" class="so-whatsapp">
+    <a href="${waLink}" target="_blank" class="so-whatsapp">
       <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Inquire about this work
     </a>
