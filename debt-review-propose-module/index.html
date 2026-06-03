@@ -43,6 +43,7 @@
 
         html {
             scroll-behavior: smooth;
+            overflow-x: hidden; /* FIX: Locks the horizontal axis completely */
         }
 
         body {
@@ -120,10 +121,12 @@
             box-shadow: 0 0 60px rgba(0,0,0,0.8);
         }
 
-        /* Scroll Container — NORMAL SMOOTH SCROLLING (Sprint fix) */
+        /* Scroll Container — FIX: Magnet Bounce Restored */
         .scroll-container {
             height: 100vh;
             overflow-y: scroll;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory; /* The Magnet */
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
@@ -135,24 +138,41 @@
             display: none;
         }
 
-        /* Slide Base */
+        /* Slide Base — FIX: Exact Screen Height */
         .slide {
-            min-height: 100vh;
+            height: 100vh; /* Forces exact screen fit for the magnet */
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding: 2rem 1.5rem 7rem 1.5rem;
+            scroll-snap-align: start; /* Where the magnet grabs */
+            scroll-snap-stop: always;
             position: relative;
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
                         transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden; /* Locks the outer shell */
         }
 
         .slide.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Slide Inner Content — FIX: Internal Scrolling for long text */
+        .slide-content {
+            height: 100vh;
+            width: 100%;
+            overflow-y: auto; /* Allows scrolling inside long slides */
+            overflow-x: hidden;
+            padding: 2rem 1.5rem 7rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .slide-content::-webkit-scrollbar {
+            display: none;
         }
 
         /* Background Gradients per Slide */
@@ -167,6 +187,19 @@
         .slide-9 { background: linear-gradient(180deg, #1a0f0a 0%, var(--bg-secondary) 100%); }
         .slide-10 { background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%); }
 
+        /* FIX: Making the app "Alive" with Float Animations */
+        @keyframes float-soft {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes float-orb {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+
         /* Decorative Elements */
         .glow-orb {
             position: absolute;
@@ -174,6 +207,7 @@
             filter: blur(80px);
             opacity: 0.15;
             pointer-events: none;
+            animation: float-orb 10s ease-in-out infinite alternate; /* Floating Orb */
         }
 
         .orb-1 { width: 300px; height: 300px; background: var(--accent-primary); top: -100px; right: -100px; }
@@ -189,6 +223,7 @@
             color: var(--accent-primary);
             margin-bottom: 1rem;
             margin-top: 2rem;
+            flex-shrink: 0;
         }
 
         h1 {
@@ -197,6 +232,7 @@
             line-height: 1.1;
             margin-bottom: 1.2rem;
             letter-spacing: -0.02em;
+            flex-shrink: 0;
         }
 
         h2 {
@@ -217,6 +253,7 @@
             line-height: 1.7;
             color: var(--text-secondary);
             margin-bottom: 1rem;
+            flex-shrink: 0;
         }
 
         .lead {
@@ -224,6 +261,7 @@
             color: var(--text-secondary);
             line-height: 1.6;
             margin-bottom: 1.5rem;
+            flex-shrink: 0;
         }
 
         /* Icons */
@@ -239,6 +277,7 @@
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border);
+            animation: float-soft 5s ease-in-out infinite alternate; /* Alive */
         }
 
         .icon-circle.accent {
@@ -265,17 +304,24 @@
             border-radius: 20px;
             padding: 1.5rem;
             margin-bottom: 1rem;
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            transition: all 0.3s ease;
             cursor: default;
+            animation: float-soft 6s ease-in-out infinite; /* Alive */
+            flex-shrink: 0;
         }
+
+        /* Stagger the card animations so they float organically */
+        .card:nth-child(even) { animation-delay: 1.5s; }
+        .card:nth-child(3n) { animation-delay: 3s; }
 
         .card.clickable {
             cursor: pointer;
         }
 
         .card.clickable:hover {
-            border-color: rgba(255, 107, 53, 0.3);
-            transform: translateY(-2px);
+            border-color: rgba(255, 107, 53, 0.5);
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15);
+            /* Transform removed here so it doesn't fight the float animation */
         }
 
         .card.clickable:active {
@@ -286,6 +332,7 @@
             display: grid;
             gap: 0.75rem;
             margin-top: 1.5rem;
+            flex-shrink: 0;
         }
 
         /* Stats / Highlights */
@@ -301,12 +348,13 @@
             border-bottom: none;
         }
 
+        /* FIX: Prevent 3-5x from wrapping */
         .stat-number {
-            font-size: 1.6rem; /* Adjusted to fit */
+            font-size: 1.6rem; 
             font-weight: 800;
             color: var(--accent-primary);
             min-width: 60px;
-            white-space: nowrap; /* Ensures 3-5x stays on one line */
+            white-space: nowrap; 
         }
 
         .stat-label {
@@ -321,6 +369,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 0.75rem;
             margin-top: 1.5rem;
+            flex-shrink: 0;
         }
 
         .comparison-box {
@@ -331,15 +380,18 @@
             border-radius: 16px;
             padding: 1.2rem 1rem;
             text-align: center;
+            animation: float-soft 7s ease-in-out infinite alternate;
         }
 
         .comparison-box.before {
             border-color: rgba(255, 71, 87, 0.2);
+            animation-delay: 1s;
         }
 
         .comparison-box.after {
             border-color: rgba(255, 107, 53, 0.2);
             background: rgba(255, 107, 53, 0.05);
+            animation-delay: 2.5s;
         }
 
         .comparison-title {
@@ -380,12 +432,15 @@
             padding: 0.4rem 0.8rem;
             border-radius: 100px;
             margin-bottom: 1rem;
+            flex-shrink: 0;
+            animation: float-soft 4s ease-in-out infinite;
         }
 
         /* Feature List */
         .feature-list {
             list-style: none;
             margin-top: 1rem;
+            flex-shrink: 0;
         }
 
         .feature-list li {
@@ -430,10 +485,8 @@
 
         /* Scroll Indicator */
         .scroll-hint {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
+            margin-top: auto;
+            padding-top: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -458,15 +511,15 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-8px); }
-            60% { transform: translateX(-50%) translateY(-4px); }
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
         }
 
         /* ==================== EXPANDING WHATSAPP CTA ==================== */
         .whatsapp-cta-container {
             position: fixed;
-            bottom: 3.8rem; /* Lifted slightly to avoid overlap with footer */
+            bottom: 3.8rem;
             right: 1.2rem;
             z-index: 1000;
             display: flex;
@@ -594,18 +647,16 @@
             pointer-events: none;
         }
 
-        /* Footer Visibility Fix */
+        /* FIX: Footer Links Glow */
         .persistent-footer a {
             font-size: 0.65rem;
             color: var(--text-primary);
             text-decoration: none;
-            opacity: 0.85; /* Increased opacity for readability */
+            opacity: 0.85; 
             transition: all 0.3s ease;
             pointer-events: auto;
             letter-spacing: 0.05em;
             font-weight: 600;
-            
-            /* Orange Glowing Edge */
             border: 1px solid rgba(255, 107, 53, 0.4);
             padding: 4px 10px;
             border-radius: 6px;
@@ -691,6 +742,8 @@
             border-radius: 16px;
             padding: 1.2rem;
             margin-top: 1.5rem;
+            flex-shrink: 0;
+            animation: float-soft 5s ease-in-out infinite reverse;
         }
 
         .roi-box .roi-title {
@@ -725,6 +778,7 @@
             justify-content: center;
             margin-bottom: 1rem;
             margin-top: 2rem;
+            flex-shrink: 0;
         }
 
         /* Bottom spacer for last slide */
@@ -795,345 +849,373 @@
 
             <section class="slide slide-1" data-index="0">
                 <div class="glow-orb orb-1"></div>
-                <div class="eyebrow">Thynkverse Ecosystem</div>
-                <h1>You're Losing Money Every Day You Stay Analog</h1>
-                <p class="lead">Debt Review business owners across South Africa are facing the same three silent profit killers — and most don't even realize how much they're costing until it's too late. Your competitors who digitize first will capture the market. The question isn't whether you transform — it's whether you do it before your competitors do.</p>
-                <div class="card" style="margin-top: 1rem;">
-                    <div class="stat-row">
-                        <div class="stat-number">3–5×</div>
-                        <div class="stat-label">Higher cost-per-lead without digital infrastructure</div>
+                <div class="slide-content">
+                    <div class="eyebrow">Thynkverse Ecosystem</div>
+                    <h1>You're Losing Money Every Day You Stay Analog</h1>
+                    <p class="lead">Debt Review business owners across South Africa are facing the same three silent profit killers — and most don't even realize how much they're costing until it's too late. Your competitors who digitize first will capture the market. The question isn't whether you transform — it's whether you do it before your competitors do.</p>
+                    <div class="card" style="margin-top: 1rem;">
+                        <div class="stat-row">
+                            <div class="stat-number">3–5×</div>
+                            <div class="stat-label">Higher cost-per-lead without digital infrastructure</div>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-number">8s</div>
+                            <div class="stat-label">Time to judge your credibility online</div>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Real-time visibility into call center data</div>
+                        </div>
                     </div>
-                    <div class="stat-row">
-                        <div class="stat-number">8s</div>
-                        <div class="stat-label">Time to judge your credibility online</div>
+                    <div class="scroll-hint">
+                        <span>Scroll</span>
+                        <div class="chevron"></div>
                     </div>
-                    <div class="stat-row">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Real-time visibility into call center data</div>
-                    </div>
-                </div>
-                <div class="scroll-hint">
-                    <span>Scroll</span>
-                    <div class="chevron"></div>
                 </div>
             </section>
 
             <section class="slide slide-2" data-index="1">
                 <div class="glow-orb orb-2"></div>
-                <div class="eyebrow">The Problem</div>
-                <h1>The Three Bottlenecks Crushing Your Margins</h1>
-                <p class="lead">Every day your practice runs on paper, spreadsheets, and gut instinct, you're bleeding revenue in three specific ways. These aren't hypothetical problems — they're measurable, daily losses that compound into thousands of rands per month.</p>
+                <div class="slide-content">
+                    <div class="eyebrow">The Problem</div>
+                    <h1>The Three Bottlenecks Crushing Your Margins</h1>
+                    <p class="lead">Every day your practice runs on paper, spreadsheets, and gut instinct, you're bleeding revenue in three specific ways. These aren't hypothetical problems — they're measurable, daily losses that compound into thousands of rands per month.</p>
 
-                <div class="card-grid">
-                    <div class="card">
-                        <div class="icon-circle danger">💸</div>
-                        <h3>Sky-High Cost-Per-Lead</h3>
-                        <p style="font-size: 0.85rem; margin-bottom: 0;">Without a professional digital presence or targeted ad infrastructure, you're overpaying for every lead that comes through your door. Third-party referral networks charge premium fees, and cold outreach without data backing yields poor conversion rates. The result: your cost-per-acquisition is likely 3–5× higher than it needs to be.</p>
+                    <div class="card-grid">
+                        <div class="card">
+                            <div class="icon-circle danger">💸</div>
+                            <h3>Sky-High Cost-Per-Lead</h3>
+                            <p style="font-size: 0.85rem; margin-bottom: 0;">Without a professional digital presence or targeted ad infrastructure, you're overpaying for every lead that comes through your door. Third-party referral networks charge premium fees, and cold outreach without data backing yields poor conversion rates. The result: your cost-per-acquisition is likely 3–5× higher than it needs to be.</p>
+                        </div>
+                        <div class="card">
+                            <div class="icon-circle warning">🕳️</div>
+                            <h3>Call Center Data Blind Spots</h3>
+                            <p style="font-size: 0.85rem; margin-bottom: 0;">Your agents are on the phone all day, but you have zero real-time visibility into what's actually happening. How many calls converted? Which agents are underperforming? Where are leads dropping off? Without digital tracking, you're making critical business decisions based on incomplete, delayed, or entirely absent data.</p>
+                        </div>
+                        <div class="card">
+                            <div class="icon-circle">🔴</div>
+                            <h3>Outdated Digital Presence</h3>
+                            <p style="font-size: 0.85rem; margin-bottom: 0;">When a potential client searches for a debt review provider, they judge your credibility in under 8 seconds. An outdated website, no social media presence, or zero online reviews signals untrustworthiness. You're losing qualified leads to competitors who simply look more professional online — regardless of who actually provides better service.</p>
+                        </div>
                     </div>
-                    <div class="card">
-                        <div class="icon-circle warning">🕳️</div>
-                        <h3>Call Center Data Blind Spots</h3>
-                        <p style="font-size: 0.85rem; margin-bottom: 0;">Your agents are on the phone all day, but you have zero real-time visibility into what's actually happening. How many calls converted? Which agents are underperforming? Where are leads dropping off? Without digital tracking, you're making critical business decisions based on incomplete, delayed, or entirely absent data.</p>
-                    </div>
-                    <div class="card">
-                        <div class="icon-circle">🔴</div>
-                        <h3>Outdated Digital Presence</h3>
-                        <p style="font-size: 0.85rem; margin-bottom: 0;">When a potential client searches for a debt review provider, they judge your credibility in under 8 seconds. An outdated website, no social media presence, or zero online reviews signals untrustworthiness. You're losing qualified leads to competitors who simply look more professional online — regardless of who actually provides better service.</p>
-                    </div>
+                    <div class="bottom-spacer"></div>
                 </div>
             </section>
 
             <section class="slide slide-3" data-index="2">
                 <div class="glow-orb orb-3"></div>
-                <div class="eyebrow">The Solution</div>
-                <h1>Introducing the Thynkverse Ecosystem</h1>
-                <p class="lead">The Thynkverse Ecosystem is a modular digital transformation suite built specifically for Debt Review businesses in South Africa. Unlike rigid, one-size-fits-all software packages, the Thynkverse is designed to meet you where you are — and scale with you as you grow. Each module solves a specific, high-impact bottleneck, and you choose which one to activate first based on your most urgent business need.</p>
+                <div class="slide-content">
+                    <div class="eyebrow">The Solution</div>
+                    <h1>Introducing the Thynkverse Ecosystem</h1>
+                    <p class="lead">The Thynkverse Ecosystem is a modular digital transformation suite built specifically for Debt Review businesses in South Africa. Unlike rigid, one-size-fits-all software packages, the Thynkverse is designed to meet you where you are — and scale with you as you grow. Each module solves a specific, high-impact bottleneck, and you choose which one to activate first based on your most urgent business need.</p>
 
-                <div class="card-grid">
-                    <div class="card clickable" data-jump="slide-module-1">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <span style="font-size: 1.4rem;">📋</span>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Module 1: Paperless Cloud Intake</h3>
+                    <div class="card-grid">
+                        <div class="card clickable" data-jump="slide-module-1">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 1.4rem;">📋</span>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Module 1: Paperless Cloud Intake</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Eliminate paper forms. Capture client data directly from credit bureaus in a secure, super-admin-controlled cloud environment.</p>
+                            <div class="jump-hint">Tap to explore →</div>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Eliminate paper forms. Capture client data directly from credit bureaus in a secure, super-admin-controlled cloud environment.</p>
-                        <div class="jump-hint">Tap to explore →</div>
-                    </div>
-                    <div class="card clickable" data-jump="slide-module-2">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <span style="font-size: 1.4rem;">📊</span>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Module 2: Real-Time Business Intelligence</h3>
+                        <div class="card clickable" data-jump="slide-module-2">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 1.4rem;">📊</span>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Module 2: Real-Time Business Intelligence</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Custom dashboards that auto-refresh 8× daily. Total visibility over metrics, pipeline health, and agent performance.</p>
+                            <div class="jump-hint">Tap to explore →</div>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Custom dashboards that auto-refresh 8× daily. Total visibility over metrics, pipeline health, and agent performance.</p>
-                        <div class="jump-hint">Tap to explore →</div>
-                    </div>
-                    <div class="card clickable" data-jump="slide-module-3">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <span style="font-size: 1.4rem;">💬</span>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Module 3: Direct WhatsApp Automation</h3>
+                        <div class="card clickable" data-jump="slide-module-3">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 1.4rem;">💬</span>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Module 3: Direct WhatsApp Automation</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Hands-on setup for direct-to-source WhatsApp engagement. Cut third-party fees. Increase consumer response rates.</p>
+                            <div class="jump-hint">Tap to explore →</div>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Hands-on setup for direct-to-source WhatsApp engagement. Cut third-party fees. Increase consumer response rates.</p>
-                        <div class="jump-hint">Tap to explore →</div>
-                    </div>
-                    <div class="card clickable" data-jump="slide-module-4">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <span style="font-size: 1.4rem;">🌐</span>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Module 4: Digital Office & Lead Gen</h3>
+                        <div class="card clickable" data-jump="slide-module-4">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 1.4rem;">🌐</span>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Module 4: Digital Office & Lead Gen</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Custom debt review website, professional social media identity, and low-cost, high-converting ad campaigns.</p>
+                            <div class="jump-hint">Tap to explore →</div>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Custom debt review website, professional social media identity, and low-cost, high-converting ad campaigns.</p>
-                        <div class="jump-hint">Tap to explore →</div>
-                    </div>
-                    <div class="card clickable" data-jump="slide-module-5">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <span style="font-size: 1.4rem;">🔔</span>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Module 5: Client Self-Service Portal</h3>
+                        <div class="card clickable" data-jump="slide-module-5">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 1.4rem;">🔔</span>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Module 5: Client Self-Service Portal</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Reduce inbound query calls by 70%. Clients get instant status updates via secure web app.</p>
+                            <div class="jump-hint">Tap to explore →</div>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Reduce inbound query calls by 70%. Clients get instant status updates via secure web app.</p>
-                        <div class="jump-hint">Tap to explore →</div>
                     </div>
+
+                    <p style="font-size: 0.9rem; margin-top: 1.5rem; flex-shrink: 0;">The Thynkverse is modular by design. You don't need to buy everything at once. Start with the module that addresses your biggest pain point, then layer in additional capabilities as your ROI compounds.</p>
+                    <div class="bottom-spacer"></div>
                 </div>
-
-                <p style="font-size: 0.9rem; margin-top: 1.5rem;">The Thynkverse is modular by design. You don't need to buy everything at once. Start with the module that addresses your biggest pain point, then layer in additional capabilities as your ROI compounds.</p>
             </section>
 
             <section class="slide slide-4" id="slide-module-1" data-index="3">
-                <div class="module-num">1</div>
-                <div class="module-badge">📋 Module 1</div>
-                <h1>Paperless Cloud Intake: Stop Writing. Start Capturing.</h1>
-                <p class="lead">Every minute your call center agent spends writing on paper is a minute not spent closing deals. The Paperless Cloud Intake module moves your entire intake process into a secure, super-admin-controlled cloud environment — eliminating transcription errors, reducing onboarding time, and creating a searchable digital record of every client interaction from day one.</p>
-                <p>Our system integrates directly with South African credit bureaus, pulling verified client data automatically. Agents no longer manually type in ID numbers, debt figures, or credit scores. The data flows in, validated and structured, ready for immediate use in your review process. This alone can reduce average intake time by up to 40%, freeing your agents to handle more calls per shift.</p>
-                <p>Super-admin controls mean you decide who sees what. Sensitive client data is protected, access is logged, and your practice stays compliant with POPIA regulations without adding administrative overhead.</p>
+                <div class="slide-content">
+                    <div class="module-num">1</div>
+                    <div class="module-badge">📋 Module 1</div>
+                    <h1>Paperless Cloud Intake: Stop Writing. Start Capturing.</h1>
+                    <p class="lead">Every minute your call center agent spends writing on paper is a minute not spent closing deals. The Paperless Cloud Intake module moves your entire intake process into a secure, super-admin-controlled cloud environment — eliminating transcription errors, reducing onboarding time, and creating a searchable digital record of every client interaction from day one.</p>
+                    <p>Our system integrates directly with South African credit bureaus, pulling verified client data automatically. Agents no longer manually type in ID numbers, debt figures, or credit scores. The data flows in, validated and structured, ready for immediate use in your review process. This alone can reduce average intake time by up to 40%, freeing your agents to handle more calls per shift.</p>
+                    <p>Super-admin controls mean you decide who sees what. Sensitive client data is protected, access is logged, and your practice stays compliant with POPIA regulations without adding administrative overhead.</p>
 
-                <div class="comparison">
-                    <div class="comparison-box before">
-                        <div class="comparison-title">Before Thynkverse</div>
-                        <div class="comparison-value" style="color: var(--danger);">Paper</div>
-                        <div class="comparison-desc">Agents write on paper during calls</div>
-                        <div class="comparison-desc">Manual data re-entry into systems</div>
-                        <div class="comparison-desc">High error rates and lost forms</div>
-                        <div class="comparison-desc">No audit trail for compliance</div>
-                        <div class="comparison-desc">Slow onboarding = lost clients</div>
+                    <div class="comparison">
+                        <div class="comparison-box before">
+                            <div class="comparison-title">Before Thynkverse</div>
+                            <div class="comparison-value" style="color: var(--danger);">Paper</div>
+                            <div class="comparison-desc">Agents write on paper during calls</div>
+                            <div class="comparison-desc">Manual data re-entry into systems</div>
+                            <div class="comparison-desc">High error rates and lost forms</div>
+                            <div class="comparison-desc">No audit trail for compliance</div>
+                            <div class="comparison-desc">Slow onboarding = lost clients</div>
+                        </div>
+                        <div class="comparison-box after">
+                            <div class="comparison-title">After Thynkverse</div>
+                            <div class="comparison-value" style="color: var(--success);">Cloud</div>
+                            <div class="comparison-desc">Cloud-based digital intake in real time</div>
+                            <div class="comparison-desc">Auto-populated bureau data</div>
+                            <div class="comparison-desc">Zero transcription errors</div>
+                            <div class="comparison-desc">Full compliance audit logs</div>
+                            <div class="comparison-desc">Faster onboarding = more clients</div>
+                        </div>
                     </div>
-                    <div class="comparison-box after">
-                        <div class="comparison-title">After Thynkverse</div>
-                        <div class="comparison-value" style="color: var(--success);">Cloud</div>
-                        <div class="comparison-desc">Cloud-based digital intake in real time</div>
-                        <div class="comparison-desc">Auto-populated bureau data</div>
-                        <div class="comparison-desc">Zero transcription errors</div>
-                        <div class="comparison-desc">Full compliance audit logs</div>
-                        <div class="comparison-desc">Faster onboarding = more clients</div>
+
+                    <ul class="feature-list">
+                        <li><span class="check">✓</span> Eliminate paper-based intake forms entirely</li>
+                        <li><span class="check">✓</span> Direct credit bureau data integration</li>
+                        <li><span class="check">✓</span> Super-admin access controls and audit logs</li>
+                        <li><span class="check">✓</span> POPIA-compliant data handling built in</li>
+                        <li><span class="check">✓</span> Searchable digital client records from day one</li>
+                    </ul>
+
+                    <div class="roi-box">
+                        <div class="roi-title">Typical ROI</div>
+                        <div class="roi-value">40% faster intake, zero transcription errors</div>
                     </div>
-                </div>
-
-                <ul class="feature-list">
-                    <li><span class="check">✓</span> Eliminate paper-based intake forms entirely</li>
-                    <li><span class="check">✓</span> Direct credit bureau data integration</li>
-                    <li><span class="check">✓</span> Super-admin access controls and audit logs</li>
-                    <li><span class="check">✓</span> POPIA-compliant data handling built in</li>
-                    <li><span class="check">✓</span> Searchable digital client records from day one</li>
-                </ul>
-
-                <div class="roi-box">
-                    <div class="roi-title">Typical ROI</div>
-                    <div class="roi-value">40% faster intake, zero transcription errors</div>
+                    <div class="bottom-spacer"></div>
                 </div>
             </section>
 
             <section class="slide slide-5" id="slide-module-2" data-index="4">
-                <div class="module-num">2</div>
-                <div class="module-badge">📊 Module 2</div>
-                <h1>Real-Time Business Intelligence: See Everything. Decide Faster.</h1>
-                <p class="lead">Most Debt Review business owners make critical decisions based on last month's spreadsheet or — worse — a feeling. The Real-Time Business Intelligence module changes that entirely. Our custom reporting system automatically refreshes 8 times per day, giving you a live pulse on every metric that matters: lead volume, conversion rates, agent performance, pipeline value, and cost-per-acquisition.</p>
+                <div class="slide-content">
+                    <div class="module-num">2</div>
+                    <div class="module-badge">📊 Module 2</div>
+                    <h1>Real-Time Business Intelligence: See Everything. Decide Faster.</h1>
+                    <p class="lead">Most Debt Review business owners make critical decisions based on last month's spreadsheet or — worse — a feeling. The Real-Time Business Intelligence module changes that entirely. Our custom reporting system automatically refreshes 8 times per day, giving you a live pulse on every metric that matters: lead volume, conversion rates, agent performance, pipeline value, and cost-per-acquisition.</p>
 
-                <div class="card" style="margin-top: 1rem;">
-                    <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">Live Performance Dashboards</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 0;">Custom-built dashboards show exactly what's happening in your practice right now. No waiting for end-of-month reports. No guessing which agents are performing. The data is always current, always accessible, and always actionable — whether you're checking from your office or your phone.</p>
-                </div>
-                <div class="card">
-                    <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">Agent-Level Visibility</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 0;">Track individual agent performance in real time: calls made, leads captured, conversion rates, and average deal value. Identify your top performers, coach your underperformers with data, and reward the right behaviors. Your best agents become your blueprint for scaling the entire team.</p>
-                </div>
-                <div class="card">
-                    <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">8× Daily Auto-Refresh</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 0;">Unlike static reports that are outdated the moment they're generated, our system refreshes automatically eight times per day. You're always making decisions on the most current data available — not yesterday's numbers, not last week's summary. This frequency is calibrated to match the pace of a high-volume call center environment.</p>
-                </div>
-                <div class="card">
-                    <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">Cost & ROI Tracking</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 0;">Know exactly how much each lead costs, which channels deliver the highest-quality clients, and where your marketing budget is generating the strongest returns. This module alone typically identifies 15–30% in cost savings within the first 60 days by exposing inefficient spend.</p>
-                </div>
+                    <div class="card" style="margin-top: 1rem;">
+                        <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">Live Performance Dashboards</h3>
+                        <p style="font-size: 0.85rem; margin-bottom: 0;">Custom-built dashboards show exactly what's happening in your practice right now. No waiting for end-of-month reports. No guessing which agents are performing. The data is always current, always accessible, and always actionable — whether you're checking from your office or your phone.</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">Agent-Level Visibility</h3>
+                        <p style="font-size: 0.85rem; margin-bottom: 0;">Track individual agent performance in real time: calls made, leads captured, conversion rates, and average deal value. Identify your top performers, coach your underperformers with data, and reward the right behaviors. Your best agents become your blueprint for scaling the entire team.</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">8× Daily Auto-Refresh</h3>
+                        <p style="font-size: 0.85rem; margin-bottom: 0;">Unlike static reports that are outdated the moment they're generated, our system refreshes automatically eight times per day. You're always making decisions on the most current data available — not yesterday's numbers, not last week's summary. This frequency is calibrated to match the pace of a high-volume call center environment.</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">Cost & ROI Tracking</h3>
+                        <p style="font-size: 0.85rem; margin-bottom: 0;">Know exactly how much each lead costs, which channels deliver the highest-quality clients, and where your marketing budget is generating the strongest returns. This module alone typically identifies 15–30% in cost savings within the first 60 days by exposing inefficient spend.</p>
+                    </div>
 
-                <div class="roi-box">
-                    <div class="roi-title">Typical ROI</div>
-                    <div class="roi-value">15–30% cost savings identified in 60 days</div>
+                    <div class="roi-box">
+                        <div class="roi-title">Typical ROI</div>
+                        <div class="roi-value">15–30% cost savings identified in 60 days</div>
+                    </div>
+                    <div class="bottom-spacer"></div>
                 </div>
             </section>
 
             <section class="slide slide-6" id="slide-module-3" data-index="5">
-                <div class="module-num">3</div>
-                <div class="module-badge">💬 Module 3</div>
-                <h1>Direct WhatsApp Automation: Cut the Middleman. Own the Conversation.</h1>
-                <p class="lead">WhatsApp is South Africa's most powerful consumer channel — but most practices overpay for third-party platforms. We set you up with direct WhatsApp Business API integration, eliminating per-message fees and giving you full ownership of the relationship data.</p>
-                <p>Our team handles the full setup: automated sequences, lead qualification, compliance templates, and workflow integration. You're live in 5–7 business days, engaging hundreds of prospects without adding headcount. Response rates outperform email and SMS by 3–5×.</p>
+                <div class="slide-content">
+                    <div class="module-num">3</div>
+                    <div class="module-badge">💬 Module 3</div>
+                    <h1>Direct WhatsApp Automation: Cut the Middleman. Own the Conversation.</h1>
+                    <p class="lead">WhatsApp is South Africa's most powerful consumer channel — but most practices overpay for third-party platforms. We set you up with direct WhatsApp Business API integration, eliminating per-message fees and giving you full ownership of the relationship data.</p>
+                    <p>Our team handles the full setup: automated sequences, lead qualification, compliance templates, and workflow integration. You're live in 5–7 business days, engaging hundreds of prospects without adding headcount. Response rates outperform email and SMS by 3–5×.</p>
 
-                <div class="card" style="background: linear-gradient(135deg, rgba(255, 140, 66, 0.08), rgba(255, 107, 53, 0.03));">
-                    <div class="stat-row" style="border: none; padding: 0.5rem 0;">
-                        <div class="stat-number" style="font-size: 1.4rem; min-width: 50px;">💰</div>
-                        <div class="stat-label"><strong style="color: var(--text-primary);">Third-Party Fees</strong><br>Eliminated. Direct API access means you stop paying per-message fees to platforms like ManyChat, WATI, or Respond.io.</div>
+                    <div class="card" style="background: linear-gradient(135deg, rgba(255, 140, 66, 0.08), rgba(255, 107, 53, 0.03));">
+                        <div class="stat-row" style="border: none; padding: 0.5rem 0;">
+                            <div class="stat-number" style="font-size: 1.4rem; min-width: 50px;">💰</div>
+                            <div class="stat-label"><strong style="color: var(--text-primary);">Third-Party Fees</strong><br>Eliminated. Direct API access means you stop paying per-message fees to platforms like ManyChat, WATI, or Respond.io.</div>
+                        </div>
+                        <div class="stat-row" style="border: none; padding: 0.5rem 0;">
+                            <div class="stat-number" style="font-size: 1.4rem; min-width: 50px;">⚡</div>
+                            <div class="stat-label"><strong style="color: var(--text-primary);">Speed to Market</strong><br>Our team handles full setup and configuration. Most practices are live within 5–7 business days.</div>
+                        </div>
+                        <div class="stat-row" style="border: none; padding: 0.5rem 0;">
+                            <div class="stat-number" style="font-size: 1.4rem; min-width: 50px;">📈</div>
+                            <div class="stat-label"><strong style="color: var(--text-primary);">Engagement Lift</strong><br>WhatsApp open rates exceed 90% in SA. Automated sequences ensure no lead goes uncontacted.</div>
+                        </div>
                     </div>
-                    <div class="stat-row" style="border: none; padding: 0.5rem 0;">
-                        <div class="stat-number" style="font-size: 1.4rem; min-width: 50px;">⚡</div>
-                        <div class="stat-label"><strong style="color: var(--text-primary);">Speed to Market</strong><br>Our team handles full setup and configuration. Most practices are live within 5–7 business days.</div>
-                    </div>
-                    <div class="stat-row" style="border: none; padding: 0.5rem 0;">
-                        <div class="stat-number" style="font-size: 1.4rem; min-width: 50px;">📈</div>
-                        <div class="stat-label"><strong style="color: var(--text-primary);">Engagement Lift</strong><br>WhatsApp open rates exceed 90% in SA. Automated sequences ensure no lead goes uncontacted.</div>
-                    </div>
-                </div>
 
-                <ul class="feature-list">
-                    <li><span class="check">✓</span> Eliminated third-party per-message fees</li>
-                    <li><span class="check">✓</span> Automated sequences & lead qualification</li>
-                    <li><span class="check">✓</span> Compliance templates built in</li>
-                    <li><span class="check">✓</span> Full workflow integration</li>
-                </ul>
+                    <ul class="feature-list">
+                        <li><span class="check">✓</span> Eliminated third-party per-message fees</li>
+                        <li><span class="check">✓</span> Automated sequences & lead qualification</li>
+                        <li><span class="check">✓</span> Compliance templates built in</li>
+                        <li><span class="check">✓</span> Full workflow integration</li>
+                    </ul>
 
-                <div class="roi-box">
-                    <div class="roi-title">Typical ROI</div>
-                    <div class="roi-value">Elimination of per-message platform fees + 3× engagement lift</div>
+                    <div class="roi-box">
+                        <div class="roi-title">Typical ROI</div>
+                        <div class="roi-value">Elimination of per-message platform fees + 3× engagement lift</div>
+                    </div>
+                    <div class="bottom-spacer"></div>
                 </div>
             </section>
 
             <section class="slide slide-7" id="slide-module-4" data-index="6">
-                <div class="module-num">4</div>
-                <div class="module-badge">🌐 Module 4</div>
-                <h1>The Digital Office & Lead Gen: Build Authority. Attract Clients.</h1>
-                <p class="lead">Your digital office is your 24/7 sales representative. It works while you sleep, answers questions while you're in meetings, and builds trust with prospects before they ever pick up the phone. Module 4 gives your practice the professional online presence it needs to attract qualified leads at a fraction of traditional advertising costs.</p>
+                <div class="slide-content">
+                    <div class="module-num">4</div>
+                    <div class="module-badge">🌐 Module 4</div>
+                    <h1>The Digital Office & Lead Gen: Build Authority. Attract Clients.</h1>
+                    <p class="lead">Your digital office is your 24/7 sales representative. It works while you sleep, answers questions while you're in meetings, and builds trust with prospects before they ever pick up the phone. Module 4 gives your practice the professional online presence it needs to attract qualified leads at a fraction of traditional advertising costs.</p>
 
-                <div class="card">
-                    <div class="icon-circle accent">🌐</div>
-                    <h3>Custom Debt Review Website</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 0;">We build a fully custom, mobile-optimized website tailored specifically to the Debt Review market. It's designed to convert visitors into inquiries — with clear calls to action, trust signals, compliance disclosures, and a streamlined intake form. No templates. No generic designs. A digital front door that reflects the professionalism of your practice.</p>
-                </div>
-                <div class="card">
-                    <div class="icon-circle accent">📱</div>
-                    <h3>Professional Social Media Identity</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 0;">A consistent, authoritative social media presence across Facebook, Instagram, and LinkedIn — built to establish your brand as the trusted expert in debt review. We create your brand guidelines, content strategy, and initial content library so you launch with credibility already established. Social proof drives trust, and trust drives conversions.</p>
-                </div>
-                <div class="card">
-                    <div class="icon-circle accent">🎯</div>
-                    <h3>Low-Cost, High-Converting Ad Campaigns</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 0;">We design and launch targeted ad campaigns on Facebook and Google that reach consumers actively searching for debt relief solutions. Our campaigns are built for efficiency — low cost-per-click, high intent targeting, and continuous optimization based on real performance data. Most clients see their cost-per-lead drop by 40–60% within the first campaign cycle.</p>
-                </div>
+                    <div class="card">
+                        <div class="icon-circle accent">🌐</div>
+                        <h3>Custom Debt Review Website</h3>
+                        <p style="font-size: 0.85rem; margin-bottom: 0;">We build a fully custom, mobile-optimized website tailored specifically to the Debt Review market. It's designed to convert visitors into inquiries — with clear calls to action, trust signals, compliance disclosures, and a streamlined intake form. No templates. No generic designs. A digital front door that reflects the professionalism of your practice.</p>
+                    </div>
+                    <div class="card">
+                        <div class="icon-circle accent">📱</div>
+                        <h3>Professional Social Media Identity</h3>
+                        <p style="font-size: 0.85rem; margin-bottom: 0;">A consistent, authoritative social media presence across Facebook, Instagram, and LinkedIn — built to establish your brand as the trusted expert in debt review. We create your brand guidelines, content strategy, and initial content library so you launch with credibility already established. Social proof drives trust, and trust drives conversions.</p>
+                    </div>
+                    <div class="card">
+                        <div class="icon-circle accent">🎯</div>
+                        <h3>Low-Cost, High-Converting Ad Campaigns</h3>
+                        <p style="font-size: 0.85rem; margin-bottom: 0;">We design and launch targeted ad campaigns on Facebook and Google that reach consumers actively searching for debt relief solutions. Our campaigns are built for efficiency — low cost-per-click, high intent targeting, and continuous optimization based on real performance data. Most clients see their cost-per-lead drop by 40–60% within the first campaign cycle.</p>
+                    </div>
 
-                <div class="roi-box">
-                    <div class="roi-title">Typical ROI</div>
-                    <div class="roi-value">40–60% reduction in cost-per-lead</div>
+                    <div class="roi-box">
+                        <div class="roi-title">Typical ROI</div>
+                        <div class="roi-value">40–60% reduction in cost-per-lead</div>
+                    </div>
+                    <div class="bottom-spacer"></div>
                 </div>
             </section>
 
             <section class="slide slide-8" id="slide-module-5" data-index="7">
-                <div class="module-num">5</div>
-                <div class="module-badge">🔔 Module 5</div>
-                <h1>Client Self-Service Portal: Peace of Mind, Less Interruption</h1>
-                <p class="lead">Every inbound call from a client asking for a status update directly impacts your bottom line, tying up staff resources and interrupting workflow. Our Client Self-Service Portal eliminates this bottleneck by providing instant transparency.</p>
-                <p>The moment clients sign Form 16, they receive a simple, secure web app link. This portal shows them exactly where they are in the debt review journey, offering just enough detail to provide peace of mind without overwhelming them.</p>
+                <div class="slide-content">
+                    <div class="module-num">5</div>
+                    <div class="module-badge">🔔 Module 5</div>
+                    <h1>Client Self-Service Portal: Peace of Mind, Less Interruption</h1>
+                    <p class="lead">Every inbound call from a client asking for a status update directly impacts your bottom line, tying up staff resources and interrupting workflow. Our Client Self-Service Portal eliminates this bottleneck by providing instant transparency.</p>
+                    <p>The moment clients sign Form 16, they receive a simple, secure web app link. This portal shows them exactly where they are in the debt review journey, offering just enough detail to provide peace of mind without overwhelming them.</p>
 
-                <div class="comparison">
-                    <div class="comparison-box before">
-                        <div class="comparison-title">Before</div>
-                        <div class="comparison-value" style="color: var(--danger);">Hours</div>
-                        <div class="comparison-desc">Staff tied up answering status update calls daily</div>
+                    <div class="comparison">
+                        <div class="comparison-box before">
+                            <div class="comparison-title">Before</div>
+                            <div class="comparison-value" style="color: var(--danger);">Hours</div>
+                            <div class="comparison-desc">Staff tied up answering status update calls daily</div>
+                        </div>
+                        <div class="comparison-box after">
+                            <div class="comparison-title">After</div>
+                            <div class="comparison-value" style="color: var(--success);">70%</div>
+                            <div class="comparison-desc">Fewer inbound query calls — clients self-serve</div>
+                        </div>
                     </div>
-                    <div class="comparison-box after">
-                        <div class="comparison-title">After</div>
-                        <div class="comparison-value" style="color: var(--success);">70%</div>
-                        <div class="comparison-desc">Fewer inbound query calls — clients self-serve</div>
-                    </div>
-                </div>
 
-                <div class="card-grid" style="margin-top: 1.5rem;">
-                    <div class="card" style="padding: 1.2rem;">
-                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem;">70% Fewer Calls</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Drastically reduce the volume of inbound query calls, freeing your team to focus on high-value tasks.</div>
+                    <div class="card-grid" style="margin-top: 1.5rem;">
+                        <div class="card" style="padding: 1.2rem;">
+                            <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem;">70% Fewer Calls</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Drastically reduce the volume of inbound query calls, freeing your team to focus on high-value tasks.</div>
+                        </div>
+                        <div class="card" style="padding: 1.2rem;">
+                            <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem;">Empowered Clients</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Clients stay informed and feel in control, leading to higher satisfaction and trust in your practice.</div>
+                        </div>
+                        <div class="card" style="padding: 1.2rem;">
+                            <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem;">Boost Staff Efficiency</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Your staff spends less time on routine updates and more time processing cases and converting new leads.</div>
+                        </div>
+                        <div class="card" style="padding: 1.2rem;">
+                            <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem;">Instant Journey Updates</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Provide real-time progress visibility, ensuring clients always know their next step without needing to ask.</div>
+                        </div>
                     </div>
-                    <div class="card" style="padding: 1.2rem;">
-                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem;">Empowered Clients</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Clients stay informed and feel in control, leading to higher satisfaction and trust in your practice.</div>
-                    </div>
-                    <div class="card" style="padding: 1.2rem;">
-                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem;">Boost Staff Efficiency</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Your staff spends less time on routine updates and more time processing cases and converting new leads.</div>
-                    </div>
-                    <div class="card" style="padding: 1.2rem;">
-                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem;">Instant Journey Updates</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Provide real-time progress visibility, ensuring clients always know their next step without needing to ask.</div>
-                    </div>
-                </div>
 
-                <div class="roi-box">
-                    <div class="roi-title">Typical ROI</div>
-                    <div class="roi-value">70% reduction in inbound query calls + improved client satisfaction</div>
+                    <div class="roi-box">
+                        <div class="roi-title">Typical ROI</div>
+                        <div class="roi-value">70% reduction in inbound query calls + improved client satisfaction</div>
+                    </div>
+                    <div class="bottom-spacer"></div>
                 </div>
             </section>
 
             <section class="slide slide-9" data-index="8">
-                <div class="eyebrow">Your Choice</div>
-                <h1>Which Bottleneck Do You Want to Fix First?</h1>
-                <p class="lead">The Thynkverse Ecosystem is modular by design — you don't need to transform everything at once. Start with the module that addresses your most urgent pain point, prove the ROI, and then layer in the next capability. Every module is designed to deliver measurable returns within the first 30–60 days of activation.</p>
+                <div class="slide-content">
+                    <div class="eyebrow">Your Choice</div>
+                    <h1>Which Bottleneck Do You Want to Fix First?</h1>
+                    <p class="lead">The Thynkverse Ecosystem is modular by design — you don't need to transform everything at once. Start with the module that addresses your most urgent pain point, prove the ROI, and then layer in the next capability. Every module is designed to deliver measurable returns within the first 30–60 days of activation.</p>
 
-                <div class="card-grid">
-                    <div class="card" style="padding: 1rem 1.2rem;">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</div>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Paperless Cloud Intake</h3>
+                    <div class="card-grid">
+                        <div class="card" style="padding: 1rem 1.2rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</div>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Paperless Cloud Intake</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: High-volume call centers drowning in paper forms and manual data entry. If your agents are writing instead of closing, start here. <strong style="color: var(--accent-primary);">Typical ROI: 40% faster intake, zero transcription errors.</strong></p>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: High-volume call centers drowning in paper forms and manual data entry. If your agents are writing instead of closing, start here. <strong style="color: var(--accent-primary);">Typical ROI: 40% faster intake, zero transcription errors.</strong></p>
-                    </div>
-                    <div class="card" style="padding: 1rem 1.2rem;">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</div>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Real-Time Business Intelligence</h3>
+                        <div class="card" style="padding: 1rem 1.2rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</div>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Real-Time Business Intelligence</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: Owners who feel like they're flying blind. If you don't know your numbers in real time, you're making expensive guesses. <strong style="color: var(--accent-primary);">Typical ROI: 15–30% cost savings identified in 60 days.</strong></p>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: Owners who feel like they're flying blind. If you don't know your numbers in real time, you're making expensive guesses. <strong style="color: var(--accent-primary);">Typical ROI: 15–30% cost savings identified in 60 days.</strong></p>
-                    </div>
-                    <div class="card" style="padding: 1rem 1.2rem;">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</div>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Direct WhatsApp Automation</h3>
+                        <div class="card" style="padding: 1rem 1.2rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</div>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Direct WhatsApp Automation</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: Practices losing leads to slow follow-up or paying excessive third-party messaging fees. If WhatsApp is your primary channel but you're not automating it, start here. <strong style="color: var(--accent-primary);">Typical ROI: Elimination of per-message platform fees + 3× engagement lift.</strong></p>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: Practices losing leads to slow follow-up or paying excessive third-party messaging fees. If WhatsApp is your primary channel but you're not automating it, start here. <strong style="color: var(--accent-primary);">Typical ROI: Elimination of per-message platform fees + 3× engagement lift.</strong></p>
-                    </div>
-                    <div class="card" style="padding: 1rem 1.2rem;">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">4</div>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Digital Office & Lead Gen</h3>
+                        <div class="card" style="padding: 1rem 1.2rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">4</div>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Digital Office & Lead Gen</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: Businesses with an outdated or non-existent online presence. If you're losing clients to competitors who simply look more professional online, this is your priority. <strong style="color: var(--accent-primary);">Typical ROI: 40–60% reduction in cost-per-lead.</strong></p>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: Businesses with an outdated or non-existent online presence. If you're losing clients to competitors who simply look more professional online, this is your priority. <strong style="color: var(--accent-primary);">Typical ROI: 40–60% reduction in cost-per-lead.</strong></p>
-                    </div>
-                    <div class="card" style="padding: 1rem 1.2rem;">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">5</div>
-                            <h3 style="font-size: 0.95rem; margin: 0;">Client Self-Service Portal</h3>
+                        <div class="card" style="padding: 1rem 1.2rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: blur(10px); border: 2px solid var(--accent-primary); color: var(--accent-primary); font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">5</div>
+                                <h3 style="font-size: 0.95rem; margin: 0;">Client Self-Service Portal</h3>
+                            </div>
+                            <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: Practices losing clients to inbound query calls that interrupt workflow. If your team spends hours answering status update calls, start here. <strong style="color: var(--accent-primary);">Typical ROI: 70% reduction in inbound query calls + improved client satisfaction.</strong></p>
                         </div>
-                        <p style="font-size: 0.8rem; margin-bottom: 0; color: var(--text-muted);">Best for: Practices losing clients to inbound query calls that interrupt workflow. If your team spends hours answering status update calls, start here. <strong style="color: var(--accent-primary);">Typical ROI: 70% reduction in inbound query calls + improved client satisfaction.</strong></p>
                     </div>
+                    <div class="bottom-spacer"></div>
                 </div>
             </section>
 
             <section class="slide slide-10" data-index="9">
                 <div class="glow-orb orb-1" style="opacity: 0.2; top: 30%; left: 50%; transform: translateX(-50%);"></div>
-                <div class="cta-content">
-                    <div class="eyebrow">Ready to Transform Your Practice?</div>
-                    <h1>Book a 15-minute discovery call and we'll map out exactly which Thynkverse module will deliver the fastest ROI for your specific situation.</h1>
-                    <p>No obligation. No generic pitch. Just a focused conversation about your biggest bottleneck and how we solve it.</p>
+                <div class="slide-content">
+                    <div class="cta-content">
+                        <div class="eyebrow">Ready to Transform Your Practice?</div>
+                        <h1>Book a 15-minute discovery call and we'll map out exactly which Thynkverse module will deliver the fastest ROI for your specific situation.</h1>
+                        <p>No obligation. No generic pitch. Just a focused conversation about your biggest bottleneck and how we solve it.</p>
 
-                    <div class="card" style="width: 100%; margin-top: 2rem; background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(255, 107, 53, 0.02)); border-color: rgba(255, 107, 53, 0.2);">
-                        <div style="text-align: center;">
-                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📞</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">Your Next Step<br>Book your free 15-minute discovery call today. We'll identify your highest-impact starting point and show you exactly what transformation looks like for your practice.</div>
+                        <div class="card" style="width: 100%; margin-top: 2rem; background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(255, 107, 53, 0.02)); border-color: rgba(255, 107, 53, 0.2);">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📞</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">Your Next Step<br>Book your free 15-minute discovery call today. We'll identify your highest-impact starting point and show you exactly what transformation looks like for your practice.</div>
+                            </div>
                         </div>
                     </div>
+                    <div class="bottom-spacer"></div>
                 </div>
-                <div class="bottom-spacer"></div>
             </section>
 
         </div>
@@ -1188,7 +1270,7 @@
                 splashScreen.classList.add('hidden');
             }, 3000);
 
-            // ==================== WHATSAPP BUBBLE TOGGLE & AUTO-PEEK ====================
+            // ==================== WHATSAPP BUBBLE TOGGLE ====================
             function toggleBubble() {
                 bubbleOpen = !bubbleOpen;
                 whatsappBubble.classList.toggle('visible', bubbleOpen);
@@ -1215,7 +1297,7 @@
                     whatsappBubble.classList.add('visible');
                     whatsappIconBtn.classList.add('active');
                     setTimeout(() => {
-                        if (!bubbleOpen) { // Don't close if user manually tapped it open in the meantime
+                        if (!bubbleOpen) { // Don't auto-close if user manually tapped it open
                             whatsappBubble.classList.remove('visible');
                             whatsappIconBtn.classList.remove('active');
                         }
@@ -1224,30 +1306,21 @@
             }, 15000);
 
             // ==================== INTERSECTION OBSERVER ====================
+            // Because slides are 100vh, we can easily track which one is in view
             const observerOptions = {
                 root: container,
-                threshold: 0.15, // Lowered threshold slightly for smooth normal scrolling detection
+                threshold: 0.5, // Trigger when at least 50% of the slide is visible
                 rootMargin: '0px'
             };
 
             const slideObserver = new IntersectionObserver((entries) => {
-                // Find the most visible slide
-                let mostVisibleIndex = parseInt(counter.textContent.split(' ')[0]) - 1;
-                let highestIntersectionRatio = 0;
-                
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        if(entry.intersectionRatio > highestIntersectionRatio) {
-                            highestIntersectionRatio = entry.intersectionRatio;
-                            mostVisibleIndex = parseInt(entry.target.dataset.index);
-                        }
+                        const index = parseInt(entry.target.dataset.index);
+                        updateProgress(index);
                     }
                 });
-                
-                if(highestIntersectionRatio > 0) {
-                    updateProgress(mostVisibleIndex);
-                }
             }, observerOptions);
 
             slides.forEach(slide => {
@@ -1282,17 +1355,6 @@
                 });
             });
 
-            // ==================== KEYBOARD NAVIGATION ====================
-            // Now behaves like a normal website, but keeping keyboard nav intact for desktop users
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'ArrowUp' || e.key === 'PageUp') {
-                   // Let native scroll behavior handle it now that snapping is removed
-                }
-            });
-
-            // Note: Removed the buggy touchstart/touchend logic that was causing the sprinting!
-            // The browser will now handle natural, smooth scrolling natively.
-
             // Initialize first slide as visible
             setTimeout(() => {
                 slides[0].classList.add('visible');
@@ -1302,5 +1364,3 @@
     </script>
 </body>
 </html>
-
-```
