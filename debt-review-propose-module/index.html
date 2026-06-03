@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4FG41S19L"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M4FG41S19L"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -121,11 +120,10 @@
             box-shadow: 0 0 60px rgba(0,0,0,0.8);
         }
 
-        /* Scroll Container — PROXIMITY snapping so users can read long slides */
+        /* Scroll Container — NORMAL SMOOTH SCROLLING (Sprint fix) */
         .scroll-container {
             height: 100vh;
             overflow-y: scroll;
-            scroll-snap-type: y proximity;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
@@ -141,8 +139,6 @@
         .slide {
             min-height: 100vh;
             width: 100%;
-            scroll-snap-align: start;
-            scroll-snap-stop: normal;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -306,10 +302,11 @@
         }
 
         .stat-number {
-            font-size: 1.8rem;
+            font-size: 1.6rem; /* Adjusted to fit */
             font-weight: 800;
             color: var(--accent-primary);
-            min-width: 70px;
+            min-width: 60px;
+            white-space: nowrap; /* Ensures 3-5x stays on one line */
         }
 
         .stat-label {
@@ -469,7 +466,7 @@
         /* ==================== EXPANDING WHATSAPP CTA ==================== */
         .whatsapp-cta-container {
             position: fixed;
-            bottom: 2.8rem;
+            bottom: 3.8rem; /* Lifted slightly to avoid overlap with footer */
             right: 1.2rem;
             z-index: 1000;
             display: flex;
@@ -592,24 +589,36 @@
             justify-content: center;
             align-items: center;
             gap: 1.5rem;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
+            padding: 0.8rem 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 70%, transparent 100%);
             pointer-events: none;
         }
 
+        /* Footer Visibility Fix */
         .persistent-footer a {
             font-size: 0.65rem;
-            color: var(--text-muted);
+            color: var(--text-primary);
             text-decoration: none;
-            opacity: 0.5;
-            transition: opacity 0.3s ease, color 0.3s ease;
+            opacity: 0.85; /* Increased opacity for readability */
+            transition: all 0.3s ease;
             pointer-events: auto;
             letter-spacing: 0.05em;
+            font-weight: 600;
+            
+            /* Orange Glowing Edge */
+            border: 1px solid rgba(255, 107, 53, 0.4);
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255, 107, 53, 0.1);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
         }
 
         .persistent-footer a:hover {
             opacity: 1;
-            color: var(--accent-primary);
+            color: var(--text-primary);
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.6);
+            background: rgba(255, 107, 53, 0.2);
+            border-color: rgba(255, 107, 53, 0.8);
         }
 
         /* Progress Dots */
@@ -776,7 +785,6 @@
 </head>
 <body>
 
-    <!-- ==================== SPLASH SCREEN ==================== -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-logo">Thynk<span class="verse">verse</span></div>
         <div class="splash-tagline">Is your office still in 2010?</div>
@@ -785,7 +793,6 @@
     <div class="app-wrapper">
         <div class="scroll-container" id="scrollContainer">
 
-            <!-- ==================== SLIDE 1: HERO ==================== -->
             <section class="slide slide-1" data-index="0">
                 <div class="glow-orb orb-1"></div>
                 <div class="eyebrow">Thynkverse Ecosystem</div>
@@ -811,7 +818,6 @@
                 </div>
             </section>
 
-            <!-- ==================== SLIDE 2: THREE BOTTLENECKS ==================== -->
             <section class="slide slide-2" data-index="1">
                 <div class="glow-orb orb-2"></div>
                 <div class="eyebrow">The Problem</div>
@@ -837,7 +843,6 @@
                 </div>
             </section>
 
-            <!-- ==================== SLIDE 3: ECOSYSTEM OVERVIEW (THE JUMP) ==================== -->
             <section class="slide slide-3" data-index="2">
                 <div class="glow-orb orb-3"></div>
                 <div class="eyebrow">The Solution</div>
@@ -890,7 +895,6 @@
                 <p style="font-size: 0.9rem; margin-top: 1.5rem;">The Thynkverse is modular by design. You don't need to buy everything at once. Start with the module that addresses your biggest pain point, then layer in additional capabilities as your ROI compounds.</p>
             </section>
 
-            <!-- ==================== SLIDE 4: MODULE 1 ==================== -->
             <section class="slide slide-4" id="slide-module-1" data-index="3">
                 <div class="module-num">1</div>
                 <div class="module-badge">📋 Module 1</div>
@@ -934,7 +938,6 @@
                 </div>
             </section>
 
-            <!-- ==================== SLIDE 5: MODULE 2 ==================== -->
             <section class="slide slide-5" id="slide-module-2" data-index="4">
                 <div class="module-num">2</div>
                 <div class="module-badge">📊 Module 2</div>
@@ -964,7 +967,6 @@
                 </div>
             </section>
 
-            <!-- ==================== SLIDE 6: MODULE 3 ==================== -->
             <section class="slide slide-6" id="slide-module-3" data-index="5">
                 <div class="module-num">3</div>
                 <div class="module-badge">💬 Module 3</div>
@@ -1000,7 +1002,6 @@
                 </div>
             </section>
 
-            <!-- ==================== SLIDE 7: MODULE 4 ==================== -->
             <section class="slide slide-7" id="slide-module-4" data-index="6">
                 <div class="module-num">4</div>
                 <div class="module-badge">🌐 Module 4</div>
@@ -1029,7 +1030,6 @@
                 </div>
             </section>
 
-            <!-- ==================== SLIDE 8: MODULE 5 ==================== -->
             <section class="slide slide-8" id="slide-module-5" data-index="7">
                 <div class="module-num">5</div>
                 <div class="module-badge">🔔 Module 5</div>
@@ -1075,7 +1075,6 @@
                 </div>
             </section>
 
-            <!-- ==================== SLIDE 9: WHICH TO FIX FIRST ==================== -->
             <section class="slide slide-9" data-index="8">
                 <div class="eyebrow">Your Choice</div>
                 <h1>Which Bottleneck Do You Want to Fix First?</h1>
@@ -1120,7 +1119,6 @@
                 </div>
             </section>
 
-            <!-- ==================== SLIDE 10: FINAL CTA ==================== -->
             <section class="slide slide-10" data-index="9">
                 <div class="glow-orb orb-1" style="opacity: 0.2; top: 30%; left: 50%; transform: translateX(-50%);"></div>
                 <div class="cta-content">
@@ -1140,10 +1138,8 @@
 
         </div>
 
-        <!-- Slide Counter -->
         <div class="slide-counter" id="slideCounter">1 / 10</div>
 
-        <!-- Progress Dots -->
         <div class="progress-dots" id="progressDots">
             <div class="dot active" data-slide="0"></div>
             <div class="dot" data-slide="1"></div>
@@ -1157,13 +1153,11 @@
             <div class="dot" data-slide="9"></div>
         </div>
 
-        <!-- ==================== PERSISTENT FOOTER ==================== -->
         <div class="persistent-footer" id="persistentFooter">
             <a href="https://www.thynkverse.co.za" target="_blank" rel="noopener">www.thynkverse.co.za</a>
             <a href="https://www.stanbanilao.me" target="_blank" rel="noopener">My Portfolio www.stanbanilao.me</a>
         </div>
 
-        <!-- ==================== EXPANDING WHATSAPP CTA ==================== -->
         <div class="whatsapp-cta-container" id="whatsappCtaContainer">
             <button class="whatsapp-icon-btn" id="whatsappIconBtn" aria-label="Open WhatsApp">
                 <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -1194,7 +1188,7 @@
                 splashScreen.classList.add('hidden');
             }, 3000);
 
-            // ==================== WHATSAPP BUBBLE TOGGLE ====================
+            // ==================== WHATSAPP BUBBLE TOGGLE & AUTO-PEEK ====================
             function toggleBubble() {
                 bubbleOpen = !bubbleOpen;
                 whatsappBubble.classList.toggle('visible', bubbleOpen);
@@ -1215,30 +1209,45 @@
                 }
             });
 
-            // On mobile, also close when scrolling
-            container.addEventListener('scroll', () => {
-                if (bubbleOpen) {
-                    bubbleOpen = false;
-                    whatsappBubble.classList.remove('visible');
-                    whatsappIconBtn.classList.remove('active');
+            // Auto-peek WhatsApp Bubble every 15 seconds to grab attention
+            setInterval(() => {
+                if (!bubbleOpen) {
+                    whatsappBubble.classList.add('visible');
+                    whatsappIconBtn.classList.add('active');
+                    setTimeout(() => {
+                        if (!bubbleOpen) { // Don't close if user manually tapped it open in the meantime
+                            whatsappBubble.classList.remove('visible');
+                            whatsappIconBtn.classList.remove('active');
+                        }
+                    }, 4000); // Peeks for 4 seconds
                 }
-            }, { passive: true });
+            }, 15000);
 
             // ==================== INTERSECTION OBSERVER ====================
             const observerOptions = {
                 root: container,
-                threshold: 0.35,
+                threshold: 0.15, // Lowered threshold slightly for smooth normal scrolling detection
                 rootMargin: '0px'
             };
 
             const slideObserver = new IntersectionObserver((entries) => {
+                // Find the most visible slide
+                let mostVisibleIndex = parseInt(counter.textContent.split(' ')[0]) - 1;
+                let highestIntersectionRatio = 0;
+                
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        const index = parseInt(entry.target.dataset.index);
-                        updateProgress(index);
+                        if(entry.intersectionRatio > highestIntersectionRatio) {
+                            highestIntersectionRatio = entry.intersectionRatio;
+                            mostVisibleIndex = parseInt(entry.target.dataset.index);
+                        }
                     }
                 });
+                
+                if(highestIntersectionRatio > 0) {
+                    updateProgress(mostVisibleIndex);
+                }
             }, observerOptions);
 
             slides.forEach(slide => {
@@ -1274,44 +1283,15 @@
             });
 
             // ==================== KEYBOARD NAVIGATION ====================
+            // Now behaves like a normal website, but keeping keyboard nav intact for desktop users
             document.addEventListener('keydown', (e) => {
-                const currentScroll = container.scrollTop;
-                const slideHeight = container.clientHeight;
-                let currentIndex = Math.round(currentScroll / slideHeight);
-
-                if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-                    e.preventDefault();
-                    if (currentIndex < totalSlides - 1) {
-                        slides[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
-                    }
-                } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-                    e.preventDefault();
-                    if (currentIndex > 0) {
-                        slides[currentIndex - 1].scrollIntoView({ behavior: 'smooth' });
-                    }
+                if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+                   // Let native scroll behavior handle it now that snapping is removed
                 }
             });
 
-            // ==================== TOUCH SWIPE SUPPORT ====================
-            let touchStartY = 0;
-            let touchEndY = 0;
-
-            container.addEventListener('touchstart', (e) => {
-                touchStartY = e.changedTouches[0].screenY;
-            }, { passive: true });
-
-            container.addEventListener('touchend', (e) => {
-                touchEndY = e.changedTouches[0].screenY;
-                const currentScroll = container.scrollTop;
-                const slideHeight = container.clientHeight;
-                let currentIndex = Math.round(currentScroll / slideHeight);
-
-                if (touchStartY - touchEndY > 50 && currentIndex < totalSlides - 1) {
-                    slides[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
-                } else if (touchEndY - touchStartY > 50 && currentIndex > 0) {
-                    slides[currentIndex - 1].scrollIntoView({ behavior: 'smooth' });
-                }
-            }, { passive: true });
+            // Note: Removed the buggy touchstart/touchend logic that was causing the sprinting!
+            // The browser will now handle natural, smooth scrolling natively.
 
             // Initialize first slide as visible
             setTimeout(() => {
@@ -1322,3 +1302,5 @@
     </script>
 </body>
 </html>
+
+```
