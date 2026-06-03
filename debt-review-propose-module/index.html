@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M4FG41S19L"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-M4FG41S19L');
 </script>
     <meta charset="UTF-8">
@@ -122,11 +121,11 @@
             box-shadow: 0 0 60px rgba(0,0,0,0.8);
         }
 
-        /* Scroll Container */
+        /* Scroll Container — PROXIMITY snapping so users can read long slides */
         .scroll-container {
             height: 100vh;
             overflow-y: scroll;
-            scroll-snap-type: y mandatory;
+            scroll-snap-type: y proximity;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
@@ -143,11 +142,11 @@
             min-height: 100vh;
             width: 100%;
             scroll-snap-align: start;
-            scroll-snap-stop: always;
+            scroll-snap-stop: normal;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: 2rem 1.5rem 5rem 1.5rem;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem 7rem 1.5rem;
             position: relative;
             opacity: 0;
             transform: translateY(30px);
@@ -193,6 +192,7 @@
             letter-spacing: 0.15em;
             color: var(--accent-primary);
             margin-bottom: 1rem;
+            margin-top: 2rem;
         }
 
         h1 {
@@ -420,6 +420,7 @@
             align-items: center;
             justify-content: center;
             flex: 1;
+            padding-top: 3rem;
         }
 
         .cta-content h1 {
@@ -465,54 +466,51 @@
             60% { transform: translateX(-50%) translateY(-4px); }
         }
 
-        /* ==================== STICKY CTA BUTTON ==================== */
-        .sticky-cta {
+        /* ==================== EXPANDING WHATSAPP CTA ==================== */
+        .whatsapp-cta-container {
             position: fixed;
-            bottom: 3.2rem;
-            right: 1.5rem;
+            bottom: 2.8rem;
+            right: 1.2rem;
             z-index: 1000;
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse;
+            gap: 0;
+        }
+
+        .whatsapp-icon-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             color: #000;
-            font-weight: 700;
-            font-size: 0.85rem;
-            padding: 0.9rem 1.4rem;
-            border-radius: 100px;
-            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
             box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4), 
                         0 0 40px rgba(255, 107, 53, 0.15);
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: none;
-            cursor: pointer;
-            letter-spacing: -0.01em;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, visibility 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease;
+            flex-shrink: 0;
+            z-index: 2;
+            position: relative;
         }
 
-        .sticky-cta.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+        .whatsapp-icon-btn svg {
+            width: 26px;
+            height: 26px;
         }
 
-        .sticky-cta:hover {
-            transform: translateY(-2px) scale(1.05);
+        .whatsapp-icon-btn:hover,
+        .whatsapp-icon-btn.active {
+            transform: scale(1.08);
             box-shadow: 0 6px 30px rgba(255, 107, 53, 0.5), 
                         0 0 60px rgba(255, 107, 53, 0.2);
         }
 
-        .sticky-cta:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        .sticky-cta svg {
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
+        .whatsapp-icon-btn:active {
+            transform: scale(0.95);
         }
 
         @keyframes pulse-glow {
@@ -520,13 +518,65 @@
             50% { box-shadow: 0 4px 30px rgba(255, 107, 53, 0.6), 0 0 60px rgba(255, 107, 53, 0.25); }
         }
 
-        .sticky-cta.visible {
-            animation: pulse-glow 3s ease-in-out infinite, ctaSlideIn 0.6s ease forwards;
+        .whatsapp-icon-btn {
+            animation: pulse-glow 3s ease-in-out infinite;
         }
 
-        @keyframes ctaSlideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Sliding message bubble */
+        .whatsapp-bubble {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            padding: 0.7rem 1.4rem;
+            margin-right: 0.6rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            transform: translateX(20px) scale(0.9);
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+            max-width: 0;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .whatsapp-bubble.visible {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            pointer-events: auto;
+            max-width: 320px;
+            padding-left: 1.4rem;
+            padding-right: 1.4rem;
+        }
+
+        .whatsapp-bubble a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+        }
+
+        .whatsapp-bubble .bubble-arrow {
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 8px solid var(--glass-border);
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .whatsapp-bubble {
+            position: relative;
         }
 
         /* ==================== PERSISTENT FOOTER ==================== */
@@ -542,8 +592,8 @@
             justify-content: center;
             align-items: center;
             gap: 1.5rem;
-            padding: 0.6rem 1rem;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 0.5rem 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
             pointer-events: none;
         }
 
@@ -665,11 +715,12 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 1rem;
+            margin-top: 2rem;
         }
 
         /* Bottom spacer for last slide */
         .bottom-spacer {
-            height: 100px;
+            height: 120px;
             flex-shrink: 0;
         }
 
@@ -701,9 +752,9 @@
             .scroll-container {
                 height: 95vh;
             }
-            .sticky-cta {
-                bottom: 4.5vh;
-                right: calc(50% - 260px);
+            .whatsapp-cta-container {
+                bottom: 4vh;
+                right: calc(50% - 270px);
             }
             .progress-dots {
                 right: calc(50% - 280px);
@@ -1112,17 +1163,18 @@
             <a href="https://www.stanbanilao.me" target="_blank" rel="noopener">My Portfolio www.stanbanilao.me</a>
         </div>
 
-        <!-- ==================== STICKY CTA (WHATSAPP) ==================== -->
-        <a href="https://wa.me/27826836364?text=Hi+Thynkverse+team,+I'd+like+to+set+up+a+strategy+session+to+discuss+my+practice." 
-           class="sticky-cta" 
-           id="stickyCta" 
-           target="_blank" 
-           rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            Request Strategy Session
-        </a>
+        <!-- ==================== EXPANDING WHATSAPP CTA ==================== -->
+        <div class="whatsapp-cta-container" id="whatsappCtaContainer">
+            <button class="whatsapp-icon-btn" id="whatsappIconBtn" aria-label="Open WhatsApp">
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+            </button>
+            <div class="whatsapp-bubble" id="whatsappBubble">
+                <a href="https://wa.me/27826836364?text=Hi+Thynkverse+team,+I'd+like+to+set+up+a+strategy+session+to+discuss+my+practice." target="_blank" rel="noopener">Request Strategy Session</a>
+                <div class="bubble-arrow"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1131,18 +1183,46 @@
             const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('.dot');
             const counter = document.getElementById('slideCounter');
-            const stickyCta = document.getElementById('stickyCta');
             const splashScreen = document.getElementById('splashScreen');
+            const whatsappIconBtn = document.getElementById('whatsappIconBtn');
+            const whatsappBubble = document.getElementById('whatsappBubble');
             const totalSlides = slides.length;
+            let bubbleOpen = false;
 
             // ==================== SPLASH SCREEN ====================
             setTimeout(() => {
                 splashScreen.classList.add('hidden');
-                // Show CTA after splash fades
-                setTimeout(() => {
-                    stickyCta.classList.add('visible');
-                }, 500);
             }, 3000);
+
+            // ==================== WHATSAPP BUBBLE TOGGLE ====================
+            function toggleBubble() {
+                bubbleOpen = !bubbleOpen;
+                whatsappBubble.classList.toggle('visible', bubbleOpen);
+                whatsappIconBtn.classList.toggle('active', bubbleOpen);
+            }
+
+            whatsappIconBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleBubble();
+            });
+
+            // Close bubble when clicking anywhere else
+            document.addEventListener('click', (e) => {
+                if (bubbleOpen && !whatsappBubble.contains(e.target) && !whatsappIconBtn.contains(e.target)) {
+                    bubbleOpen = false;
+                    whatsappBubble.classList.remove('visible');
+                    whatsappIconBtn.classList.remove('active');
+                }
+            });
+
+            // On mobile, also close when scrolling
+            container.addEventListener('scroll', () => {
+                if (bubbleOpen) {
+                    bubbleOpen = false;
+                    whatsappBubble.classList.remove('visible');
+                    whatsappIconBtn.classList.remove('active');
+                }
+            }, { passive: true });
 
             // ==================== INTERSECTION OBSERVER ====================
             const observerOptions = {
