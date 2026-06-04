@@ -140,16 +140,16 @@
 
         /* Slide Base — FIX: Exact Screen Height */
         .slide {
-            height: 100vh; /* Forces exact screen fit for the magnet */
+            min-height: 100vh; /* Forces exact screen fit for the magnet */
             width: 100%;
             scroll-snap-align: start; /* Where the magnet grabs */
-            scroll-snap-stop: always;
+            scroll-snap-stop: normal;
             position: relative;
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
                         transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden; /* Locks the outer shell */
+            overflow: visible; /* Locks the outer shell */
         }
 
         .slide.visible {
@@ -159,33 +159,25 @@
 
         /* Slide Inner Content — FIX: Internal Scrolling for long text */
         .slide-content {
-            height: 100vh;
-            width: 100%;
-            overflow-y: auto; /* Allows scrolling inside long slides */
-            overflow-x: hidden;
+                        width: 100%;
+                        overflow-x: hidden;
             padding: 2rem 1.5rem 7rem 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .slide-content::-webkit-scrollbar {
-            display: none;
-        }
+                                }
 
         /* Background Gradients per Slide */
         .slide-1 { background: linear-gradient(180deg, var(--bg-primary) 0%, #0d1117 100%); }
-        .slide-2 { background: linear-gradient(180deg, #0d1117 0%, var(--bg-secondary) 100%); }
+        .slide-2 { background: #f5f5f7; }
         .slide-3 { background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%); }
-        .slide-4 { background: linear-gradient(180deg, var(--bg-primary) 0%, #1a0f0a 100%); }
+        .slide-4 { background: #f5f5f7; }
         .slide-5 { background: linear-gradient(180deg, #1a0f0a 0%, #1a120d 100%); }
-        .slide-6 { background: linear-gradient(180deg, #1a120d 0%, #1a0f0a 100%); }
+        .slide-6 { background: #f5f5f7; }
         .slide-7 { background: linear-gradient(180deg, #1a0f0a 0%, #0f0a0a 100%); }
-        .slide-8 { background: linear-gradient(180deg, #0f0a0a 0%, #1a0f0a 100%); }
+        .slide-8 { background: #f5f5f7; }
         .slide-9 { background: linear-gradient(180deg, #1a0f0a 0%, var(--bg-secondary) 100%); }
-        .slide-10 { background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%); }
+        .slide-10 { background: #f5f5f7; }
 
         /* FIX: Making the app "Alive" with Float Animations */
         @keyframes float-soft {
@@ -834,6 +826,71 @@
                 border-radius: 24px;
             }
         }
+    
+        /* ==================== WHITE SLIDES — BLACK TEXT OVERRIDES ==================== */
+        .slide-2, .slide-4, .slide-6, .slide-8, .slide-10 {
+            color: #0a0a0f;
+        }
+        .slide-2 h1, .slide-2 h2, .slide-2 h3,
+        .slide-4 h1, .slide-4 h2, .slide-4 h3,
+        .slide-6 h1, .slide-6 h2, .slide-6 h3,
+        .slide-8 h1, .slide-8 h2, .slide-8 h3,
+        .slide-10 h1, .slide-10 h2, .slide-10 h3 {
+            color: #0a0a0f;
+        }
+        .slide-2 p, .slide-2 .lead,
+        .slide-4 p, .slide-4 .lead,
+        .slide-6 p, .slide-6 .lead,
+        .slide-8 p, .slide-8 .lead,
+        .slide-10 p, .slide-10 .lead {
+            color: #333340;
+        }
+        .slide-2 .stat-label, .slide-4 .stat-label,
+        .slide-6 .stat-label, .slide-8 .stat-label,
+        .slide-10 .stat-label { color: #333340; }
+        .slide-2 .card, .slide-4 .card, .slide-6 .card,
+        .slide-8 .card, .slide-10 .card {
+            background: rgba(0,0,0,0.05);
+            border-color: rgba(0,0,0,0.12);
+        }
+        .slide-2 .comparison-box, .slide-4 .comparison-box,
+        .slide-6 .comparison-box, .slide-8 .comparison-box,
+        .slide-10 .comparison-box {
+            background: rgba(0,0,0,0.04);
+            border-color: rgba(0,0,0,0.1);
+        }
+        .slide-2 .comparison-box.before, .slide-4 .comparison-box.before,
+        .slide-6 .comparison-box.before, .slide-8 .comparison-box.before,
+        .slide-10 .comparison-box.before { border-color: rgba(255,71,87,0.4); }
+        .slide-2 .comparison-box.after, .slide-4 .comparison-box.after,
+        .slide-6 .comparison-box.after, .slide-8 .comparison-box.after,
+        .slide-10 .comparison-box.after {
+            border-color: rgba(255,107,53,0.4);
+            background: rgba(255,107,53,0.06);
+        }
+        .slide-2 .comparison-desc, .slide-4 .comparison-desc,
+        .slide-6 .comparison-desc, .slide-8 .comparison-desc,
+        .slide-10 .comparison-desc { color: #555560; }
+        .slide-2 .feature-list li, .slide-4 .feature-list li,
+        .slide-6 .feature-list li, .slide-8 .feature-list li,
+        .slide-10 .feature-list li { color: #333340; }
+        .slide-2 .roi-box, .slide-4 .roi-box,
+        .slide-6 .roi-box, .slide-8 .roi-box,
+        .slide-10 .roi-box {
+            background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(255,107,53,0.02));
+            border-color: rgba(255,107,53,0.25);
+        }
+        .slide-2 .roi-box .roi-value, .slide-4 .roi-box .roi-value,
+        .slide-6 .roi-box .roi-value, .slide-8 .roi-box .roi-value,
+        .slide-10 .roi-box .roi-value { color: #0a0a0f; }
+        .slide-2 .stat-row, .slide-4 .stat-row, .slide-6 .stat-row,
+        .slide-8 .stat-row, .slide-10 .stat-row { border-bottom-color: rgba(0,0,0,0.08); }
+        .slide-2 .icon-circle, .slide-4 .icon-circle, .slide-6 .icon-circle,
+        .slide-8 .icon-circle, .slide-10 .icon-circle {
+            background: rgba(0,0,0,0.05);
+            border-color: rgba(0,0,0,0.1);
+        }
+
     </style>
 <base target="_blank">
 </head>
@@ -1309,7 +1366,7 @@
             // Because slides are 100vh, we can easily track which one is in view
             const observerOptions = {
                 root: container,
-                threshold: 0.5, // Trigger when at least 50% of the slide is visible
+                threshold: 0.15, // Trigger when 15% visible (handles tall content slides)
                 rootMargin: '0px'
             };
 
