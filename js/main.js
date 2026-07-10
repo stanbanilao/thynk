@@ -918,3 +918,14 @@ function openCaseStudy(p) {
   serviceOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
+
+/* GA4 conversion events: WhatsApp / call / email clicks */
+document.addEventListener('click', function(e){
+  var a = e.target.closest ? e.target.closest('a[href]') : null;
+  if(!a || typeof gtag !== 'function') return;
+  var h = a.href;
+  if(h.indexOf('wa.me') > -1) gtag('event','whatsapp_click',{link_url:h});
+  else if(h.indexOf('tel:') === 0) gtag('event','call_click',{link_url:h});
+  else if(h.indexOf('mailto:') === 0) gtag('event','email_click',{link_url:h});
+});
