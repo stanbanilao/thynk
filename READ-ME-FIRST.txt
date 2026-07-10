@@ -1,0 +1,4 @@
+READY TO UPLOAD - no edits needed.
+1. GitHub repo > Add file > Upload files: drag in index.html + js folder + assets folder (contents of this folder, not the folder itself).
+2. Choose "Create a new branch" > name it ga4-tracking > commit > Create PR > Merge.
+3. Verify: visit the site, watch yourself appear in GA4 Realtime; click the WhatsApp button and see whatsapp_click under Events.
