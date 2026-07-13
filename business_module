@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Telly - Business Architecture 3D Roadmap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            perspective: 2000px;
+        }
+
+        /* Splash Screen Styles */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        .brand-name {
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            animation: brandPulse 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes brandPulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.02); filter: brightness(1.2); }
+        }
+
+        .splash-line {
+            width: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            margin: 2rem auto;
+            border-radius: 2px;
+            animation: lineExpand 1.5s ease-out 0.5s forwards;
+        }
+
+        @keyframes lineExpand {
+            to { width: 200px; }
+        }
+
+        .splash-tagline {
+            font-size: 1.125rem;
+            color: #64748b;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: taglineFade 1s ease-out 1s forwards;
+        }
+
+        @keyframes taglineFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .splash-loader {
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            animation: loaderFade 0.5s ease-out 1.5s forwards;
+        }
+
+        .splash-dot {
+            width: 8px;
+            height: 8px;
+            background: #3b82f6;
+            border-radius: 50%;
+            animation: dotBounce 1.4s ease-in-out infinite;
+        }
+
+        .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #8b5cf6; }
+        .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #ec4899; }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+        }
+
+        @keyframes loaderFade {
+            to { opacity: 1; }
+        }
+
+        /* Main Content Initial State */
+        #hub-view {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #hub-view.show-content {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ... (rest of your existing CSS remains the same) ... */
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
+        .scene-3d {
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scene-rotated {
+            transform: rotateX(20deg) rotateY(-15deg) scale(0.8) translateZ(-200px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateZ(0px); }
+            50% { transform: translateY(-20px) translateZ(10px); }
+        }
+
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .glass-card:hover {
+            transform: scale(1.05) translateZ(30px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        .timeline-container {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateZ(100px) rotateX(-20deg) rotateY(15deg);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .timeline-visible {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateZ(0) rotateX(0) rotateY(0);
+        }
+
+        .timeline-node {
+            opacity: 0;
+            transform: translateY(30px) scale(0.8);
+            animation: nodeAppear 0.6s ease-out forwards;
+        }
+
+        @keyframes nodeAppear {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            background-size: 200% 100%;
+            animation: gradientFlow 3s linear infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .bg-grid {
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: center top;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(100px, -50px) scale(1.2); }
+            66% { transform: translate(-50px, 100px) scale(0.8); }
+        }
+
+        .check-item {
+            transition: all 0.3s ease;
+        }
+        .check-item:hover {
+            transform: translateX(8px);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .check-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+        .check-item.completed .check-box {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .whatsapp-badge {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .scaling-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .flow-diagram-container {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 24px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .flow-diagram-header {
+            padding: 24px 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(30, 41, 59, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .flow-diagram-header:hover {
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .flow-diagram-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+        }
+
+        .flow-diagram-content.expanded {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 0 32px 32px 32px;
+        }
+
+        .flow-node {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .flow-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.8);
+        }
+
+        .flow-node.entry {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .flow-node.process {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .flow-node.decision {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
+            border-color: rgba(245, 158, 11, 0.5);
+            transform: rotate(45deg);
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flow-node.decision .content {
+            transform: rotate(-45deg);
+        }
+
+        .flow-node.action {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.2));
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        .flow-node.legal {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .flow-arrow {
+            position: relative;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flow-arrow::after {
+            content: '';
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            position: absolute;
+        }
+
+        .flow-arrow::before {
+            content: '▼';
+            color: #8b5cf6;
+            position: absolute;
+            bottom: 0;
+            font-size: 12px;
+        }
+
+        .flow-arrow.return::after {
+            background: linear-gradient(to bottom, #ef4444, #f59e0b);
+        }
+
+        .flow-arrow.return::before {
+            content: '▲';
+            color: #ef4444;
+            top: 0;
+            bottom: auto;
+        }
+
+        .branch-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .tech-security-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-security-card:hover {
+            border-color: rgba(16, 185, 129, 0.6);
+            transform: translateX(10px);
+        }
+
+        .diagram-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .recycle-label {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .comm-tool-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comm-tool-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .comm-tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+
+        .comm-tool-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 0;
+        }
+
+        .dropdown-content.expanded {
+            max-height: 1000px;
+            opacity: 1;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-toggle {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            color: #3b82f6;
+        }
+
+        .dropdown-toggle .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-toggle.active .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .party-timeline-container {
+            position: relative;
+            padding: 40px 0;
+            overflow-x: auto;
+        }
+
+        .party-timeline-line {
+            position: absolute;
+            top: 80px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #8b5cf6, #ef4444, #14b8a6, #f59e0b, #8b5cf6, #ef4444, #14b8a6);
+            border-radius: 2px;
+        }
+
+        .party-timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 20px;
+            position: relative;
+            min-width: 900px;
+        }
+
+        .party-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .party-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .party-connector {
+            width: 2px;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+            margin-bottom: 8px;
+        }
+
+        .party-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .party-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .party-box h4 {
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .party-box p {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.4;
+        }
+
+        .color-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-color: #8b5cf6; }
+        .color-red { background: linear-gradient(135deg, #ef4444, #dc2626); border-color: #ef4444; }
+        .color-teal { background: linear-gradient(135deg, #14b8a6, #0d9488); border-color: #14b8a6; }
+        .color-yellow { background: linear-gradient(135deg, #f59e0b, #d97706); border-color: #f59e0b; }
+
+        .text-purple { color: #a78bfa; }
+        .text-red { color: #fca5a5; }
+        .text-teal { color: #5eead4; }
+        .text-yellow { color: #fcd34d; }
+
+        .template-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: rgba(99, 102, 241, 0.6);
+            transform: translateX(10px);
+        }
+
+        .template-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .sop-item {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sop-item:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateX(5px);
+        }
+
+        .sop-item i {
+            color: #818cf8;
+        }
+    
+        /* Mobile Responsiveness for Flow Diagrams */
+        @media (max-width: 768px) {
+            .flow-diagram-content.expanded {
+                padding: 16px;
+                overflow: auto;
+                max-height: 70vh;
+                cursor: grab;
+                touch-action: pan-x pan-y;
+            }
+
+            .flow-diagram-content.expanded:active {
+                cursor: grabbing;
+            }
+
+            .flow-node {
+                min-width: 160px !important;
+                padding: 12px;
+            }
+
+            .flow-node.decision {
+                width: 100px;
+                height: 100px;
+            }
+
+            .branch-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .flow-arrow {
+                height: 40px;
+            }
+
+            /* Allow horizontal scrolling for wide flowcharts */
+            .flow-diagram-content > div {
+                min-width: max-content;
+                padding: 20px;
+            }
+
+            /* Timeline view adjustments for bottom header */
+            #timeline-view {
+                padding-bottom: 120px;
+            }
+
+            /* Hub view adjustments */
+            #hub-view {
+                padding-bottom: 100px;
+            }
+        }
+
+        /* Pan hint indicator */
+        .pan-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(59, 130, 246, 0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+
+        .flow-diagram-content:hover .pan-hint {
+            opacity: 1;
+        }
+
+        /* Minimal floating header styles */
+        @media (max-width: 640px) {
+            header {
+                transform: translateX(-50%) scale(0.9);
+                bottom: 0.5rem !important;
+            }
+        }
+
+        /* Ensure timeline view has enough bottom padding for the floating controls */
+        #timeline-view {
+            padding-bottom: 100px;
+        }
+</style>
+<base target="_blank">
+</head>
+<body class="min-h-screen overflow-hidden bg-slate-900">
+
+    <!-- Splash Screen - Mr. Telly Brand -->
+    <div id="splash-screen">
+        <div class="text-center">
+            <h1 class="brand-name">Mr. Telly</h1>
+            <div class="splash-line"></div>
+            <p class="splash-tagline">Business Architecture</p>
+            <div class="splash-loader">
+                <div class="splash-dot"></div>
+                <div class="splash-dot"></div>
+                <div class="splash-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="bg-grid absolute inset-0 opacity-30"></div>
+        <div class="glow-orb w-96 h-96 bg-blue-600 top-0 left-0"></div>
+        <div class="glow-orb w-80 h-80 bg-purple-600 bottom-0 right-0"></div>
+        <div class="glow-orb w-64 h-64 bg-pink-600 top-1/2 left-1/2"></div>
+    </div>
+
+    <header class="fixed bottom-0 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900/90 backdrop-blur-md border border-white/10 rounded-full px-4 py-3 mb-6 flex items-center gap-3 shadow-2xl">
+        <!-- Logo Icon - Click to go home -->
+        <div onclick="resetAll()" class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30 cursor-pointer hover:scale-110 transition-transform" title="Back to Home">
+            <i class="fa-solid fa-cube text-white text-lg"></i>
+        </div>
+
+        <!-- Back to Hub Button (Icon only) -->
+        <button onclick="toggleView()" id="viewToggle" class="hidden w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 border border-slate-500 flex items-center justify-center transition text-white" title="Back to Hub">
+            <i class="fa-solid fa-rotate-left"></i>
+        </button>
+
+        <!-- Reset Button (Icon only) -->
+        <button onclick="resetAll()" class="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 border border-slate-500 flex items-center justify-center transition text-white" title="Reset">
+            <i class="fa-solid fa-rotate-right"></i>
+        </button>
+    </header>
+
+    <main class="relative w-full h-screen flex items-center justify-center pt-20 pb-20">
+        
+        <div id="hub-view" class="scene-3d absolute inset-0 flex items-center justify-center transition-all duration-1000">
+            <div class="relative w-full max-w-6xl h-[600px] flex items-center justify-center">
+                
+                <div id="center-hub" class="absolute z-20 w-48 h-48 rounded-3xl bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 flex flex-col items-center justify-center text-center shadow-[0_0_80px_rgba(59,130,246,0.5)] border-4 border-white/20 animate-float cursor-pointer hover:scale-110 transition-transform duration-500">
+                    <i class="fa-solid fa-building text-5xl mb-3 text-white drop-shadow-lg"></i>
+                    <span class="font-black text-2xl tracking-wider text-white">BUSINESS</span>
+                    <span class="text-blue-200 text-sm mt-1">Click modules to explore</span>
+                    <div class="absolute -bottom-4 bg-white text-slate-900 text-xs font-bold px-4 py-2 rounded-full shadow-xl">
+                        CORE SYSTEM
+                    </div>
+                </div>
+
+                <div id="orbital-container" class="absolute inset-0"></div>
+
+                <svg id="hub-connections" class="absolute inset-0 w-full h-full pointer-events-none z-10">
+                    <defs>
+                        <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.8" />
+                            <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:0.6" />
+                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0.8" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+
+        <div id="timeline-view" class="timeline-container fixed inset-0 pt-24 px-4 md:px-12 overflow-y-auto z-30 bg-slate-900/95 backdrop-blur-xl">
+            <div class="max-w-6xl mx-auto pb-20">
+                
+                <div class="mb-12 text-center">
+                    <div id="timeline-icon" class="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br flex items-center justify-center mb-6 shadow-2xl">
+                        <i class="fa-solid text-4xl text-white"></i>
+                    </div>
+                    <h2 id="timeline-title" class="text-5xl font-black text-white mb-4">Module Title</h2>
+                    <p id="timeline-desc" class="text-xl text-slate-400 max-w-2xl mx-auto">Description goes here</p>
+                </div>
+
+                <div id="progress-section" class="mb-12 bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-slate-400 font-medium">Overall Progress</span>
+                        <span id="progress-text" class="text-2xl font-bold text-white">0%</span>
+                    </div>
+                    <div class="h-4 bg-slate-700 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="progress-bar h-full w-0 rounded-full transition-all duration-1000"></div>
+                    </div>
+                    <div class="mt-4 flex justify-between text-sm text-slate-500">
+                        <span id="items-count">0/0 items completed</span>
+                    </div>
+                </div>
+
+                <div id="timeline-items" class="space-y-6 relative z-10"></div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Splash Screen Logic
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initialize hub immediately (behind splash)
+            initHub();
+            
+            // Fade out splash after 2.5 seconds
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                const hubView = document.getElementById('hub-view');
+                
+                splash.classList.add('fade-out');
+                hubView.classList.add('show-content');
+                
+                // Remove splash from DOM after animation completes
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 1200);
+            }, 2500);
+        });
+
+        const modules = [
+            {
+                id: 'businessflow',
+                title: 'Business Flow',
+                icon: 'fa-diagram-project',
+                color: 'from-emerald-500 to-teal-600',
+                glow: 'shadow-emerald-500/50',
+                desc: 'Visual workflow diagrams showing lead management and NCR debt help processes',
+                isVisualFlow: true,
+                diagrams: [
+                    {
+                        title: 'Sales & Debi Check Process',
+                        icon: 'fa-route',
+                        id: 'sales-flow',
+                        steps: [
+                            {
+                                level: 0,
+                                nodes: [
+                                    { id: 'lead-gen', text: 'Lead Generation', icon: 'fa-bullhorn', type: 'entry', subtext: '3 Entry Points' }
+                                ]
+                            },
+                            {
+                                level: 1,
+                                nodes: [
+                                    { id: 'whatsapp-leads', text: 'WhatsApp', icon: 'fa-whatsapp', type: 'entry' },
+                                    { id: 'upload-leads', text: 'Upload Leads', icon: 'fa-upload', type: 'entry' },
+                                    { id: 'direct-leads', text: 'Direct Leads', icon: 'fa-arrow-right-to-bracket', type: 'entry' }
+                                ]
+                            },
+                            {
+                                level: 2,
+                                nodes: [
+                                    { id: 'vicidial', text: 'ViciDial', icon: 'fa-headset', type: 'process', subtext: 'Auto-Dialing' }
+                                ]
+                            },
+                            {
+                                level: 3,
+                                nodes: [
+                                    { id: 'decision', text: 'Sale Complete?', icon: 'fa-question', type: 'decision' }
+                                ]
+                            },
+                            {
+                                level: 4,
+                                branches: [
+                                    {
+                                        label: 'NO - Recycle',
+                                        type: 'return',
+                                        nodes: [
+                                            { id: 'recycle', text: 'Return to Lead Pool', icon: 'fa-recycle', type: 'action' }
+                                        ]
+                                    },
+                                    {
+                                        label: 'YES - Continue',
+                                        type: 'forward',
+                                        nodes: [
+                                            { id: 'crm', text: 'CRM SharePoint', icon: 'fa-microsoft', type: 'process', subtext: 'Update Status' },
+                                            { id: 'debicheck', text: 'Debi Check Mandate', icon: 'fa-file-signature', type: 'action', subtext: 'Via NuPay' },
+                                            { id: 'client-accept', text: 'Client Accept', icon: 'fa-check-circle', type: 'process' },
+                                            { id: 'waiting', text: 'Waiting Period', icon: 'fa-clock', type: 'process' },
+                                            { id: 'payment', text: 'Full Payment', icon: 'fa-money-bill-wave', type: 'process' },
+                                            { id: 'legal', text: 'Legal Work Start', icon: 'fa-gavel', type: 'legal', subtext: 'Drafting → Attorney' }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        title: 'NCR Debt Help System Process',
+                        icon: 'fa-building-columns',
+                        id: 'ncr-flow',
+                        steps: [
+                            {
+                                level: 0,
+                                nodes: [
+                                    { id: 'ncr-leads', text: 'Leads', icon: 'fa-users', type: 'entry' }
+                                ]
+                            },
+                            {
+                                level: 1,
+                                nodes: [
+                                    { id: 'ncr-vicidial', text: 'ViciDial', icon: 'fa-headset', type: 'process' }
+                                ]
+                            },
+                            {
+                                level: 2,
+                                nodes: [
+                                    { id: 'ncr-check', text: 'NCR DC Check', icon: 'fa-magnifying-glass', type: 'process', subtext: 'Check if Flagged' }
+                                ]
+                            },
+                            {
+                                level: 3,
+                                nodes: [
+                                    { id: 'documents', text: 'Get Documents', icon: 'fa-folder-open', type: 'action' }
+                                ]
+                            },
+                            {
+                                level: 4,
+                                nodes: [
+                                    { id: 'dc-transfer', text: 'Back to DC', icon: 'fa-rotate-left', type: 'process', subtext: 'Request Transfer' }
+                                ]
+                            },
+                            {
+                                level: 5,
+                                nodes: [
+                                    { id: 'attorney', text: 'Attorney', icon: 'fa-scale-balanced', type: 'legal' }
+                                ]
+                            },
+                            {
+                                level: 6,
+                                nodes: [
+                                    { id: 'drafting', text: 'Drafting & Legal Paperwork', icon: 'fa-file-contract', type: 'legal', subtext: 'Draw Documents' }
+                                ]
+                            },
+                            {
+                                level: 7,
+                                nodes: [
+                                    { id: 'ncr-upload', text: 'NCR Debt Help System', icon: 'fa-cloud-upload', type: 'process', subtext: 'DC Uploads Final' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        title: 'TBA - More Flows Coming',
+                        icon: 'fa-ellipsis',
+                        id: 'tba-flow',
+                        isPlaceholder: true
+                    }
+                ]
+            },
+            {
+                id: 'legal',
+                title: 'Foundation & Legal',
+                icon: 'fa-scale-balanced',
+                color: 'from-slate-500 to-gray-600',
+                glow: 'shadow-slate-500/50',
+                desc: 'Legal compliance and business registration status',
+                isFoundation: true,
+                foundationItems: [
+                    { name: 'Company Registration', status: 'done', icon: 'fa-building' },
+                    { name: 'Tax Number', status: 'done', icon: 'fa-file-invoice-dollar' },
+                    { name: 'VAT Registration', status: 'done', icon: 'fa-receipt' },
+                    { name: 'Business Bank Account', status: 'done', icon: 'fa-university' },
+                    { name: 'POPIA Compliance', status: 'pending', icon: 'fa-shield-alt' },
+                    { name: 'NCR Registration', status: 'pending', icon: 'fa-registered' },
+                    { name: 'Consumer Protection', status: 'pending', icon: 'fa-user-shield' }
+                ]
+            },
+            {
+                id: 'comm',
+                title: 'Communication',
+                icon: 'fa-comments',
+                color: 'from-orange-500 to-amber-600',
+                glow: 'shadow-orange-500/50',
+                desc: 'Current communication infrastructure and daily operations',
+                isCommunication: true,
+                commTools: [
+                    {
+                        title: 'Microsoft Teams',
+                        icon: 'fa-microsoft',
+                        color: 'bg-blue-600',
+                        purpose: 'Primary internal communication hub',
+                        features: ['Team chat channels for departments', 'Video conferencing for meetings', 'Screen sharing and collaboration', 'File sharing and storage', 'Integration with Office 365 suite']
+                    },
+                    {
+                        title: 'WhatsApp Business',
+                        icon: 'fa-whatsapp',
+                        color: 'bg-green-500',
+                        purpose: 'Fast mobile communication',
+                        features: ['Instant messaging for quick decisions', 'Group chats for team coordination', 'Voice messages for fast updates', 'Document and image sharing', 'Mobile accessibility for field agents']
+                    },
+                    {
+                        title: 'ViciDial',
+                        icon: 'fa-headset',
+                        color: 'bg-purple-500',
+                        purpose: 'Call center operations with WhatsApp integration',
+                        features: ['Outbound predictive dialing', 'Inbound call routing', 'WhatsApp integration for fast communication', 'Real-time agent monitoring', 'Call recording and quality control', 'Lead management and scripting']
+                    }
+                ]
+            },
+            {
+                id: 'tech',
+                title: 'Technology & Security',
+                icon: 'fa-shield-halved',
+                color: 'from-cyan-500 to-blue-600',
+                glow: 'shadow-cyan-500/50',
+                desc: 'Current tech infrastructure and security implementation protocols',
+                isTechSecurity: true,
+                securitySections: [
+                    {
+                        title: 'PC Monitoring & Access Control',
+                        icon: 'fa-desktop',
+                        color: 'text-emerald-400',
+                        items: [
+                            'Each PC is individually monitored for activity and security',
+                            'Dedicated Gmail account per PC for TeamViewer remote access',
+                            'Gmail accounts linked to Microsoft Personal for software licensing',
+                            'Centralized monitoring dashboard for all workstations',
+                            'Remote troubleshooting capabilities via TeamViewer'
+                        ]
+                    },
+                    {
+                        title: 'Account Management',
+                        icon: 'fa-key',
+                        color: 'text-blue-400',
+                        items: [
+                            'Individual Gmail accounts serve as unique identifiers per machine',
+                            'Microsoft Personal accounts tied to Gmail for Office suite access',
+                            'Standardized naming convention for account organization',
+                            'Secure password management and rotation policies',
+                            'Access logs maintained for security auditing'
+                        ]
+                    },
+                    {
+                        title: 'Implementation Strategy',
+                        icon: 'fa-rocket',
+                        color: 'text-purple-400',
+                        items: [
+                            'Phase 1: Install monitoring software on each workstation',
+                            'Phase 2: Create dedicated Gmail accounts per PC',
+                            'Phase 3: Link Gmail to Microsoft Personal accounts',
+                            'Phase 4: Configure TeamViewer access via Gmail credentials',
+                            'Phase 5: Establish monitoring protocols and alert systems'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'docs',
+                title: 'Documentation',
+                icon: 'fa-file-contract',
+                color: 'from-indigo-500 to-violet-600',
+                glow: 'shadow-indigo-500/50',
+                desc: 'Templates, SOPs, and document management',
+                isDocumentation: true,
+                sections: [
+                    {
+                        title: 'Templates',
+                        icon: 'fa-file-lines',
+                        color: 'text-blue-400',
+                        items: [
+                            { name: 'Power of Attorney (Client)', desc: 'Legal authorization document for client representation' },
+                            { name: 'Employment Contract (Employee)', desc: 'Standard employment agreement and terms' },
+                            { name: 'NCR Disclosure Documents', desc: 'Certification of NCR - Remedy Debt compliance documents' }
+                        ]
+                    },
+                    {
+                        title: 'Procedure Templates (SOPs)',
+                        icon: 'fa-list-check',
+                        color: 'text-emerald-400',
+                        isExpandable: true,
+                        items: [
+                            { name: 'Lead Qualification Procedure', desc: 'Standard process for qualifying incoming leads' },
+                            { name: 'Debi Check Submission SOP', desc: 'Step-by-step guide for submitting Debi Check mandates' },
+                            { name: 'Client Onboarding Process', desc: 'Procedure for welcoming and setting up new clients' },
+                            { name: 'NCR Document Upload Procedure', desc: 'Guidelines for uploading documents to NCR system' },
+                            { name: 'Escalation Procedures', desc: 'When and how to escalate issues to management' },
+                            { name: 'Data Backup Protocol', desc: 'Daily/weekly backup procedures for critical data' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'integrations',
+                title: '3rd Party Systems',
+                icon: 'fa-network-wired',
+                color: 'from-pink-500 to-rose-600',
+                glow: 'shadow-pink-500/50',
+                desc: 'External systems and integrations powering the business',
+                is3rdParty: true,
+                parties: [
+                    { 
+                        name: 'DHS', 
+                        icon: 'fa-database',
+                        desc: 'Debt review case management, NCR reporting, court document generation',
+                        color: 'color-purple',
+                        textColor: 'text-purple'
+                    },
+                    { 
+                        name: 'ViciDial', 
+                        icon: 'fa-headset',
+                        desc: 'Call routing, IVR, call recording, real-time monitoring, reporting',
+                        color: 'color-red',
+                        textColor: 'text-red'
+                    },
+                    { 
+                        name: 'NuPay', 
+                        icon: 'fa-credit-card',
+                        desc: 'Payment Distribution Agency - Debi Check mandate processing',
+                        color: 'color-teal',
+                        textColor: 'text-teal'
+                    },
+                    { 
+                        name: 'Legal Partner', 
+                        icon: 'fa-gavel',
+                        desc: 'Attorney to Draft and Submit to Magistrate Court',
+                        color: 'color-yellow',
+                        textColor: 'text-yellow'
+                    },
+                    { 
+                        name: 'Microsoft', 
+                        icon: 'fa-microsoft',
+                        desc: 'Operation CRM HUB - SharePoint, Teams, Office 365',
+                        color: 'color-purple',
+                        textColor: 'text-purple'
+                    },
+                    { 
+                        name: 'WhatsApp', 
+                        icon: 'fa-whatsapp',
+                        desc: 'Communication - Business messaging and notifications',
+                        color: 'color-red',
+                        textColor: 'text-red'
+                    },
+                    { 
+                        name: 'Banking Partner', 
+                        icon: 'fa-building-columns',
+                        desc: 'Payroll - Salary processing and banking integrations',
+                        color: 'color-teal',
+                        textColor: 'text-teal'
+                    }
+                ]
+            },
+            {
+                id: 'marketing',
+                title: 'Marketing',
+                icon: 'fa-bullhorn',
+                color: 'from-purple-500 to-fuchsia-600',
+                glow: 'shadow-purple-500/50',
+                desc: 'Execute powerful marketing strategies and brand building',
+                roadmap: [
+                    { title: 'Strategy', desc: 'Quarterly planning', items: ['Goal setting', 'Budget allocation', 'Channel strategy', 'KPI definition'] },
+                    { title: 'Content', desc: 'Creative production', items: ['Blog posts', 'Video scripts', 'Social assets', 'Email copy'] },
+                    { title: 'Campaigns', desc: 'Paid acquisition', items: ['Google Ads', 'Meta campaigns', 'LinkedIn sponsored', 'Programmatic'] },
+                    { title: 'Social', desc: 'Community management', items: ['Content calendar', 'Influencer outreach', 'Engagement tactics', 'UGC curation'] },
+                    { title: 'Analytics', desc: 'Performance review', items: ['ROI analysis', 'Attribution modeling', 'Cohort analysis', 'Forecasting'] }
+                ]
+            },
+            {
+                id: 'hr',
+                title: 'HR - Sales Recruitment',
+                icon: 'fa-users-gear',
+                color: 'from-lime-500 to-green-600',
+                glow: 'shadow-lime-500/50',
+                desc: 'Recruit and scale sales agents through ads, WhatsApp screening, training, and performance-based contracts',
+                roadmap: [
+                    { 
+                        title: 'Launch Recruitment Ads', 
+                        desc: 'Deploy ads to attract sales agent candidates',
+                        items: ['Create job ad copy for sales agents', 'Launch Facebook/Instagram ads', 'Launch WhatsApp Business ads', 'Set daily budget and targeting'],
+                        badge: 'ads'
+                    },
+                    { 
+                        title: 'WhatsApp Screening', 
+                        desc: 'Initial candidate filtering via WhatsApp',
+                        items: ['Send briefing message to applicants', 'Ask qualifying questions (experience, availability)', 'Score responses 1-10', 'Shortlist qualified candidates'],
+                        badge: 'whatsapp'
+                    },
+                    { 
+                        title: 'On-Site Interviews', 
+                        desc: 'Face-to-face candidate assessment',
+                        items: ['Conduct interviews (morning)', 'Conduct interviews (afternoon)', 'Evaluate culture fit', 'Select trainees']
+                    },
+                    { 
+                        title: '1-Week Training Module', 
+                        desc: 'Intensive sales training program',
+                        items: ['Day 1: Product knowledge & systems', 'Day 2: Sales techniques & scripts', 'Day 3: Role-play & shadowing', 'Day 4-5: Live practice with supervision']
+                    },
+                    { 
+                        title: 'Contract & Scaling', 
+                        desc: 'Performance-based contract activation',
+                        items: ['First sale = Contract offer', 'Explain commission structure', 'Sign scaling agreement', 'Begin full sales operations'],
+                        badge: 'scaling'
+                    }
+                ],
+                commissionStructure: {
+                    title: 'Commission Structure (Agent Choice)',
+                    tiers: [
+                        { sales: 'R35,000', earnings: 'R3,500', type: 'tier' },
+                        { sales: 'R40,000', earnings: 'R4,000', type: 'tier' },
+                        { sales: 'Per Sale', earnings: 'Variable', type: 'per-sale', note: 'Agent chooses preferred model' }
+                    ]
+                }
+            }
+        ];
+
+        let currentModule = null;
+        let completedItems = new Set();
+        let expandedFlows = new Set();
+        let expandedSOPs = false;
+
+        function initHub() {
+            const container = document.getElementById('orbital-container');
+            const svg = document.getElementById('hub-connections');
+            const centerX = container.offsetWidth / 2;
+            const centerY = container.offsetHeight / 2;
+            const radius = Math.min(centerX, centerY) * 0.75;
+
+            modules.forEach((mod, index) => {
+                const angle = (index * 360 / modules.length) * (Math.PI / 180);
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                const node = document.createElement('div');
+                node.className = `absolute w-36 h-36 rounded-2xl glass-card flex flex-col items-center justify-center cursor-pointer group animate-float`;
+                node.style.left = `${x - 72}px`;
+                node.style.top = `${y - 72}px`;
+                node.style.animationDelay = `${index * 0.3}s`;
+                
+                let badgeHTML = '';
+                if (mod.id === 'hr') {
+                    badgeHTML = `<div class="absolute -top-2 -right-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg">ADS ACTIVE</div>`;
+                }
+                
+                node.innerHTML = `
+                    ${badgeHTML}
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br ${mod.color} flex items-center justify-center mb-3 shadow-lg ${mod.glow} group-hover:scale-110 transition-transform duration-300">
+                        <i class="fa-solid ${mod.icon} text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-center text-white group-hover:text-blue-300 transition-colors px-2">${mod.title}</h3>
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br ${mod.color} opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                `;
+                node.onclick = () => activateModule(mod);
+                container.appendChild(node);
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', centerX);
+                line.setAttribute('y1', centerY);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', 'url(#connectionGradient)');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('opacity', '0.6');
+                line.setAttribute('stroke-dasharray', '5,5');
+                svg.appendChild(line);
+            });
+        }
+
+        function activateModule(module) {
+            currentModule = module;
+            completedItems.clear();
+            expandedFlows.clear();
+            expandedSOPs = false;
+            
+            document.getElementById('hub-view').classList.add('scene-rotated');
+            document.getElementById('viewToggle').classList.remove('hidden');
+            
+            setTimeout(() => {
+                document.getElementById('timeline-view').classList.add('timeline-visible');
+                renderTimeline();
+            }, 600);
+        }
+
+        function toggleView() {
+            document.getElementById('timeline-view').classList.remove('timeline-visible');
+            document.getElementById('hub-view').classList.remove('scene-rotated');
+            document.getElementById('viewToggle').classList.add('hidden');
+            currentModule = null;
+        }
+
+        function resetAll() {
+            toggleView();
+            completedItems.clear();
+            expandedFlows.clear();
+            expandedSOPs = false;
+        }
+
+        function toggleDropdown(index) {
+            const content = document.getElementById(`dropdown-${index}`);
+            const toggle = document.getElementById(`toggle-${index}`);
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                toggle.classList.remove('active');
+            } else {
+                content.classList.add('expanded');
+                toggle.classList.add('active');
+            }
+        }
+
+        function toggleFlow(flowId) {
+            const content = document.getElementById(`flow-content-${flowId}`);
+            const icon = document.getElementById(`flow-icon-${flowId}`);
+            
+            if (expandedFlows.has(flowId)) {
+                expandedFlows.delete(flowId);
+                content.classList.remove('expanded');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                expandedFlows.add(flowId);
+                content.classList.add('expanded');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function toggleSOP() {
+            const content = document.getElementById('sop-content');
+            const icon = document.getElementById('sop-icon');
+            
+            if (expandedSOPs) {
+                expandedSOPs = false;
+                content.classList.remove('expanded');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                expandedSOPs = true;
+                content.classList.add('expanded');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function renderTimeline() {
+            if (!currentModule) return;
+
+            const iconContainer = document.getElementById('timeline-icon');
+            iconContainer.className = `w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br ${currentModule.color} flex items-center justify-center mb-6 shadow-2xl ${currentModule.glow}`;
+            iconContainer.innerHTML = `<i class=\"fa-solid ${currentModule.icon} text-4xl text-white\"></i>`;
+            
+            document.getElementById('timeline-title').textContent = currentModule.title;
+            document.getElementById('timeline-desc').textContent = currentModule.desc;
+
+            const container = document.getElementById('timeline-items');
+            container.innerHTML = '';
+
+            if (currentModule.isVisualFlow) {
+                document.getElementById('progress-section').style.display = 'none';
+                
+                currentModule.diagrams.forEach((diagram, diagramIndex) => {
+                    const diagramEl = document.createElement('div');
+                    diagramEl.className = 'flow-diagram-container timeline-node';
+                    diagramEl.style.animationDelay = `${diagramIndex * 0.2}s`;
+                    
+                    if (diagram.isPlaceholder) {
+                        diagramEl.innerHTML = `
+                            <div class="flow-diagram-header" style="opacity: 0.7;">
+                                <div class="diagram-title">
+                                    <i class="fa-solid ${diagram.icon} text-slate-400"></i>
+                                    <span style="color: #94a3b8;">${diagram.title}</span>
+                                </div>
+                                <i class="fa-solid fa-lock text-slate-500"></i>
+                            </div>
+                        `;
+                    } else {
+                        let diagramHTML = `
+                            <div class="flow-diagram-header" onclick="toggleFlow('${diagram.id}')">
+                                <div class="diagram-title">
+                                    <i class="fa-solid ${diagram.icon} text-blue-400"></i>
+                                    ${diagram.title}
+                                </div>
+                                <i id="flow-icon-${diagram.id}" class="fa-solid fa-chevron-down text-slate-400 text-xl" style="transition: transform 0.3s ease;"></i>
+                            </div>
+                            <div id="flow-content-${diagram.id}" class="flow-diagram-content"><div class="pan-hint"><i class="fa-solid fa-hand"></i> Drag to pan</div>
+                                <div class="flex flex-col items-center gap-4">
+                        `;
+                        
+                        diagram.steps.forEach((step, stepIndex) => {
+                            if (step.branches) {
+                                diagramHTML += `<div class="flex justify-center gap-8 w-full mt-4">`;
+                                
+                                step.branches.forEach((branch, branchIndex) => {
+                                    const isReturn = branch.type === 'return';
+                                    diagramHTML += `
+                                        <div class="flex flex-col items-center ${isReturn ? 'opacity-70' : ''}" style="flex: 1; max-width: 300px;">
+                                            <div class="recycle-label mb-2">
+                                                <i class="fa-solid ${isReturn ? 'fa-rotate-left' : 'fa-arrow-right'}"></i>
+                                                ${branch.label}
+                                            </div>
+                                    `;
+                                    
+                                    branch.nodes.forEach((node, nodeIndex) => {
+                                        diagramHTML += createFlowNodeHTML(node, stepIndex + nodeIndex);
+                                        if (nodeIndex < branch.nodes.length - 1) {
+                                            diagramHTML += `<div class="flow-arrow ${isReturn ? 'return' : ''}"></div>`;
+                                        }
+                                    });
+                                    
+                                    diagramHTML += `</div>`;
+                                });
+                                
+                                diagramHTML += `</div>`;
+                            } else {
+                                if (step.nodes.length === 1) {
+                                    diagramHTML += createFlowNodeHTML(step.nodes[0], stepIndex);
+                                } else {
+                                    diagramHTML += `<div class="branch-container">`;
+                                    step.nodes.forEach((node, nodeIndex) => {
+                                        diagramHTML += createFlowNodeHTML(node, stepIndex);
+                                    });
+                                    diagramHTML += `</div>`;
+                                }
+                                
+                                if (stepIndex < diagram.steps.length - 1) {
+                                    diagramHTML += `<div class="flow-arrow"></div>`;
+                                }
+                            }
+                        });
+                        
+                        diagramHTML += `</div></div>`;
+                        diagramEl.innerHTML = diagramHTML;
+                    }
+                    
+                    container.appendChild(diagramEl);
+                });
+                
+            } else if (currentModule.isFoundation) {
+                document.getElementById('progress-section').style.display = 'none';
+                
+                const foundationContainer = document.createElement('div');
+                foundationContainer.className = 'timeline-node';
+                
+                const doneItems = currentModule.foundationItems.filter(item => item.status === 'done');
+                const pendingItems = currentModule.foundationItems.filter(item => item.status === 'pending');
+                
+                foundationContainer.innerHTML = `
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                            <i class="fa-solid fa-clipboard-check text-emerald-400"></i>
+                            Legal Foundation Status
+                        </h3>
+                        
+                        <div class="mb-8">
+                            <h4 class="text-sm font-semibold text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle"></i> Completed
+                            </h4>
+                            ${doneItems.map(item => `
+                                <div class="foundation-item done">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fa-solid ${item.icon} text-emerald-400 text-lg"></i>
+                                        <span class="text-white font-medium">${item.name}</span>
+                                    </div>
+                                    <span class="status-badge status-done">
+                                        <i class="fa-solid fa-check"></i> Done
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm font-semibold text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-clock"></i> Pending - Business Longevity
+                            </h4>
+                            ${pendingItems.map(item => `
+                                <div class="foundation-item pending">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fa-solid ${item.icon} text-amber-400 text-lg"></i>
+                                        <span class="text-white font-medium">${item.name}</span>
+                                    </div>
+                                    <span class="status-badge status-pending">
+                                        <i class="fa-solid fa-hourglass-half"></i> Pending
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="foundation-note">
+                            <p class="text-slate-300 text-sm flex items-start gap-3">
+                                <i class="fa-solid fa-info-circle text-blue-400 mt-1"></i>
+                                <span>These pending registrations are essential for business longevity and compliance with South African regulations. Prioritize POPIA compliance for data protection, NCR registration if offering credit/financial services, and Consumer Protection Act compliance for customer-facing operations.</span>
+                            </p>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(foundationContainer);
+                
+            } else if (currentModule.isCommunication) {
+                document.getElementById('progress-section').style.display = 'none';
+                
+                const commContainer = document.createElement('div');
+                commContainer.className = 'timeline-node';
+                
+                currentModule.commTools.forEach((tool, index) => {
+                    const toolEl = document.createElement('div');
+                    toolEl.className = 'comm-tool-card';
+                    toolEl.style.animationDelay = `${index * 0.15}s`;
+                    
+                    const featuresHtml = tool.features.map(feature => `
+                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+                            <i class="fa-solid fa-check text-emerald-400 text-sm"></i>
+                            <span class="text-slate-300 text-sm">${feature}</span>
+                        </div>
+                    `).join('');
+                    
+                    toolEl.innerHTML = `
+                        <div class="flex items-start gap-6">
+                            <div class="comm-tool-icon ${tool.color}">
+                                <i class="fa-brands ${tool.icon} text-white"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-2xl font-bold text-white mb-1">${tool.title}</h3>
+                                <p class="text-blue-400 font-medium mb-4">${tool.purpose}</p>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    ${featuresHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    commContainer.appendChild(toolEl);
+                });
+                
+                const summaryBox = document.createElement('div');
+                summaryBox.className = 'mt-6 p-6 rounded-2xl bg-slate-800/50 border border-slate-700';
+                summaryBox.innerHTML = `
+                    <h4 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired text-orange-400"></i>
+                        Communication Flow
+                    </h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Daily operations rely on <strong class="text-white">Microsoft Teams</strong> for structured internal communication and video meetings, 
+                        <strong class="text-white">WhatsApp</strong> for rapid mobile coordination, and 
+                        <strong class="text-white">ViciDial</strong> for agent call operations with integrated WhatsApp capabilities for fast customer communication.
+                    </p>
+                `;
+                commContainer.appendChild(summaryBox);
+                
+                container.appendChild(commContainer);
+                
+            } else if (currentModule.isTechSecurity) {
+                document.getElementById('progress-section').style.display = 'none';
+                
+                const techContainer = document.createElement('div');
+                techContainer.className = 'timeline-node';
+                
+                currentModule.securitySections.forEach((section, index) => {
+                    const sectionEl = document.createElement('div');
+                    sectionEl.className = 'tech-security-card';
+                    sectionEl.style.animationDelay = `${index * 0.15}s`;
+                    
+                    const itemsHtml = section.items.map(item => `
+                        <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-800/50 border-l-4 border-emerald-500 mb-2">
+                            <i class="fa-solid fa-chevron-right text-emerald-400 mt-1 text-xs"></i>
+                            <span class="text-slate-300 text-sm">${item}</span>
+                        </div>
+                    `).join('');
+                    
+                    sectionEl.innerHTML = `
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-slate-700 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid ${section.icon} ${section.color} text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">${section.title}</h3>
+                                <div class="h-1 w-20 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full mt-2"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            ${itemsHtml}
+                        </div>
+                    `;
+                    
+                    techContainer.appendChild(sectionEl);
+                });
+                
+                container.appendChild(techContainer);
+                
+            } else if (currentModule.isDocumentation) {
+                document.getElementById('progress-section').style.display = 'none';
+                
+                const docsContainer = document.createElement('div');
+                docsContainer.className = 'timeline-node';
+                
+                currentModule.sections.forEach((section, index) => {
+                    if (section.title === 'Templates') {
+                        const sectionEl = document.createElement('div');
+                        sectionEl.className = 'mb-8';
+                        
+                        let templatesHtml = `
+                            <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                                <i class="fa-solid ${section.icon} ${section.color}"></i>
+                                ${section.title}
+                            </h3>
+                            <div class="space-y-4">
+                        `;
+                        
+                        section.items.forEach(item => {
+                            templatesHtml += `
+                                <div class="template-card">
+                                    <div class="flex items-start gap-4">
+                                        <div class="template-icon bg-slate-700">
+                                            <i class="fa-solid fa-file-lines text-blue-400"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-white mb-1">${item.name}</h4>
+                                            <p class="text-slate-400 text-sm">${item.desc}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        templatesHtml += `</div>`;
+                        sectionEl.innerHTML = templatesHtml;
+                        docsContainer.appendChild(sectionEl);
+                        
+                    } else if (section.title === 'Procedure Templates (SOPs)') {
+                        const sopEl = document.createElement('div');
+                        sopEl.className = 'mt-8';
+                        
+                        sopEl.innerHTML = `
+                            <div class="glass-card rounded-2xl overflow-hidden">
+                                <div class="p-6 cursor-pointer hover:bg-slate-800/50 transition-all" onclick="toggleSOP()">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fa-solid ${section.icon} ${section.color} text-2xl"></i>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-white">${section.title}</h3>
+                                                <p class="text-slate-400 text-sm mt-1">Click to expand procedures</p>
+                                            </div>
+                                        </div>
+                                        <i id="sop-icon" class="fa-solid fa-chevron-down text-slate-400 text-xl" style="transition: transform 0.3s ease;"></i>
+                                    </div>
+                                </div>
+                                <div id="sop-content" class="dropdown-content" style="padding: 0 24px;">
+                                    <div class="pb-6 space-y-3">
+                                        ${section.items.map(item => `
+                                            <div class="sop-item">
+                                                <i class="fa-solid fa-clipboard-list"></i>
+                                                <div>
+                                                    <h4 class="font-semibold text-white text-sm">${item.name}</h4>
+                                                    <p class="text-slate-400 text-xs">${item.desc}</p>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        docsContainer.appendChild(sopEl);
+                    }
+                });
+                
+                container.appendChild(docsContainer);
+                
+            } else if (currentModule.is3rdParty) {
+                document.getElementById('progress-section').style.display = 'none';
+                
+                const partyContainer = document.createElement('div');
+                partyContainer.className = 'timeline-node';
+                
+                let partiesHtml = `
+                    <div class="party-timeline-container">
+                        <div class="party-timeline-line"></div>
+                        <div class="party-timeline-grid">
+                `;
+                
+                currentModule.parties.forEach((party, index) => {
+                    partiesHtml += `
+                        <div class="party-item timeline-node" style="animation-delay: ${index * 0.1}s">
+                            <div class="party-circle ${party.color}">
+                                <i class="fa-solid ${party.icon}"></i>
+                            </div>
+                            <div class="party-connector"></div>
+                            <div class="party-box ${party.color}" style="border-width: 2px;">
+                                <h4 class="${party.textColor}">${party.name}</h4>
+                                <p>${party.desc}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                partiesHtml += `</div></div>`;
+                partyContainer.innerHTML = partiesHtml;
+                container.appendChild(partyContainer);
+                
+            } else {
+                document.getElementById('progress-section').style.display = 'block';
+                const data = currentModule.roadmap;
+                const totalItems = data.reduce((sum, item) => sum + item.items.length, 0);
+                document.getElementById('items-count').textContent = `0/${totalItems} items completed`;
+
+                data.forEach((item, index) => {
+                    const node = document.createElement('div');
+                    node.className = 'timeline-node';
+                    node.style.animationDelay = `${index * 0.15}s`;
+                    
+                    let badgeHTML = '';
+                    if (item.badge === 'whatsapp') {
+                        badgeHTML = `<div class="whatsapp-badge mb-2"><i class="fa-brands fa-whatsapp"></i> WhatsApp Screening</div>`;
+                    } else if (item.badge === 'ads') {
+                        badgeHTML = `<div class="scaling-badge mb-2" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);"><i class="fa-solid fa-bullhorn"></i> Ads Active</div>`;
+                    } else if (item.badge === 'scaling') {
+                        badgeHTML = `<div class="scaling-badge mb-2"><i class="fa-solid fa-chart-line"></i> Scaling Phase</div>`;
+                    }
+                    
+                    const itemsHtml = item.items.map((subItem, subIndex) => `
+                        <div class="check-item flex items-start gap-3 p-3 rounded-lg cursor-pointer bg-slate-800/50 hover:bg-slate-700/50 transition-all" 
+                             onclick="toggleComplete('${currentModule.id}-${index}-${subIndex}')"
+                             id="item-${currentModule.id}-${index}-${subIndex}">
+                            <div class="check-box w-5 h-5 rounded border-2 border-slate-500 flex items-center justify-center transition-all flex-shrink-0 mt-0.5">
+                                <i class="fa-solid fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                            </div>
+                            <span class="text-slate-300 text-sm">${subItem}</span>
+                        </div>
+                    `).join('');
+                    
+                    node.innerHTML = `
+                        <div class="glass-card rounded-2xl p-6 mb-4">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br ${currentModule.color} flex items-center justify-center shadow-lg ${currentModule.glow}">
+                                    <span class="text-white font-bold text-sm">${index + 1}</span>
+                                </div>
+                                <div class="flex-grow">
+                                    ${badgeHTML}
+                                    <div class="dropdown-toggle flex items-center justify-between mb-2" id="toggle-${index}" onclick="toggleDropdown(${index})">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-white">${item.title}</h3>
+                                            <p class="text-slate-400 text-sm">${item.desc}</p>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-down text-slate-400 text-xl"></i>
+                                    </div>
+                                    <div class="dropdown-content" id="dropdown-${index}">
+                                        <div class="space-y-2 mt-4 pt-4 border-t border-slate-700">
+                                            ${itemsHtml}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            ${currentModule.id === 'hr' && index === data.length - 1 && currentModule.commissionStructure ? `
+                                <div class="commission-box mt-4" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 16px;">
+                                    <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                                        <i class="fa-solid fa-money-bill-wave text-green-400"></i>
+                                        ${currentModule.commissionStructure.title}
+                                    </h4>
+                                    ${currentModule.commissionStructure.tiers.map(tier => `
+                                        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;">
+                                                <i class="fa-solid ${tier.type === 'per-sale' ? 'fa-percent' : 'fa-trophy'} text-${tier.type === 'per-sale' ? 'blue' : 'yellow'}-400 text-sm"></i>
+                                            </div>
+                                            <div style="flex-grow: 1;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <span class="text-slate-300 text-sm">Sales Target: <span class="text-white font-semibold">${tier.sales}</span></span>
+                                                    <span style="font-weight: 700; color: #10b981; font-size: 1.1em;">${tier.earnings}</span>
+                                                </div>
+                                                ${tier.note ? `<p class="text-slate-500 text-xs mt-1">${tier.note}</p>` : ''}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    
+                    container.appendChild(node);
+                });
+            }
+        }
+
+        function createFlowNodeHTML(node, index) {
+            const isDecision = node.type === 'decision';
+            const iconHtml = node.icon ? `<i class=\"fa-solid ${node.icon} text-2xl mb-2 ${isDecision ? 'text-amber-400' : 'text-white'}\"></i>` : '';
+            const subtextHtml = node.subtext ? `<p class=\"text-xs text-slate-400 mt-1\">${node.subtext}</p>` : '';
+            
+            if (isDecision) {
+                return `
+                    <div class="flow-node decision my-4" style="animation-delay: ${index * 0.1}s">
+                        <div class="content">
+                            ${iconHtml}
+                            <span class="text-sm font-bold text-white">${node.text}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="flow-node ${node.type}" style="animation-delay: ${index * 0.1}s; min-width: 200px;">
+                    ${iconHtml}
+                    <h4 class="font-bold text-white">${node.text}</h4>
+                    ${subtextHtml}
+                </div>
+            `;
+        }
+
+        function toggleComplete(itemId) {
+            const item = document.getElementById(`item-${itemId}`);
+            const checkIcon = item.querySelector('.fa-check');
+            
+            if (completedItems.has(itemId)) {
+                completedItems.delete(itemId);
+                item.classList.remove('completed');
+                checkIcon.classList.add('opacity-0');
+            } else {
+                completedItems.add(itemId);
+                item.classList.add('completed');
+                checkIcon.classList.remove('opacity-0');
+            }
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            if (!currentModule || currentModule.isVisualFlow || currentModule.isFoundation || currentModule.isCommunication || currentModule.isTechSecurity || currentModule.isDocumentation || currentModule.is3rdParty) return;
+            
+            const totalItems = currentModule.roadmap.reduce((sum, item) => sum + item.items.length, 0);
+            const completed = completedItems.size;
+            const percentage = Math.round((completed / totalItems) * 100);
+            
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-text').textContent = `${percentage}%`;
+            document.getElementById('items-count').textContent = `${completed}/${totalItems} items completed`;
+        }
+
+        window.addEventListener('resize', () => {
+            if (!currentModule) {
+                document.getElementById('orbital-container').innerHTML = '';
+                document.getElementById('hub-connections').innerHTML = `
+                    <defs>
+                        <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.8" />
+                            <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:0.6" />
+                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0.8" />
+                        </linearGradient>
+                    </defs>
+                `;
+                initHub();
+            }
+        });
+    </script>
+
+    <!-- Drag to Pan Functionality for Flow Diagrams -->
+    <script>
+        // Make flow diagrams draggable/pannable on mobile and desktop
+        document.addEventListener('DOMContentLoaded', function() {
+            const flowContainers = document.querySelectorAll('.flow-diagram-content');
+
+            flowContainers.forEach(container => {
+                let isDown = false;
+                let startX;
+                let startY;
+                let scrollLeft;
+                let scrollTop;
+
+                container.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    container.style.cursor = 'grabbing';
+                    startX = e.pageX - container.offsetLeft;
+                    startY = e.pageY - container.offsetTop;
+                    scrollLeft = container.scrollLeft;
+                    scrollTop = container.scrollTop;
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    container.style.cursor = 'grab';
+                });
+
+                container.addEventListener('mouseup', () => {
+                    isDown = false;
+                    container.style.cursor = 'grab';
+                });
+
+                container.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - container.offsetLeft;
+                    const y = e.pageY - container.offsetTop;
+                    const walkX = (x - startX) * 2;
+                    const walkY = (y - startY) * 2;
+                    container.scrollLeft = scrollLeft - walkX;
+                    container.scrollTop = scrollTop - walkY;
+                });
+
+                // Touch events for mobile
+                container.addEventListener('touchstart', (e) => {
+                    isDown = true;
+                    startX = e.touches[0].pageX - container.offsetLeft;
+                    startY = e.touches[0].pageY - container.offsetTop;
+                    scrollLeft = container.scrollLeft;
+                    scrollTop = container.scrollTop;
+                }, {passive: true});
+
+                container.addEventListener('touchend', () => {
+                    isDown = false;
+                });
+
+                container.addEventListener('touchmove', (e) => {
+                    if (!isDown) return;
+                    const x = e.touches[0].pageX - container.offsetLeft;
+                    const y = e.touches[0].pageY - container.offsetTop;
+                    const walkX = (x - startX) * 2;
+                    const walkY = (y - startY) * 2;
+                    container.scrollLeft = scrollLeft - walkX;
+                    container.scrollTop = scrollTop - walkY;
+                }, {passive: true});
+            });
+        });
+
+        // Prevent body scroll when interacting with flow diagrams
+        document.querySelectorAll('.flow-diagram-content').forEach(el => {
+            el.addEventListener('touchmove', function(e) {
+                if (this.scrollHeight > this.clientHeight || this.scrollWidth > this.clientWidth) {
+                    e.stopPropagation();
+                }
+            }, {passive: false});
+        });
+    </script>
+</body>
+</html>
