@@ -1,3 +1,11 @@
+const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const prefersReducedMotion = reducedMotionQuery.matches;
+let pageIsVisible = !document.hidden;
+
+document.addEventListener('visibilitychange', () => {
+  pageIsVisible = !document.hidden;
+});
+
 /* ============================================
    PAGE LOADER
    ============================================ */
@@ -282,6 +290,10 @@ if (!isTouch) {
   setupCursorHover();
 
   function animateCursor() {
+    if (!pageIsVisible || prefersReducedMotion) {
+      requestAnimationFrame(animateCursor);
+      return;
+    }
     ringX += (mouseX - ringX) * 0.15;
     ringY += (mouseY - ringY) * 0.15;
     ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
@@ -419,8 +431,12 @@ function rippleTextSlightly(mx, my) {
 }
 
 function animateLiquid() {
+  if (!pageIsVisible || prefersReducedMotion) {
+    requestAnimationFrame(animateLiquid);
+    return;
+  }
   lCtx.clearRect(0, 0, liquidW, liquidH);
-  ripples = ripples.filter(r => r.opacity > 0);
+  ripples = ripples.filter(r => r.opacity > 0).slice(isTouch ? -28 : -48);
   ripples.forEach(r => { r.update(); r.draw(lCtx); });
   requestAnimationFrame(animateLiquid);
 }
@@ -432,7 +448,7 @@ animateLiquid();
 const cCanvas = document.getElementById('constellationCanvas');
 const cCtx = cCanvas.getContext('2d');
 let cW, cH;
-const PARTICLE_COUNT = 70;
+const PARTICLE_COUNT = isTouch ? 36 : 70;
 const CONNECTION_DIST = 150;
 const MOUSE_REPULSE = 120;
 const TOUCH_REPULSE = 180;
@@ -523,6 +539,10 @@ class Particle {
 const particles = Array.from({ length: PARTICLE_COUNT }, () => new Particle());
 
 function animateConstellation() {
+  if (!pageIsVisible || prefersReducedMotion) {
+    requestAnimationFrame(animateConstellation);
+    return;
+  }
   cCtx.clearRect(0, 0, cW, cH);
   particles.forEach(p => { p.update(); p.draw(cCtx); });
   for (let i = 0; i < particles.length; i++) {
@@ -566,19 +586,21 @@ setTimeout(() => scrambler.scramble(), 500);
    HEADER SCROLL LIMIT
    ============================================ */
 const header = document.getElementById('header');
-window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 50));
+function updateHeaderScrollState() {
+  header.classList.toggle('scrolled', window.scrollY > 50);
+}
 
 /* ============================================
    PARALLAX BACKGROUND
    ============================================ */
 const parallaxEls = document.querySelectorAll('.parallax-element');
-window.addEventListener('scroll', () => {
+function updateParallax() {
   const sy = window.scrollY;
   parallaxEls.forEach(el => {
     const speed = parseFloat(el.dataset.speed) || 0.3;
     el.style.transform = `translateY(${sy * speed}px)`;
   });
-});
+}
 
 /* ============================================
    FORMING WORDS + ORBIT CARDS
@@ -667,6 +689,10 @@ function updateCardPositions(wordIndex, angle, isParked) {
 }
 
 function animateOrbit() {
+  if (!pageIsVisible || prefersReducedMotion) {
+    requestAnimationFrame(animateOrbit);
+    return;
+  }
   if (activeWord >= 0 && activeWord < formingWords.length) {
     const cards = allOrbitCards.filter(c => parseInt(c.dataset.wi) === activeWord);
     switch (cardState) {
@@ -708,7 +734,7 @@ animateOrbit();
 
 /* Scroll handler */
 const formingSection = document.querySelector('.forming-section');
-window.addEventListener('scroll', () => {
+function updateFormingScroll() {
   const rect = formingSection.getBoundingClientRect();
   const sectionH = formingSection.offsetHeight - window.innerHeight;
   const progress = Math.max(0, Math.min(1, -rect.top / sectionH));
@@ -755,9 +781,24 @@ window.addEventListener('scroll', () => {
       allOrbitCards.filter(c => parseInt(c.dataset.wi) === activeWord).forEach(c => c.classList.add('visible'));
     }
   }
-});
+}
 
-window.addEventListener('load', () => window.dispatchEvent(new Event('scroll')));
+let scrollFrame = null;
+function updateScrollEffects() {
+  scrollFrame = null;
+  updateHeaderScrollState();
+  updateParallax();
+  updateFormingScroll();
+}
+
+function requestScrollUpdate() {
+  if (scrollFrame === null) {
+    scrollFrame = requestAnimationFrame(updateScrollEffects);
+  }
+}
+
+window.addEventListener('scroll', requestScrollUpdate, { passive: true });
+window.addEventListener('load', requestScrollUpdate);
 let resizeT;
 window.addEventListener('resize', () => {
   clearTimeout(resizeT);
