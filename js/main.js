@@ -206,7 +206,7 @@ const portfolioProjects = [
     id: 1,
     title: "Visual Identity System",
     tag: "Brand Identity",
-    imgUrl: "Brand Identity - Visiual Identity System.jpg",
+    imgUrl: "assets/portfolio/visual-identity-system.jpg",
     problem: "The client suffered from low market positioning, looking like a standard entry agency and unable to command premium margins.",
     engineering: "Constructed a comprehensive modern branding grid, applying rich Violet Core and Neon Black canvas tokens for visual dominance.",
     result: "Successfully established a high-authority position yielding over 2.4M organic campaign impressions."
@@ -215,7 +215,7 @@ const portfolioProjects = [
     id: 2,
     title: "E-Commerce Platform",
     tag: "Web Design",
-    imgUrl: "Web Design - E-Commerce Platform.jpg",
+    imgUrl: "assets/portfolio/ecommerce-platform.jpg",
     problem: "Sluggish load speeds on dynamic mobile viewports triggered a staggering 70% cart abandonment rate.",
     engineering: "Coded custom frontend logic, implemented rapid-load image delivery pipelines, and engineered clean product display grids.",
     result: "Dramatically slashed bounce rates and catalyzed immediate conversion spikes for the Lumina brand launch."
@@ -224,7 +224,7 @@ const portfolioProjects = [
     id: 3,
     title: "Campaign Strategy",
     tag: "Social Media",
-    imgUrl: "Social Media - Campaign Strategy.jpg",
+    imgUrl: "assets/portfolio/campaign-strategy.jpg",
     problem: "Stale, over-corporate content systems completely failed to establish meaningful interactive relationships with target consumer demographics.",
     engineering: "Divided content strategy into 4 highly creative core pillars and automated distribution weighted specifically to TikTok and Instagram.",
     result: "Surpassed initial Q3 reach targets to engage over 250k users at an incredible 18% interaction metric."
@@ -233,7 +233,7 @@ const portfolioProjects = [
     id: 4,
     title: "Mobile App Interface",
     tag: "UI/UX Design",
-    imgUrl: "UI UX Design - Mobile App Interface.jpg",
+    imgUrl: "assets/portfolio/mobile-app-interface.jpg",
     problem: "Confusing financial interface architectures led to massive registrant dropping during sensitive verification processes.",
     engineering: "Redesigned entire step-by-step verification flows using flat visual meters, real-time stage tracking, and immediate transaction feedback overlays.",
     result: "Engineered a gorgeous, user-centric mobile app interface mockup perfectly simplified and ready for scale."
@@ -242,7 +242,7 @@ const portfolioProjects = [
     id: 5,
     title: "Growth Roadmap",
     tag: "Digital Strategy",
-    imgUrl: "Digital Strategy - Growth Roadmap.jpg",
+    imgUrl: "assets/portfolio/growth-roadmap.jpg",
     problem: "The firm was burning advertising capital through disjointed marketing spend running across separate, isolated channels.",
     engineering: "Architected a unified digital growth roadmap starting from tech-stack audits straight through to multi-quarter optimization metrics.",
     result: "Successfully generated a stunning +240% increase in traffic and an exponential +312% compounding revenue loop."
@@ -251,7 +251,7 @@ const portfolioProjects = [
     id: 6,
     title: "Online Store Redesign",
     tag: "E-Commerce",
-    imgUrl: "E-commerce - online store redesign.jpg",
+    imgUrl: "assets/portfolio/online-store-redesign.jpg",
     problem: "Cluttered navigational layouts and heavy static imagery made shopping confusing for users trying to browse inventories.",
     engineering: "Implemented precise filtering parameters, built clean custom image blocks, and embedded custom visual components.",
     result: "Transformed static pages into high-speed, performance-optimized, and visually stunning sales systems."
@@ -260,7 +260,7 @@ const portfolioProjects = [
     id: 7,
     title: "Business Flow Funnel",
     tag: "Business Strategy",
-    imgUrl: "Business Strategy - Business Funnel.jpg",
+    imgUrl: "assets/portfolio/business-flow-funnel.jpg",
     problem: "Manual administrative handoffs was delaying contracts and causing the sales team to lose warm, incoming client leads.",
     engineering: "Mapped out and automated secure, automated data webhooks running directly from capture through to final team delivery portals.",
     result: "Dramatically minimized operational friction while optimizing sales pipeline velocity down to a 3.5% conversion cycle."
