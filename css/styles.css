@@ -14,13 +14,17 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
 body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
   overflow-x: hidden;
   cursor: none;
+  touch-action: pan-y;
 }
 ::selection { background: var(--accent); color: #fff; }
 ::-webkit-scrollbar { width: 6px; }
@@ -92,6 +96,20 @@ body {
 @media (pointer: coarse) {
   .cursor-ring, .cursor-dot, .trail-dot { display: none !important; }
   body { cursor: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+  #constellationCanvas, #liquidCanvas,
+  .cursor-ring, .cursor-dot, .trail-dot {
+    display: none !important;
+  }
 }
 
 /* ============================================
