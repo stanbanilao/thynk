@@ -153,6 +153,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
   cursor: pointer;
   z-index: 101;
   position: absolute;
@@ -164,6 +169,12 @@ body {
   background: var(--text);
   transition: 0.3s;
   border-radius: 2px;
+}
+.hamburger:focus-visible,
+.service-card:focus-visible,
+.gallery-card-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 /* Call and WhatsApp Alternating Action Container */
@@ -566,7 +577,8 @@ body {
   transition: opacity 0.4s;
   pointer-events: none;
 }
-.service-card:hover::before { opacity: 1; }
+.service-card:hover::before,
+.service-card:focus-visible::before { opacity: 1; }
 
 /* Custom glowing pulse animations for services 07 and 08 */
 .service-card-07 {
@@ -629,7 +641,8 @@ body {
   transform: translateY(10px);
   transition: opacity 0.3s, transform 0.3s;
 }
-.service-card:hover .sc-cta {
+.service-card:hover .sc-cta,
+.service-card:focus-visible .sc-cta {
   opacity: 1;
   transform: translateY(0);
 }
@@ -786,7 +799,8 @@ body {
   transition: opacity 0.4s;
 }
 .gallery-card-item:hover class-item-overlay,
-.gallery-card-item:hover .gallery-item-overlay {
+.gallery-card-item:hover .gallery-item-overlay,
+.gallery-card-item:focus-visible .gallery-item-overlay {
   opacity: 1;
 }
 .gallery-card-tag {

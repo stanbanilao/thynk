@@ -34,17 +34,33 @@ document.addEventListener('visibilitychange', () => {
    ============================================ */
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
+const firstMobileMenuLink = mobileMenu.querySelector('.mm-link');
+
+function setMobileMenuState(isOpen, returnFocus = false) {
+  hamburger.classList.toggle('open', isOpen);
+  mobileMenu.classList.toggle('open', isOpen);
+  hamburger.setAttribute('aria-expanded', String(isOpen));
+  hamburger.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+  mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+  mobileMenu.inert = !isOpen;
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+
+  if (isOpen) firstMobileMenuLink.focus();
+  else if (returnFocus) hamburger.focus();
+}
+
 hamburger.addEventListener('click', () => {
-  hamburger.classList.toggle('open');
-  mobileMenu.classList.toggle('open');
-  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  setMobileMenuState(!mobileMenu.classList.contains('open'), true);
 });
 document.querySelectorAll('.mm-link').forEach(link => {
   link.addEventListener('click', () => {
-    hamburger.classList.remove('open');
-    mobileMenu.classList.remove('open');
-    document.body.style.overflow = '';
+    setMobileMenuState(false, true);
   });
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+    setMobileMenuState(false, true);
+  }
 });
 
 /* ============================================
@@ -817,6 +833,19 @@ const serviceOverlay = document.getElementById('serviceOverlay');
 const soContent = document.getElementById('soContent');
 const soClose = document.getElementById('soClose');
 
+function addKeyboardActivation(element, label, activate) {
+  element.setAttribute('role', 'button');
+  element.setAttribute('tabindex', '0');
+  element.setAttribute('aria-label', label);
+  element.addEventListener('click', activate);
+  element.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      activate();
+    }
+  });
+}
+
 services.forEach(s => {
   const card = document.createElement('div');
   // Dynamic glow classes assigned to new services
@@ -844,7 +873,7 @@ services.forEach(s => {
     card.style.setProperty('--my', `${(y/rect.height)*100}%`);
   });
   card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-  card.addEventListener('click', () => openOverlay(s));
+  addKeyboardActivation(card, `View details for ${s.title}`, () => openOverlay(s));
   servicesGrid.appendChild(card);
 });
 
@@ -920,7 +949,7 @@ doubledProjects.forEach((p, idx) => {
       <div class="gallery-card-title">${p.title}</div>
     </div>
   `;
-  item.addEventListener('click', () => openCaseStudy(p));
+  addKeyboardActivation(item, `Open ${p.title} case study`, () => openCaseStudy(p));
   galleryMarqueeTrack.appendChild(item);
 });
 
