@@ -832,6 +832,8 @@ const servicesGrid = document.getElementById('servicesGrid');
 const serviceOverlay = document.getElementById('serviceOverlay');
 const soContent = document.getElementById('soContent');
 const soClose = document.getElementById('soClose');
+let overlayTrigger = null;
+let overlayBackgroundState = [];
 
 function addKeyboardActivation(element, label, activate) {
   element.setAttribute('role', 'button');
@@ -881,7 +883,7 @@ function openOverlay(service) {
   soContent.innerHTML = `
     <div class="so-header">
       <span class="so-tag">Service 0${service.id}</span>
-      <h2 class="so-title">${service.title}</h2>
+      <h2 class="so-title" id="soTitle">${service.title}</h2>
       <p class="so-desc">${service.fullDesc}</p>
     </div>
     <div class="so-features">
@@ -893,14 +895,68 @@ function openOverlay(service) {
       Discuss on WhatsApp
     </a>
   `;
-  serviceOverlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  showOverlay();
 }
 
 soClose.addEventListener('click', closeOverlay);
 serviceOverlay.addEventListener('click', (e) => { if (e.target === serviceOverlay) closeOverlay(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
-function closeOverlay() { serviceOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+document.addEventListener('keydown', (e) => {
+  if (!serviceOverlay.classList.contains('open')) return;
+
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeOverlay();
+    return;
+  }
+
+  if (e.key !== 'Tab') return;
+
+  const focusableElements = Array.from(
+    serviceOverlay.querySelectorAll('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])')
+  );
+  const firstFocusable = focusableElements[0];
+  const lastFocusable = focusableElements[focusableElements.length - 1];
+
+  if (!firstFocusable) {
+    e.preventDefault();
+    soClose.focus();
+  } else if (e.shiftKey && document.activeElement === firstFocusable) {
+    e.preventDefault();
+    lastFocusable.focus();
+  } else if (!e.shiftKey && document.activeElement === lastFocusable) {
+    e.preventDefault();
+    firstFocusable.focus();
+  }
+});
+
+function showOverlay() {
+  overlayTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  overlayBackgroundState = Array.from(document.body.children)
+    .filter(element => element !== serviceOverlay && element.tagName !== 'SCRIPT')
+    .map(element => ({ element, wasInert: element.hasAttribute('inert') }));
+  overlayBackgroundState.forEach(({ element }) => element.setAttribute('inert', ''));
+  serviceOverlay.removeAttribute('inert');
+  serviceOverlay.setAttribute('aria-hidden', 'false');
+  serviceOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => soClose.focus());
+}
+
+function closeOverlay() {
+  if (!serviceOverlay.classList.contains('open')) return;
+
+  serviceOverlay.classList.remove('open');
+  serviceOverlay.setAttribute('aria-hidden', 'true');
+  serviceOverlay.setAttribute('inert', '');
+  document.body.style.overflow = '';
+  overlayBackgroundState.forEach(({ element, wasInert }) => {
+    if (!wasInert) element.removeAttribute('inert');
+  });
+  overlayBackgroundState = [];
+
+  if (overlayTrigger?.isConnected) overlayTrigger.focus();
+  overlayTrigger = null;
+}
 
 /* ============================================
    MISSION & VISION SCROLL ALIGNMENT & DECYPHER
@@ -964,7 +1020,7 @@ function openCaseStudy(p) {
   soContent.innerHTML = `
     <div class="so-header">
       <span class="so-tag">${p.tag} CASE STUDY</span>
-      <h2 class="so-title">${p.title}</h2>
+      <h2 class="so-title" id="soTitle">${p.title}</h2>
     </div>
     <div class="cs-detail-grid">
       <div class="cs-detail-box">
@@ -985,8 +1041,7 @@ function openCaseStudy(p) {
       Inquire about this work
     </a>
   `;
-  serviceOverlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  showOverlay();
 }
 
 
