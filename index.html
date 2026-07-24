@@ -62,7 +62,7 @@
 </div>
 
 <!-- Mobile Full-Screen Menu -->
-<div class="mobile-menu" id="mobileMenu">
+<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile navigation" aria-hidden="true" inert>
   <a href="#hero" class="mm-link">Home</a>
   <a href="#forming" class="mm-link">About</a>
   <a href="#services" class="mm-link">Services</a>
@@ -73,7 +73,7 @@
     <a href="https://www.instagram.com/thynkverse/" target="_blank">Instagram</a>
     <a href="https://www.facebook.com/thynkverse" target="_blank">Facebook</a>
   </div>
-</div>
+</nav>
 
 <!-- Noise -->
 <div class="noise-overlay"></div>
@@ -95,7 +95,7 @@
   <a href="#" class="logo">
     <span class="thynk">thynk</span><span class="verse">verse</span>
   </a>
-  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  <button type="button" class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-controls="mobileMenu" aria-expanded="false"><span></span><span></span><span></span></button>
   <nav class="nav-center">
     <a href="#hero">Home</a>
     <a href="#forming">About</a>
