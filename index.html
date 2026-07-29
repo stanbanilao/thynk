@@ -208,9 +208,9 @@
 </section>
  </main>
 <!-- Service Overlay (Shared Popup Modal) -->
-<div class="service-overlay" id="serviceOverlay">
+<div class="service-overlay" id="serviceOverlay" role="dialog" aria-modal="true" aria-labelledby="soTitle" aria-hidden="true" inert>
   <div class="so-panel">
-    <button class="so-close" id="soClose">×</button>
+    <button class="so-close" id="soClose" type="button" aria-label="Close details popup">×</button>
     <div id="soContent"></div>
   </div>
 </div>

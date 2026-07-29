@@ -172,7 +172,9 @@ body {
 }
 .hamburger:focus-visible,
 .service-card:focus-visible,
-.gallery-card-item:focus-visible {
+.gallery-card-item:focus-visible,
+.so-close:focus-visible,
+.so-whatsapp:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
