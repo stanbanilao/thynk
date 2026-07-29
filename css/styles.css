@@ -805,6 +805,9 @@ body {
 .gallery-card-item:focus-visible .gallery-item-overlay {
   opacity: 1;
 }
+@media (max-width: 768px), (hover: none), (pointer: coarse) {
+  .gallery-item-overlay { opacity: 1; }
+}
 .gallery-card-tag {
   font-family: var(--font-display);
   font-size: 0.65rem;
