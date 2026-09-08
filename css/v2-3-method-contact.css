@@ -1,0 +1,211 @@
+/* Thynkverse v2.3 — method sequence + contact polish */
+
+/* Method sequence: larger typography, vertical scroll focus and one orange accent per word. */
+.forming-section{height:570vh}
+.forming-sticky{padding:82px 18px 42px}
+.forming-stage{
+  width:min(1380px,97vw);
+  height:460px;
+  overflow:visible;
+}
+.forming-word{
+  width:100%;
+  text-align:center;
+  opacity:var(--forming-opacity,0)!important;
+  transform:translate3d(0,var(--forming-y,0px),0) scale(var(--forming-scale,.9))!important;
+  filter:blur(var(--forming-blur,8px));
+  transition:none!important;
+  will-change:transform,opacity,filter;
+  font-size:clamp(92px,15vw,196px)!important;
+  line-height:.88!important;
+  letter-spacing:-.075em!important;
+}
+.forming-word[data-index="1"],
+.forming-word[data-index="5"]{font-size:clamp(88px,14vw,184px)!important}
+.forming-word[data-index="3"]{font-size:clamp(82px,12.6vw,166px)!important}
+.forming-word[data-index="4"]{font-size:clamp(78px,11.7vw,156px)!important}
+
+/* Neutralise the old whole-word orange treatment. Every method word is white with one orange lead letter. */
+.forming-word[data-index="4"] .forming-letter,
+.forming-word[data-index="5"] .forming-letter,
+.forming-word .forming-letter{color:#f3f1ed!important}
+.forming-word .forming-letter.accent-letter{color:var(--orange)!important}
+.forming-letter{
+  filter:blur(5px);
+  transition:transform .64s var(--ease),opacity .5s,filter .5s,color .3s!important;
+}
+.forming-letter.formed{filter:blur(0)}
+.forming-caption{
+  max-width:760px;
+  min-height:60px;
+  margin-top:18px;
+  color:#a1a8b0;
+  font-size:15px;
+  line-height:1.7;
+  transition:opacity .25s var(--ease),transform .25s var(--ease);
+}
+.forming-progress{right:clamp(18px,3vw,48px)}
+.orbit-pill{
+  min-width:96px;
+  padding:12px 15px;
+  background:rgba(12,18,25,.72);
+  border-color:rgba(221,230,240,.13);
+  box-shadow:0 12px 38px rgba(0,0,0,.16);
+}
+
+/* Make the living world labels visually important — these are the entry points to each capability. */
+.world-card .world-symbol{
+  width:126px!important;
+  height:126px!important;
+  font-size:12px!important;
+  letter-spacing:.145em!important;
+  border-color:rgba(255,138,91,.3)!important;
+  background:radial-gradient(circle at 45% 38%,rgba(255,138,91,.07),rgba(255,255,255,.012));
+}
+.world-card .world-symbol::after{inset:13px}
+.world-card:hover .world-symbol{
+  transform:translateY(-7px) rotate(-3deg) scale(1.07)!important;
+  box-shadow:0 0 0 12px rgba(255,107,53,.025),0 20px 52px rgba(0,0,0,.2)!important;
+}
+
+/* Footer contact area: two premium glass contact cards, with phone numbers hidden behind actions. */
+.footer-contact{
+  display:grid!important;
+  gap:12px!important;
+  min-width:min(360px,100%);
+  align-self:start;
+}
+.contact-person{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:72px;
+  padding:13px 13px 13px 18px;
+  border:1px solid rgba(220,230,240,.11);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 92% 12%,rgba(255,138,91,.07),transparent 34%),
+    rgba(21,30,41,.56);
+  -webkit-backdrop-filter:blur(18px) saturate(120%);
+  backdrop-filter:blur(18px) saturate(120%);
+  box-shadow:0 18px 55px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.025);
+  transition:transform .42s var(--ease),border-color .35s,background .35s,box-shadow .35s;
+  overflow:visible;
+}
+.contact-person::before{
+  content:"";
+  position:absolute;
+  top:13px;
+  bottom:13px;
+  left:0;
+  width:2px;
+  border-radius:99px;
+  background:linear-gradient(180deg,transparent,var(--orange),transparent);
+  opacity:.55;
+}
+.contact-person:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,138,91,.24);
+  background:
+    radial-gradient(circle at 90% 10%,rgba(255,138,91,.11),transparent 38%),
+    rgba(23,33,45,.72);
+  box-shadow:0 24px 70px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.04);
+}
+.contact-meta{display:grid;gap:5px;min-width:0}
+.contact-name{
+  color:#77818c;
+  font:650 9px var(--display);
+  letter-spacing:.17em;
+  text-transform:uppercase;
+}
+.contact-email{
+  color:#c6cbd1!important;
+  text-decoration:none;
+  font-size:12px!important;
+  line-height:1.3;
+  overflow-wrap:anywhere;
+  transition:color .25s;
+}
+.contact-email:hover{color:#fff!important}
+.contact-actions{display:flex;gap:8px;flex:0 0 auto}
+.glass-contact-btn{
+  position:relative;
+  width:46px;
+  height:46px;
+  border-radius:16px;
+  display:grid!important;
+  place-items:center;
+  text-decoration:none;
+  color:#dce3ea!important;
+  border:1px solid rgba(224,232,241,.13);
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+  -webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px);
+  box-shadow:0 10px 30px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.035);
+  transition:transform .32s var(--ease),border-color .28s,background .28s,color .28s,box-shadow .28s;
+}
+.glass-contact-btn svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.glass-contact-btn.whatsapp svg{stroke-width:1.65}
+.glass-contact-btn:hover{
+  transform:translateY(-5px) scale(1.06);
+  color:#fff!important;
+  border-color:rgba(255,138,91,.44);
+  background:linear-gradient(145deg,rgba(255,107,53,.92),rgba(255,138,91,.78));
+  box-shadow:0 16px 42px rgba(255,107,53,.2),inset 0 1px 0 rgba(255,255,255,.18);
+}
+.glass-contact-btn::after{
+  content:attr(data-label);
+  position:absolute;
+  right:0;
+  bottom:calc(100% + 10px);
+  padding:8px 10px;
+  border:1px solid rgba(220,230,240,.12);
+  border-radius:10px;
+  background:rgba(11,17,24,.9);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  color:#e9edf1;
+  font:600 9px var(--display);
+  letter-spacing:.07em;
+  white-space:nowrap;
+  opacity:0;
+  transform:translateY(6px) scale(.96);
+  pointer-events:none;
+  transition:opacity .2s,transform .25s var(--ease);
+}
+.glass-contact-btn:hover::after{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .forming-section{height:520vh}
+  .forming-stage{height:390px}
+  .forming-word{font-size:clamp(74px,15vw,138px)!important}
+  .forming-word[data-index="3"]{font-size:clamp(66px,13vw,120px)!important}
+  .forming-word[data-index="4"]{font-size:clamp(60px,11.6vw,108px)!important}
+  .world-card .world-symbol{width:112px!important;height:112px!important}
+  .footer-contact{min-width:0;width:100%}
+}
+
+@media(max-width:620px){
+  .forming-section{height:500vh}
+  .forming-sticky{padding:74px 12px 34px}
+  .forming-stage{height:320px;width:100vw}
+  .forming-word{font-size:clamp(62px,18vw,96px)!important;letter-spacing:-.07em!important}
+  .forming-word[data-index="1"],.forming-word[data-index="5"]{font-size:clamp(58px,16.8vw,90px)!important}
+  .forming-word[data-index="3"]{font-size:clamp(48px,14vw,76px)!important}
+  .forming-word[data-index="4"]{font-size:clamp(44px,12.5vw,68px)!important}
+  .forming-caption{max-width:88vw;font-size:13px;margin-top:8px}
+  .forming-progress{right:12px}
+  .orbit-pill{min-width:78px;padding:9px 11px;font-size:8px}
+  .world-card .world-symbol{width:98px!important;height:98px!important;font-size:10px!important}
+  .contact-person{min-height:68px;padding:11px 11px 11px 15px;border-radius:19px}
+  .glass-contact-btn{width:43px;height:43px;border-radius:14px}
+  .contact-email{font-size:11px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .forming-word{filter:none!important}
+  .contact-person,.glass-contact-btn{transition:none!important}
+}
