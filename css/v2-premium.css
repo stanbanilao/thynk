@@ -1,3 +1,6 @@
+@import url('v2-living.css');
+@import url('v2-living-auto.css');
+
 :root{
   --bg:#0f151d;
   --bg2:#121a24;
