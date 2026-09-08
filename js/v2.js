@@ -8,11 +8,15 @@
   const memory=navigator.deviceMemory||4;
   const quality=coarse||hc<=4||memory<=4?'medium':'high';
 
-  // Load the v2.1 premium layer before the page loader leaves.
+  // Load the premium and v2.3 polish layers before the page loader leaves.
   const premiumCss=document.createElement('link');
   premiumCss.rel='stylesheet';
   premiumCss.href='css/v2-premium.css';
   document.head.appendChild(premiumCss);
+  const methodCss=document.createElement('link');
+  methodCss.rel='stylesheet';
+  methodCss.href='css/v2-3-method-contact.css';
+  document.head.appendChild(methodCss);
   qs('meta[name="theme-color"]')?.setAttribute('content','#0f151d');
 
   const loader=qs('#pageLoader');
@@ -46,7 +50,6 @@
   }),{threshold:.08,rootMargin:'0px 0px -6%'});
   qsa('.reveal').forEach(el=>revealIO.observe(el));
 
-  // Keep the native cursor. Interaction happens on the surfaces, not by dragging a delayed cursor ring.
   const cursor=qs('#cursor');
   if(cursor)cursor.setAttribute('aria-hidden','true');
 
@@ -77,7 +80,6 @@
     el.addEventListener('pointerleave',()=>{r=null;el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')});
   });
 
-  // Premium public-facing copy: evidence-led, without internal/version language.
   const showcaseIntro=qs('.showcase .split-head>p');
   if(showcaseIntro)showcaseIntro.textContent='Product-style demonstrations of the systems, interfaces and digital experiences Thynkverse shapes around real work.';
   const proofIntro=qs('.proof .split-head>p');
@@ -98,9 +100,11 @@
     words.forEach((item,wi)=>{
       const word=document.createElement('div');word.className='forming-word';word.dataset.index=wi;
       [...item.word].forEach((ch,li)=>{
-        const span=document.createElement('span');span.className='forming-letter';span.textContent=ch;
+        const span=document.createElement('span');span.className='forming-letter';
+        if(li===0)span.classList.add('accent-letter');
+        span.textContent=ch;
         const angle=(li/item.word.length)*Math.PI*2 + wi*.17;
-        const dist=138+(li%3)*54+wi*5;
+        const dist=150+(li%3)*58+wi*5;
         span.style.setProperty('--x',`${Math.cos(angle)*dist}px`);
         span.style.setProperty('--y',`${Math.sin(angle)*dist*.7}px`);
         span.style.setProperty('--r',`${((li*29+wi*17)%72)-36}deg`);
@@ -121,18 +125,48 @@
     const total=Math.max(1,formingSection.offsetHeight-innerHeight);
     const progress=clamp(-rect.top/total,0,.9999);
     const raw=progress*words.length;
-    const idx=clamp(Math.floor(raw),0,words.length-1);const local=raw-idx;
+    const focusIndex=clamp(Math.floor(raw),0,words.length-1);
+
     formedWords.forEach((word,wi)=>{
-      word.classList.toggle('active',wi===idx);
+      const relative=(wi+.5)-raw;
+      const distance=Math.abs(relative);
+      const visibility=clamp(1-distance/.78,0,1);
+      const eased=visibility*visibility*(3-2*visibility);
+      const y=clamp(relative*175,-185,185);
+      const scale=.84+eased*.16;
+      const blur=(1-eased)*10;
+      word.classList.toggle('active',eased>.55);
+      word.style.setProperty('--forming-opacity',String(eased));
+      word.style.setProperty('--forming-y',`${y}px`);
+      word.style.setProperty('--forming-scale',scale.toFixed(3));
+      word.style.setProperty('--forming-blur',`${blur.toFixed(1)}px`);
+
+      const wordProgress=clamp(raw-wi,0,1);
       const letters=qsa('.forming-letter',word);
       letters.forEach((letter,li)=>{
-        const threshold=(li+1)/(letters.length+1)*.64;
-        letter.classList.toggle('formed',wi<idx||(wi===idx&&local>threshold));
+        const threshold=.12+(li/(Math.max(1,letters.length-1)))*.34;
+        letter.classList.toggle('formed',wordProgress>threshold && wordProgress<.98);
       });
     });
-    qsa('#formingProgress i').forEach((d,i)=>d.classList.toggle('active',i===idx));
-    if(formingCaption)formingCaption.textContent=words[idx].caption;
-    pills.forEach(p=>p.classList.toggle('show',Number(p.dataset.word)===idx&&local>.6));
+
+    let best=0,bestVisibility=-1;
+    formedWords.forEach((word,i)=>{
+      const relative=(i+.5)-raw;
+      const vis=clamp(1-Math.abs(relative)/.78,0,1);
+      if(vis>bestVisibility){bestVisibility=vis;best=i}
+    });
+    qsa('#formingProgress i').forEach((d,i)=>d.classList.toggle('active',i===best));
+    if(formingCaption){
+      formingCaption.textContent=words[best].caption;
+      formingCaption.style.opacity=String(clamp(bestVisibility*1.3,0,1));
+      formingCaption.style.transform=`translateY(${(1-bestVisibility)*10}px)`;
+    }
+    pills.forEach(p=>{
+      const wi=Number(p.dataset.word);
+      const relative=(wi+.5)-raw;
+      const vis=clamp(1-Math.abs(relative)/.78,0,1);
+      p.classList.toggle('show',vis>.68);
+    });
   };
   addEventListener('scroll',updateForming,{passive:true});
   addEventListener('resize',updateForming,{passive:true});
@@ -153,7 +187,6 @@
   }
   const motion=new MotionEngine();
 
-  // Hero behaves like a precision assembly: calm at rest, then layers separate as the camera moves through it.
   const hero=qs('.hero');
   const coreA=qs('.orb-a');
   const coreB=qs('.orb-b');
@@ -224,7 +257,6 @@
     });
   }
 
-  // Water only appears around the workflow console, where it represents information flow.
   const liquid=qs('#liquidCanvas');
   const liquidZone=qs('#workflowShell');
   if(liquid&&liquidZone&&!reduced){
@@ -255,7 +287,7 @@
   const orbitPills=()=>{
     if(!pills.length)return;
     const active=pills.filter(p=>p.classList.contains('show'));if(!active.length)return;
-    const radius=clamp(innerWidth*.17,112,205),t=performance.now()*.00025;
+    const radius=clamp(innerWidth*.18,132,232),t=performance.now()*.00025;
     active.forEach((p,i)=>{const a=t+i/active.length*Math.PI*2;const x=Math.cos(a)*radius,y=Math.sin(a)*radius*.56;p.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0)`});
   };
   motion.add(orbitPills);
@@ -267,4 +299,13 @@
     el.addEventListener('pointermove',e=>{if(!r)return;const x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);el.style.transform=`translate3d(${x*.045}px,${y*.045}px,0)`});
     el.addEventListener('pointerleave',()=>{r=null;el.style.transform=''});
   });
+
+  // Footer contact controls: show people and email, keep phone numbers behind glass actions.
+  const footerContact=qs('.footer-contact');
+  if(footerContact){
+    const phoneIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.8 9 3.2l2 4.6-1.9 1.5a15.2 15.2 0 0 0 5.7 5.7l1.5-1.9 4.6 2-.6 2.4c-.3 1.2-1.4 2-2.6 1.9C10.8 18.8 5.2 13.2 4.5 6.4c-.1-1.2.7-2.3 2.1-2.6Z"/></svg>';
+    const waIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7l-4.2 1.1 1.1-4.1A8 8 0 1 1 20 11.6Z"/><path d="M8.2 7.8c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.6.8c-.2.2-.2.4 0 .7.7 1.2 1.8 2.2 3.1 2.8.3.1.5.1.7-.1l.9-1.1c.2-.2.4-.3.7-.2l2 .9c.3.1.4.3.4.5 0 .5-.3 1.4-.7 1.8-.5.5-1.3.8-2.1.6-1.2-.2-2.9-.9-4.7-2.5-1.5-1.3-2.6-2.9-3.1-4.1-.5-1.2 0-2.2 1-2.7Z"/></svg>';
+    const person=(name,email,tel,wa)=>`<div class="contact-person"><div class="contact-meta"><span class="contact-name">${name}</span><a class="contact-email" href="mailto:${email}">${email}</a></div><div class="contact-actions"><a class="glass-contact-btn" href="tel:${tel}" aria-label="Call ${name}" data-label="Call ${name}">${phoneIcon}</a><a class="glass-contact-btn whatsapp" href="https://wa.me/${wa}" aria-label="WhatsApp ${name}" data-label="WhatsApp ${name}">${waIcon}</a></div></div>`;
+    footerContact.innerHTML=person('Stan','stan@thynkverse.co.za','+27812795215','27826836364')+person('Fouad','fouad@thynkverse.co.za','+27628976939','27628976939');
+  }
 })();
