@@ -1,0 +1,226 @@
+:root{
+  --bg:#0f151d;
+  --bg2:#121a24;
+  --panel:#151e29;
+  --panel2:#192431;
+  --text:#f3f1ed;
+  --muted:#a4a9b0;
+  --muted2:#747c86;
+  --line:rgba(220,228,238,.1);
+}
+
+html,body{
+  background:#0f151d;
+}
+
+body{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.012),transparent 22%),
+    #0f151d;
+}
+
+.page-loader{background:#0f151d}
+.site-header.scrolled{background:rgba(15,21,29,.82)}
+.mobile-menu{background:rgba(15,21,29,.985)}
+
+/* Premium hero: one engineered system core, not multiple glow orbs. */
+.hero{
+  isolation:isolate;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(145,164,188,.11),transparent 34%),
+    linear-gradient(180deg,#121a23 0%,#0f151d 66%,#0f151d 100%);
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.22;
+  background-image:
+    linear-gradient(rgba(205,218,233,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(205,218,233,.035) 1px,transparent 1px);
+  background-size:84px 84px;
+  mask-image:radial-gradient(circle at 50% 45%,#000 0 34%,transparent 76%);
+  -webkit-mask-image:radial-gradient(circle at 50% 45%,#000 0 34%,transparent 76%);
+  transform:translateY(var(--hero-grid-shift,0px));
+  transition:opacity .35s ease;
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  bottom:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(216,226,237,.13),transparent);
+}
+
+.hero-copy{
+  max-width:1080px;
+}
+
+.hero h1{
+  font-weight:560;
+  font-size:clamp(52px,7.6vw,104px);
+  line-height:.97;
+  letter-spacing:-.06em;
+  text-shadow:0 1px 0 rgba(255,255,255,.02);
+}
+
+.accent-line{
+  color:transparent;
+  background:linear-gradient(90deg,#f3f1ed 0%,#f3f1ed 52%,#ff8a5b 82%,#ff6b35 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+
+.hero-copy>p{
+  color:#b0b5bc;
+  max-width:690px;
+}
+
+.hero-status,.scroll-cue{
+  color:#858d97;
+}
+
+/* Repurpose the two existing orb nodes into one layered system core. */
+.hero-orb{
+  position:absolute;
+  left:50%;
+  top:48%;
+  border-radius:50%;
+  filter:none;
+  animation:none;
+  pointer-events:none;
+  will-change:transform,opacity;
+  z-index:1;
+}
+
+.orb-a{
+  width:min(60vmin,620px);
+  height:min(60vmin,620px);
+  min-width:0;
+  min-height:0;
+  opacity:var(--core-a-opacity,.52);
+  transform:translate3d(-50%,-50%,0) scale(var(--core-a-scale,1)) rotate(var(--core-a-rot,0deg));
+  border:1px solid rgba(204,217,232,.14);
+  background:
+    radial-gradient(circle at center,transparent 0 41%,rgba(226,233,241,.07) 41.2% 41.6%,transparent 41.8% 57%,rgba(255,107,53,.22) 57.2% 57.7%,transparent 58%),
+    conic-gradient(from 18deg,
+      transparent 0 7%,rgba(215,225,236,.18) 7.1% 7.35%,transparent 7.5% 21%,
+      rgba(255,107,53,.34) 21.1% 21.45%,transparent 21.6% 47%,
+      rgba(215,225,236,.16) 47.1% 47.4%,transparent 47.6% 73%,
+      rgba(255,138,91,.25) 73.1% 73.45%,transparent 73.6% 100%);
+  box-shadow:
+    inset 0 0 70px rgba(144,164,188,.025),
+    0 0 80px rgba(78,96,116,.06);
+}
+
+.orb-a:before,
+.orb-a:after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  inset:12%;
+  border:1px solid rgba(211,222,234,.1);
+}
+
+.orb-a:after{
+  inset:27%;
+  border-style:dashed;
+  border-color:rgba(255,107,53,.22);
+}
+
+.orb-b{
+  width:min(32vmin,340px);
+  height:min(32vmin,340px);
+  min-width:0;
+  min-height:0;
+  opacity:var(--core-b-opacity,.68);
+  transform:translate3d(calc(-50% + var(--core-b-x,0px)),calc(-50% + var(--core-b-y,0px)),0) scale(var(--core-b-scale,1)) rotate(var(--core-b-rot,0deg));
+  border:1px solid rgba(229,235,242,.18);
+  background:
+    radial-gradient(circle at 46% 42%,rgba(255,255,255,.08),transparent 16%),
+    radial-gradient(circle at center,#192330 0 18%,transparent 18.5% 36%,rgba(255,107,53,.14) 36.5% 37%,transparent 37.5%),
+    conic-gradient(from -10deg,rgba(255,255,255,.02),rgba(255,107,53,.11),rgba(255,255,255,.02),rgba(120,139,163,.1),rgba(255,255,255,.02));
+  box-shadow:
+    inset 0 0 54px rgba(255,255,255,.025),
+    0 0 55px rgba(255,107,53,.045);
+}
+
+.orb-b:before{
+  content:"";
+  position:absolute;
+  inset:31%;
+  border:1px solid rgba(255,138,91,.38);
+  border-radius:42%;
+  transform:rotate(45deg);
+  box-shadow:0 0 26px rgba(255,107,53,.08);
+}
+
+.orb-b:after{
+  content:"THYNK / CORE";
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  color:rgba(232,237,243,.62);
+  font:600 8px var(--display);
+  letter-spacing:.18em;
+  white-space:nowrap;
+}
+
+/* Keep content solid while the visual system moves around it. */
+.hero-line{
+  will-change:opacity,transform;
+}
+
+/* Reduce motion friction and make the method sequence feel more deliberate. */
+.forming-section{height:480vh}
+.forming-letter{
+  filter:blur(4px);
+  transition:transform .78s var(--ease),opacity .62s,filter .62s;
+}
+
+.quiet-panel,.manifesto{
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.012) 48%,transparent);
+}
+
+.world-card,
+.workflow-shell,
+.showcase-card,
+.industry-card,
+.proof-grid article{
+  border-color:rgba(218,227,238,.1);
+}
+
+.world-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.042),rgba(255,255,255,.014));
+}
+
+/* Native cursor + responsive surfaces feel smoother than a delayed custom cursor. */
+.cursor{display:none!important}
+
+/* Water is now a workflow metaphor, not a global hero effect. */
+#liquidCanvas{opacity:.72}
+
+@media (max-width:900px){
+  .hero:before{background-size:62px 62px;opacity:.16}
+  .orb-a{width:min(82vw,520px);height:min(82vw,520px);opacity:.34}
+  .orb-b{width:min(46vw,280px);height:min(46vw,280px);opacity:.5}
+  .hero h1{font-size:clamp(48px,13vw,82px)}
+}
+
+@media (max-width:640px){
+  .hero{padding-top:132px}
+  .orb-a{top:45%;opacity:.25}
+  .orb-b{top:45%;opacity:.38}
+  .hero-status{max-width:68%;line-height:1.45}
+  .scroll-cue span{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .hero-orb{transform:translate3d(-50%,-50%,0)!important}
+}
