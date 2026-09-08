@@ -1,0 +1,229 @@
+/* Thynkverse v2.2 — Living UI layer
+   Inspired by experimental studio interactions, rebuilt as an original Thynkverse system. */
+
+body.living-ui{
+  --living-glow:rgba(255,107,53,.16);
+  --living-cool:rgba(169,191,218,.16);
+}
+
+/* Context cursor: fast, purposeful, no trailing-dot gimmick. */
+@media (pointer:fine) and (min-width:901px){
+  body.living-cursor,
+  body.living-cursor a,
+  body.living-cursor button,
+  body.living-cursor .interactive-card,
+  body.living-cursor .showcase-visual{cursor:none!important}
+  body.living-cursor .cursor{display:block!important;opacity:1;visibility:visible}
+  .cursor-ring{
+    width:42px;height:42px;margin:-21px 0 0 -21px;
+    border:1px solid rgba(232,238,244,.38);
+    background:rgba(15,21,29,.08);
+    backdrop-filter:blur(5px);
+    transition:width .2s var(--ease),height .2s var(--ease),margin .2s var(--ease),background .2s,border-color .2s,opacity .2s;
+  }
+  .cursor-core{width:5px;height:5px;margin:-2.5px;background:var(--orange)}
+  .cursor-label{
+    position:absolute;left:0;top:0;
+    transform:translate(-50%,-50%);
+    opacity:0;color:#fff;
+    font:650 9px var(--display);letter-spacing:.14em;text-transform:uppercase;
+    white-space:nowrap;pointer-events:none;
+    transition:opacity .14s;
+  }
+  .cursor.context .cursor-ring{
+    width:82px;height:82px;margin:-41px 0 0 -41px;
+    border-color:rgba(255,138,91,.42);
+    background:rgba(255,107,53,.88);
+    box-shadow:0 12px 42px rgba(255,107,53,.2);
+  }
+  .cursor.context .cursor-core{opacity:0}
+  .cursor.context .cursor-label{opacity:1}
+  .cursor.down .cursor-ring{transform:scale(.88)}
+}
+
+/* Homepage worlds feel like live product surfaces, not static agency cards. */
+.world-card.living-world{
+  isolation:isolate;
+  min-height:360px;
+  background:
+    radial-gradient(circle at var(--mx,78%) var(--my,22%),rgba(255,107,53,.09),transparent 34%),
+    linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+  transition:transform .45s var(--ease),border-color .35s,background .35s,box-shadow .35s;
+}
+.world-card.living-world:hover,
+.world-card.living-world:focus-visible{
+  border-color:rgba(255,138,91,.34);
+  box-shadow:0 24px 70px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025);
+}
+.world-card.living-world .world-symbol,
+.world-card.living-world h3,
+.world-card.living-world p,
+.world-card.living-world .card-arrow,
+.world-card.living-world .world-no{z-index:3}
+
+.world-life{
+  position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;
+  opacity:.68;transition:opacity .45s var(--ease),transform .6s var(--ease);
+}
+.living-world:hover .world-life,.living-world:focus-visible .world-life{opacity:1;transform:scale(1.025)}
+.world-life:before{
+  content:"";position:absolute;inset:20px;border:1px solid rgba(219,228,239,.045);border-radius:20px;
+}
+.life-scan{
+  position:absolute;left:-30%;top:0;width:18%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,138,91,.12),transparent);
+  transform:skewX(-12deg);animation:lifeScan 8s linear infinite;
+}
+@keyframes lifeScan{to{left:125%}}
+
+.life-brand .glyph{
+  position:absolute;font:650 clamp(28px,4vw,60px) var(--display);letter-spacing:-.06em;
+  color:rgba(231,237,244,.055);transform:translate3d(var(--gx),var(--gy),0) rotate(var(--gr));
+  transition:transform .8s var(--ease),color .45s;
+}
+.living-world:hover .life-brand .glyph:nth-child(odd){transform:translate3d(calc(var(--gx) + 10px),calc(var(--gy) - 8px),0) rotate(0deg);color:rgba(255,107,53,.12)}
+.life-product .ui-chip{
+  position:absolute;width:82px;height:48px;border:1px solid rgba(214,226,239,.09);border-radius:14px;
+  background:rgba(203,216,230,.025);box-shadow:0 10px 30px rgba(0,0,0,.12);
+  transform:translate3d(var(--ux),var(--uy),0) rotate(var(--ur));
+  animation:chipFloat 7s ease-in-out infinite var(--ud);
+}
+.life-product .ui-chip:before{content:"";position:absolute;left:12px;right:26px;top:13px;height:4px;border-radius:4px;background:rgba(255,255,255,.12);box-shadow:0 10px 0 rgba(255,255,255,.06)}
+@keyframes chipFloat{50%{transform:translate3d(var(--ux),calc(var(--uy) - 10px),0) rotate(0deg)}}
+.life-rpa .track,.life-system .link{
+  position:absolute;height:1px;transform-origin:left center;
+  background:linear-gradient(90deg,transparent,rgba(255,107,53,.24),rgba(219,228,239,.08));
+}
+.life-rpa .packet{
+  position:absolute;width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 16px rgba(255,107,53,.65);
+  offset-path:path("M 30 260 C 130 150, 210 255, 320 115 C 400 40, 500 120, 600 65");
+  animation:packetRun 4.5s linear infinite var(--pd);
+}
+@keyframes packetRun{to{offset-distance:100%}}
+.life-system .node{
+  position:absolute;width:9px;height:9px;border-radius:50%;background:#9baabc;border:2px solid #1a2430;box-shadow:0 0 0 1px rgba(214,226,239,.14);
+}
+.life-system .node.active{background:var(--orange);box-shadow:0 0 18px rgba(255,107,53,.5)}
+.life-industry .ring{
+  position:absolute;border:1px solid rgba(214,226,239,.08);border-radius:50%;left:65%;top:50%;transform:translate(-50%,-50%);
+  width:var(--rs);height:var(--rs);animation:ringBreath 5.5s ease-in-out infinite var(--rd);
+}
+.life-industry .ring:nth-child(2){border-color:rgba(255,107,53,.11)}
+@keyframes ringBreath{50%{transform:translate(-50%,-50%) scale(1.08);opacity:.45}}
+
+/* Dot-to-Dot-inspired service reveal concept, rebuilt as Thynkverse "living worlds". */
+.living-services{
+  padding:110px clamp(24px,5vw,72px) 135px;
+  position:relative;z-index:3;
+}
+.living-services-head{
+  max-width:var(--max);margin:0 auto 46px;display:grid;grid-template-columns:1fr .7fr;gap:60px;align-items:end;
+}
+.living-services-head h2{
+  font:560 clamp(38px,5.2vw,72px)/1 var(--display);letter-spacing:-.055em;margin-top:15px;
+}
+.living-services-head>p{color:#9098a1;line-height:1.75;max-width:520px}
+.living-service-list{max-width:var(--max);margin:auto;border-bottom:1px solid rgba(218,228,239,.11)}
+.living-service-row{
+  --row-accent:var(--orange);
+  position:relative;display:grid;grid-template-columns:80px minmax(0,1fr) minmax(230px,340px) 48px;
+  gap:22px;align-items:center;min-height:122px;padding:22px 16px;
+  border-top:1px solid rgba(218,228,239,.11);text-decoration:none;overflow:hidden;
+  transition:min-height .62s var(--ease),padding .62s var(--ease),background .45s,border-color .35s;
+  isolation:isolate;
+}
+.living-service-row:before{
+  content:"";position:absolute;inset:0;z-index:-2;opacity:0;
+  background:linear-gradient(90deg,rgba(255,107,53,.08),transparent 38%,rgba(148,169,194,.04));
+  transition:opacity .45s;
+}
+.living-service-row:after{
+  content:"";position:absolute;left:0;top:0;width:0;height:1px;background:linear-gradient(90deg,var(--orange),rgba(255,138,91,.3),transparent);
+  transition:width .65s var(--ease);
+}
+.living-service-row:hover,
+.living-service-row:focus-visible,
+.living-service-row.active{min-height:224px;padding-top:34px;padding-bottom:34px}
+.living-service-row:hover:before,.living-service-row:focus-visible:before,.living-service-row.active:before{opacity:1}
+.living-service-row:hover:after,.living-service-row:focus-visible:after,.living-service-row.active:after{width:100%}
+.service-index{font:650 10px var(--display);letter-spacing:.16em;color:#69737d;align-self:start;padding-top:8px}
+.service-main h3{font:570 clamp(30px,4vw,58px)/1 var(--display);letter-spacing:-.05em;transition:transform .5s var(--ease)}
+.living-service-row:hover .service-main h3,.living-service-row.active .service-main h3{transform:translateX(10px)}
+.service-kicker{display:block;color:var(--orange);font:650 9px var(--display);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+.service-detail{max-height:0;opacity:0;overflow:hidden;transform:translateY(12px);transition:max-height .55s var(--ease),opacity .4s,transform .5s var(--ease)}
+.living-service-row:hover .service-detail,
+.living-service-row:focus-visible .service-detail,
+.living-service-row.active .service-detail{max-height:92px;opacity:1;transform:none}
+.service-detail p{color:#a0a7af;line-height:1.65;font-size:13px;margin-top:14px;max-width:610px}
+.service-visual{position:relative;height:86px;transition:height .6s var(--ease),transform .6s var(--ease),opacity .4s;opacity:.58}
+.living-service-row:hover .service-visual,.living-service-row.active .service-visual{height:152px;opacity:1;transform:translateX(-8px)}
+.service-arrow{width:42px;height:42px;border:1px solid rgba(218,228,239,.12);border-radius:50%;display:grid;place-items:center;color:var(--orange);transition:transform .45s var(--ease),background .35s,border-color .35s}
+.living-service-row:hover .service-arrow,.living-service-row.active .service-arrow{transform:rotate(45deg);background:var(--orange);color:#fff;border-color:transparent}
+
+/* Four original micro-scenes used in the reveal list. */
+.visual-brand .brand-letter{position:absolute;font:650 42px var(--display);color:rgba(230,237,244,.08);transition:.7s var(--ease)}
+.visual-brand .brand-letter:nth-child(1){left:8%;top:4%}.visual-brand .brand-letter:nth-child(2){left:30%;top:34%}.visual-brand .brand-letter:nth-child(3){right:26%;top:8%}.visual-brand .brand-letter:nth-child(4){right:7%;bottom:5%;color:rgba(255,107,53,.18)}
+.living-service-row:hover .visual-brand .brand-letter:nth-child(1){transform:translate(20px,18px) rotate(-5deg)}
+.living-service-row:hover .visual-brand .brand-letter:nth-child(2){transform:translate(34px,-12px)}
+.living-service-row:hover .visual-brand .brand-letter:nth-child(3){transform:translate(-20px,24px)}
+.living-service-row:hover .visual-brand .brand-letter:nth-child(4){transform:translate(-44px,-20px) rotate(6deg)}
+.visual-product .product-window{position:absolute;border:1px solid rgba(218,228,239,.11);border-radius:14px;background:rgba(228,235,243,.025);transition:.6s var(--ease);box-shadow:0 14px 34px rgba(0,0,0,.15)}
+.visual-product .product-window:nth-child(1){width:58%;height:70%;left:3%;top:13%}.visual-product .product-window:nth-child(2){width:42%;height:55%;right:2%;top:5%}.visual-product .product-window:nth-child(3){width:34%;height:43%;right:12%;bottom:1%;border-color:rgba(255,107,53,.18)}
+.living-service-row:hover .visual-product .product-window:nth-child(1){transform:translate(-7px,8px)}
+.living-service-row:hover .visual-product .product-window:nth-child(2){transform:translate(9px,-8px)}
+.living-service-row:hover .visual-product .product-window:nth-child(3){transform:translate(5px,10px)}
+.visual-auto:before{content:"";position:absolute;left:4%;right:4%;top:50%;height:1px;background:linear-gradient(90deg,rgba(218,228,239,.06),rgba(255,107,53,.28),rgba(218,228,239,.06))}
+.visual-auto .auto-node{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);background:#1a2532;border:1px solid rgba(218,228,239,.18)}
+.visual-auto .auto-node:nth-child(1){left:10%}.visual-auto .auto-node:nth-child(2){left:38%}.visual-auto .auto-node:nth-child(3){left:67%}.visual-auto .auto-node:nth-child(4){left:91%;background:var(--orange);box-shadow:0 0 18px rgba(255,107,53,.5)}
+.visual-auto .auto-packet{position:absolute;left:8%;top:calc(50% - 4px);width:8px;height:8px;border-radius:50%;background:var(--orange);animation:autoPacket 3.2s var(--ease) infinite}
+@keyframes autoPacket{0%{left:8%;opacity:0}12%{opacity:1}90%{left:90%;opacity:1}100%{left:90%;opacity:0}}
+.visual-system .sys-core{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px;border:1px solid rgba(255,107,53,.26);border-radius:50%;display:grid;place-items:center;color:var(--orange);font:650 8px var(--display);letter-spacing:.1em}
+.visual-system .sys-node{position:absolute;width:10px;height:10px;border:1px solid rgba(218,228,239,.22);background:#18232f;border-radius:50%}
+.visual-system .sys-node:nth-child(2){left:8%;top:20%}.visual-system .sys-node:nth-child(3){left:17%;bottom:10%}.visual-system .sys-node:nth-child(4){right:16%;top:9%}.visual-system .sys-node:nth-child(5){right:7%;bottom:19%}
+.visual-system .sys-line{position:absolute;left:50%;top:50%;height:1px;width:40%;transform-origin:left center;background:linear-gradient(90deg,rgba(255,107,53,.2),rgba(218,228,239,.04));animation:sysPulse 3.8s ease-in-out infinite}
+.visual-system .sys-line.l1{transform:rotate(-148deg)}.visual-system .sys-line.l2{transform:rotate(146deg)}.visual-system .sys-line.l3{transform:rotate(-32deg)}.visual-system .sys-line.l4{transform:rotate(28deg)}
+@keyframes sysPulse{50%{opacity:.28}}
+
+/* Existing capability boxes reveal with depth and pointer light. */
+.capability-card.living-cap{
+  --spot-x:50%;--spot-y:40%;
+  opacity:0;transform:translateY(28px);clip-path:inset(12% 0 0 0 round 24px);
+  background:
+    radial-gradient(circle at var(--spot-x) var(--spot-y),rgba(255,107,53,.08),transparent 30%),
+    linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.01));
+  transition:opacity .7s var(--ease),transform .7s var(--ease),clip-path .8s var(--ease),border-color .35s,box-shadow .35s;
+}
+.capability-card.living-cap.is-in{opacity:1;transform:none;clip-path:inset(0 round 24px)}
+.capability-card.living-cap:hover{box-shadow:0 20px 55px rgba(0,0,0,.2);border-color:rgba(255,138,91,.28)}
+.capability-card.living-cap .cap-icon{transition:transform .55s var(--ease),background .35s,border-color .35s}
+.capability-card.living-cap:hover .cap-icon{transform:rotate(-5deg) scale(1.06);background:rgba(255,107,53,.08);border-color:rgba(255,138,91,.4)}
+.capability-card.living-cap li{transition:transform .35s var(--ease),color .35s}
+.capability-card.living-cap:hover li:nth-child(1){transform:translateX(4px);color:#aab1b8}
+.capability-card.living-cap:hover li:nth-child(2){transform:translateX(8px);color:#aab1b8}
+.capability-card.living-cap:hover li:nth-child(3){transform:translateX(12px);color:#aab1b8}
+
+@media(max-width:900px){
+  .living-services-head{grid-template-columns:1fr;gap:20px}
+  .living-service-row{grid-template-columns:52px 1fr 42px;min-height:118px}
+  .service-visual{grid-column:2/4;height:0;opacity:0}
+  .living-service-row.active{min-height:292px}
+  .living-service-row.active .service-visual{height:112px;opacity:1;margin-top:6px}
+  .service-arrow{grid-column:3;grid-row:1}
+  .world-card.living-world{min-height:330px}
+}
+
+@media(max-width:620px){
+  .living-services{padding:80px 20px 100px}
+  .living-service-row{padding-left:4px;padding-right:4px;gap:12px;grid-template-columns:38px 1fr 38px}
+  .living-service-row.active{min-height:316px}
+  .service-main h3{font-size:34px}
+  .service-detail p{font-size:12px}
+  .service-index{font-size:8px}
+  .service-arrow{width:36px;height:36px}
+  .world-life{opacity:.5}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .life-scan,.life-product .ui-chip,.life-rpa .packet,.life-industry .ring,.visual-auto .auto-packet,.visual-system .sys-line{animation:none!important}
+  .capability-card.living-cap{opacity:1!important;transform:none!important;clip-path:none!important}
+}

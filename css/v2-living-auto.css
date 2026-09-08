@@ -1,0 +1,178 @@
+/* v2.2 living surfaces — applies to existing Thynkverse markup without changing page structure */
+
+/* Homepage world cards: subtle autonomous motion + stronger hover reveal */
+.world-card{
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at var(--mx,72%) var(--my,28%),rgba(255,107,53,.09),transparent 32%),
+    linear-gradient(145deg,rgba(255,255,255,.044),rgba(255,255,255,.012));
+}
+.world-card::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  width:46%;
+  height:170%;
+  left:-65%;
+  top:-35%;
+  transform:rotate(14deg);
+  background:linear-gradient(90deg,transparent,rgba(188,207,228,.035),rgba(255,125,72,.08),transparent);
+  animation:tvWorldScan 8.5s linear infinite;
+  pointer-events:none;
+}
+.world-card:nth-child(2)::after{animation-delay:-1.8s}
+.world-card:nth-child(3)::after{animation-delay:-3.6s}
+.world-card:nth-child(4)::after{animation-delay:-5.1s}
+.world-card:nth-child(5)::after{animation-delay:-6.8s}
+@keyframes tvWorldScan{0%{left:-65%}60%,100%{left:130%}}
+.world-card>*{position:relative;z-index:2}
+.world-card .world-symbol{
+  overflow:visible;
+  transition:transform .55s var(--ease),border-color .4s,background .4s,box-shadow .4s;
+}
+.world-card .world-symbol::before{
+  content:"";
+  position:absolute;
+  inset:-18px;
+  border-radius:50%;
+  border:1px solid rgba(180,201,223,.065);
+  animation:tvOrbitBreath 5.4s ease-in-out infinite;
+}
+.world-card:nth-child(even) .world-symbol::before{animation-delay:-2.2s}
+@keyframes tvOrbitBreath{50%{transform:scale(1.13) rotate(8deg);opacity:.35}}
+.world-card:hover .world-symbol{
+  transform:translateY(-5px) rotate(-4deg) scale(1.055);
+  border-color:rgba(255,138,91,.45);
+  background:rgba(255,107,53,.055);
+  box-shadow:0 0 0 10px rgba(255,107,53,.025),0 18px 48px rgba(0,0,0,.18);
+}
+.world-card h3{transition:transform .55s var(--ease),color .35s}
+.world-card p{transition:transform .55s var(--ease),color .35s,opacity .35s}
+.world-card .card-arrow{transition:transform .5s var(--ease),letter-spacing .35s}
+.world-card:hover h3{transform:translateX(8px)}
+.world-card:hover p{transform:translateX(4px);color:#aab1b9}
+.world-card:hover .card-arrow{transform:translateX(9px);letter-spacing:.12em}
+
+/* Add different life signatures to each world without decorative stock art. */
+.world-card:nth-child(1){
+  background-image:
+    radial-gradient(circle at 80% 28%,rgba(255,107,53,.09),transparent 29%),
+    repeating-linear-gradient(90deg,transparent 0 36px,rgba(205,220,236,.018) 37px 38px),
+    linear-gradient(145deg,rgba(255,255,255,.044),rgba(255,255,255,.012));
+}
+.world-card:nth-child(2)::before{
+  content:"";position:absolute;right:7%;top:13%;width:31%;height:31%;z-index:1;border:1px solid rgba(197,216,236,.065);border-radius:17px;
+  box-shadow:-28px 38px 0 -1px rgba(16,25,35,.75),-28px 38px 0 0 rgba(197,216,236,.055),-55px 78px 0 -1px rgba(16,25,35,.7),-55px 78px 0 0 rgba(255,107,53,.07);
+  transform:rotate(5deg);animation:tvUiStack 6s ease-in-out infinite;
+}
+@keyframes tvUiStack{50%{transform:translate(-6px,7px) rotate(1deg)}}
+.world-card:nth-child(3){
+  background-image:linear-gradient(145deg,rgba(255,107,53,.075),rgba(255,255,255,.014));
+}
+.world-card:nth-child(3)::before{
+  content:"";position:absolute;right:7%;top:18%;width:36%;height:44%;z-index:1;
+  background:
+    radial-gradient(circle at 8% 72%,var(--orange) 0 4px,transparent 5px),
+    radial-gradient(circle at 48% 36%,#8e9dac 0 4px,transparent 5px),
+    radial-gradient(circle at 88% 58%,var(--orange) 0 4px,transparent 5px),
+    linear-gradient(151deg,transparent 8%,rgba(255,107,53,.19) 8.5% 9%,transparent 9.5% 48%,rgba(164,185,207,.11) 48.5% 49%,transparent 49.5%);
+  opacity:.55;animation:tvFlowPulse 4.3s ease-in-out infinite;
+}
+@keyframes tvFlowPulse{50%{opacity:1;transform:translateX(-5px)}}
+.world-card:nth-child(4)::before{
+  content:"";position:absolute;right:9%;top:17%;width:32%;aspect-ratio:1;z-index:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,107,53,.18) 0 4%,transparent 5% 23%,rgba(175,195,215,.06) 24% 24.7%,transparent 25% 46%,rgba(175,195,215,.055) 47% 47.7%,transparent 48%);
+  animation:tvSystemTurn 15s linear infinite;
+}
+@keyframes tvSystemTurn{to{transform:rotate(360deg)}}
+.world-card:nth-child(5)::before{
+  content:"";position:absolute;right:6%;top:9%;width:36%;height:78%;z-index:1;opacity:.45;
+  background:
+    linear-gradient(90deg,transparent 49.6%,rgba(193,211,230,.08) 50%,transparent 50.4%),
+    linear-gradient(0deg,transparent 49.6%,rgba(193,211,230,.08) 50%,transparent 50.4%),
+    radial-gradient(circle at center,transparent 0 24%,rgba(255,107,53,.11) 24.5% 25%,transparent 25.5% 45%,rgba(193,211,230,.055) 45.5% 46%,transparent 46.5%);
+  border-radius:50%;animation:tvIndustryBreath 7s ease-in-out infinite;
+}
+@keyframes tvIndustryBreath{50%{transform:scale(1.06);opacity:.7}}
+
+/* Services page: the cards reveal progressively and behave like interactive objects. */
+body[data-page="solutions"] .capability-grid{
+  perspective:1300px;
+}
+body[data-page="solutions"] .capability-card{
+  --spot-x:70%;--spot-y:20%;
+  transform-origin:50% 100%;
+  background:
+    radial-gradient(circle at var(--spot-x) var(--spot-y),rgba(255,107,53,.075),transparent 31%),
+    linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.01));
+  box-shadow:0 16px 45px rgba(0,0,0,.09);
+  animation:tvCardReveal linear both;
+  animation-timeline:view();
+  animation-range:entry 3% cover 28%;
+}
+@keyframes tvCardReveal{
+  from{opacity:.18;transform:translateY(48px) rotateX(8deg) scale(.965);filter:blur(4px);clip-path:inset(12% 0 0 0 round 24px)}
+  to{opacity:1;transform:none;filter:none;clip-path:inset(0 round 24px)}
+}
+body[data-page="solutions"] .capability-card::before{
+  content:"";position:absolute;left:-35%;top:0;width:26%;height:100%;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,128,74,.1),transparent);
+  transform:skewX(-12deg);transition:left .85s var(--ease);
+}
+body[data-page="solutions"] .capability-card:hover::before{left:125%}
+body[data-page="solutions"] .capability-card:hover{
+  transform:translateY(-7px) scale(1.012);
+  border-color:rgba(255,138,91,.34);
+  box-shadow:0 28px 70px rgba(0,0,0,.21);
+}
+body[data-page="solutions"] .capability-card .cap-icon{
+  transition:transform .55s var(--ease),border-color .35s,background .35s,box-shadow .35s;
+}
+body[data-page="solutions"] .capability-card:hover .cap-icon{
+  transform:rotate(-5deg) translateY(-3px) scale(1.065);
+  border-color:rgba(255,138,91,.42);background:rgba(255,107,53,.07);box-shadow:0 12px 32px rgba(255,107,53,.08);
+}
+body[data-page="solutions"] .capability-card h3{transition:transform .48s var(--ease)}
+body[data-page="solutions"] .capability-card p{transition:color .35s,transform .48s var(--ease)}
+body[data-page="solutions"] .capability-card li{transition:transform .38s var(--ease),color .35s}
+body[data-page="solutions"] .capability-card:hover h3{transform:translateX(6px)}
+body[data-page="solutions"] .capability-card:hover p{transform:translateX(3px);color:#a1a9b1}
+body[data-page="solutions"] .capability-card:hover li:nth-child(1){transform:translateX(4px);color:#9fa7af}
+body[data-page="solutions"] .capability-card:hover li:nth-child(2){transform:translateX(8px);color:#9fa7af}
+body[data-page="solutions"] .capability-card:hover li:nth-child(3){transform:translateX(12px);color:#9fa7af}
+
+/* Process rows open visually as they enter rather than appearing as one rigid block. */
+body[data-page="solutions"] .process-step{
+  animation:tvStepReveal linear both;
+  animation-timeline:view();
+  animation-range:entry 0% cover 25%;
+}
+body[data-page="solutions"] .process-step:nth-child(2){animation-range:entry 4% cover 28%}
+body[data-page="solutions"] .process-step:nth-child(3){animation-range:entry 8% cover 31%}
+body[data-page="solutions"] .process-step:nth-child(4){animation-range:entry 12% cover 34%}
+@keyframes tvStepReveal{from{opacity:.15;transform:translateY(36px)}to{opacity:1;transform:none}}
+body[data-page="solutions"] .process-step{transition:background .35s,transform .4s var(--ease)}
+body[data-page="solutions"] .process-step:hover{background:rgba(255,107,53,.035);transform:translateY(-3px)}
+
+/* Section headings also reveal with controlled editorial motion. */
+body[data-page="solutions"] .page-section .section-head h2{
+  animation:tvHeadingReveal linear both;
+  animation-timeline:view();
+  animation-range:entry 0% cover 28%;
+}
+@keyframes tvHeadingReveal{from{opacity:.2;transform:translateY(32px);letter-spacing:-.035em}to{opacity:1;transform:none;letter-spacing:-.05em}}
+
+/* Keep motion alive but not exhausting. */
+@media(max-width:900px){
+  .world-card::after{opacity:.6}
+  .world-card:nth-child(2)::before,.world-card:nth-child(3)::before,.world-card:nth-child(4)::before,.world-card:nth-child(5)::before{opacity:.38}
+}
+@media(max-width:620px){
+  .world-card::after{animation-duration:11s}
+  body[data-page="solutions"] .capability-card{animation-range:entry 0% cover 18%}
+}
+@media(prefers-reduced-motion:reduce){
+  .world-card::after,.world-card .world-symbol::before,.world-card:nth-child(2)::before,.world-card:nth-child(3)::before,.world-card:nth-child(4)::before,.world-card:nth-child(5)::before{animation:none!important}
+  body[data-page="solutions"] .capability-card,body[data-page="solutions"] .process-step,body[data-page="solutions"] .page-section .section-head h2{animation:none!important;opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}
+}
