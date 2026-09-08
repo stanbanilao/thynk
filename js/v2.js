@@ -8,6 +8,13 @@
   const memory=navigator.deviceMemory||4;
   const quality=coarse||hc<=4||memory<=4?'medium':'high';
 
+  // Load the v2.1 premium layer before the page loader leaves.
+  const premiumCss=document.createElement('link');
+  premiumCss.rel='stylesheet';
+  premiumCss.href='css/v2-premium.css';
+  document.head.appendChild(premiumCss);
+  qs('meta[name="theme-color"]')?.setAttribute('content','#0f151d');
+
   const loader=qs('#pageLoader');
   window.addEventListener('load',()=>setTimeout(()=>loader?.classList.add('hide'),180),{once:true});
   setTimeout(()=>loader?.classList.add('hide'),2500);
@@ -29,46 +36,52 @@
   updateHeader();
   addEventListener('scroll',updateHeader,{passive:true});
 
+  // One-time section reveals avoid the visible/invisible toggle friction on scroll-back.
   qsa('.worlds,.workflow,.showcase,.industries-preview,.proof,.stillness,.cta').forEach(el=>el.classList.add('reveal'));
-  const revealIO=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('visible',e.isIntersecting)),{threshold:.08,rootMargin:'0px 0px -6%'});
+  const revealIO=new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      revealIO.unobserve(e.target);
+    }
+  }),{threshold:.08,rootMargin:'0px 0px -6%'});
   qsa('.reveal').forEach(el=>revealIO.observe(el));
 
-  const interactive=qsa('a,button,.interactive-card,.showcase-visual');
+  // Keep the native cursor. Interaction happens on the surfaces, not by dragging a delayed cursor ring.
   const cursor=qs('#cursor');
-  if(cursor&&!coarse&&!reduced){
-    const ring=qs('.cursor-ring',cursor), core=qs('.cursor-core',cursor);
-    let tx=innerWidth/2,ty=innerHeight/2,rx=tx,ry=ty;
-    addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY},{passive:true});
-    interactive.forEach(el=>{
-      el.addEventListener('pointerenter',()=>cursor.classList.add('hover'));
-      el.addEventListener('pointerleave',()=>cursor.classList.remove('hover'));
-    });
-    const drawCursor=()=>{
-      rx+=(tx-rx)*.16;ry+=(ty-ry)*.16;
-      ring.style.transform=`translate3d(${rx}px,${ry}px,0)`;
-      core.style.transform=`translate3d(${tx}px,${ty}px,0)`;
-    };
-    window.__thynkCursor=drawCursor;
-  }
+  if(cursor)cursor.setAttribute('aria-hidden','true');
 
   qsa('.interactive-card').forEach(card=>{
-    if(coarse)return;
+    if(coarse||quality!=='high')return;
+    let r=null;
+    card.addEventListener('pointerenter',()=>{r=card.getBoundingClientRect()});
     card.addEventListener('pointermove',e=>{
-      const r=card.getBoundingClientRect();
+      if(!r)return;
       const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
-      card.style.setProperty('--mx',`${x*100}%`);card.style.setProperty('--my',`${y*100}%`);
-      card.style.transform=`perspective(900px) rotateX(${(0.5-y)*4}deg) rotateY(${(x-0.5)*5}deg) translateY(-3px)`;
+      card.style.setProperty('--mx',`${x*100}%`);
+      card.style.setProperty('--my',`${y*100}%`);
+      card.style.transform=`perspective(1000px) rotateX(${(0.5-y)*2.4}deg) rotateY(${(x-0.5)*2.8}deg) translateY(-2px)`;
     });
-    card.addEventListener('pointerleave',()=>card.style.transform='');
+    card.addEventListener('pointerleave',()=>{r=null;card.style.transform=''});
   });
+
   qsa('.showcase-visual').forEach(el=>{
-    if(coarse)return;
+    if(coarse||quality!=='high')return;
+    let r=null;
+    el.addEventListener('pointerenter',()=>{r=el.getBoundingClientRect()});
     el.addEventListener('pointermove',e=>{
-      const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
-      el.style.setProperty('--rx',`${(0.5-y)*2.7}deg`);el.style.setProperty('--ry',`${(x-.5)*3.2}deg`);
+      if(!r)return;
+      const x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+      el.style.setProperty('--rx',`${(0.5-y)*1.8}deg`);
+      el.style.setProperty('--ry',`${(x-.5)*2.1}deg`);
     });
-    el.addEventListener('pointerleave',()=>{el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')});
+    el.addEventListener('pointerleave',()=>{r=null;el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')});
   });
+
+  // Premium public-facing copy: evidence-led, without internal/version language.
+  const showcaseIntro=qs('.showcase .split-head>p');
+  if(showcaseIntro)showcaseIntro.textContent='Product-style demonstrations of the systems, interfaces and digital experiences Thynkverse shapes around real work.';
+  const proofIntro=qs('.proof .split-head>p');
+  if(proofIntro)proofIntro.textContent='We prefer project evidence: interfaces, workflow changes, before-and-after processes and verified outcomes when they are documented.';
 
   const words=[
     {word:'THYNK',caption:'Start with the real business problem before choosing the technology.',pills:['Listen','Map','Question','Focus']},
@@ -78,6 +91,7 @@
     {word:'AUTOMATE',caption:'Give repeatable rules-based work to digital workers, with human review where it matters.',pills:['RPA','Checks','Docs','Reports','Exceptions']},
     {word:'EVOLVE',caption:'Measure what improved, then keep refining instead of treating launch as the finish line.',pills:['Measure','Learn','Improve','Scale']}
   ];
+
   const formingStage=qs('#formingStage'), formingCaption=qs('#formingCaption'), formingProgress=qs('#formingProgress'), formingSection=qs('.forming-section');
   const formedWords=[]; const pills=[];
   if(formingStage&&formingProgress){
@@ -86,11 +100,11 @@
       [...item.word].forEach((ch,li)=>{
         const span=document.createElement('span');span.className='forming-letter';span.textContent=ch;
         const angle=(li/item.word.length)*Math.PI*2 + wi*.17;
-        const dist=150+(li%3)*65+wi*6;
+        const dist=138+(li%3)*54+wi*5;
         span.style.setProperty('--x',`${Math.cos(angle)*dist}px`);
-        span.style.setProperty('--y',`${Math.sin(angle)*dist*.72}px`);
-        span.style.setProperty('--r',`${((li*29+wi*17)%90)-45}deg`);
-        span.style.setProperty('--s',`${.38+(li%4)*.09}`);
+        span.style.setProperty('--y',`${Math.sin(angle)*dist*.7}px`);
+        span.style.setProperty('--r',`${((li*29+wi*17)%72)-36}deg`);
+        span.style.setProperty('--s',`${.46+(li%4)*.08}`);
         word.appendChild(span);
       });
       formingStage.appendChild(word);formedWords.push(word);
@@ -100,7 +114,7 @@
       });
     });
   }
-  let formingState={index:0,local:0};
+
   const updateForming=()=>{
     if(!formingSection||!formedWords.length)return;
     const rect=formingSection.getBoundingClientRect();
@@ -108,17 +122,17 @@
     const progress=clamp(-rect.top/total,0,.9999);
     const raw=progress*words.length;
     const idx=clamp(Math.floor(raw),0,words.length-1);const local=raw-idx;
-    formingState={index:idx,local};
     formedWords.forEach((word,wi)=>{
       word.classList.toggle('active',wi===idx);
-      qsa('.forming-letter',word).forEach((letter,li)=>{
-        const threshold=(li+1)/(qsa('.forming-letter',word).length+1)*.68;
+      const letters=qsa('.forming-letter',word);
+      letters.forEach((letter,li)=>{
+        const threshold=(li+1)/(letters.length+1)*.64;
         letter.classList.toggle('formed',wi<idx||(wi===idx&&local>threshold));
       });
     });
     qsa('#formingProgress i').forEach((d,i)=>d.classList.toggle('active',i===idx));
     if(formingCaption)formingCaption.textContent=words[idx].caption;
-    pills.forEach(p=>p.classList.toggle('show',Number(p.dataset.word)===idx&&local>.58));
+    pills.forEach(p=>p.classList.toggle('show',Number(p.dataset.word)===idx&&local>.6));
   };
   addEventListener('scroll',updateForming,{passive:true});
   addEventListener('resize',updateForming,{passive:true});
@@ -127,7 +141,7 @@
   const workflow=qs('#workflowShell');
   if(workflow){
     const steps=qsa('.workflow-steps div',workflow);let current=0,timer=null;
-    const startFlow=()=>{if(timer)return;timer=setInterval(()=>{current=(current+1)%steps.length;steps.forEach((s,i)=>s.classList.toggle('active',i===current))},1300)};
+    const startFlow=()=>{if(timer)return;timer=setInterval(()=>{current=(current+1)%steps.length;steps.forEach((s,i)=>s.classList.toggle('active',i===current))},1450)};
     const stopFlow=()=>{clearInterval(timer);timer=null};
     new IntersectionObserver(entries=>entries.forEach(e=>e.isIntersecting?startFlow():stopFlow()),{threshold:.3}).observe(workflow);
   }
@@ -138,56 +152,119 @@
     loop(now){const dt=Math.min(40,now-this.last);this.last=now;if(this.running&&!reduced)this.tasks.forEach(fn=>fn(now,dt));requestAnimationFrame(this.loop)}
   }
   const motion=new MotionEngine();
-  if(window.__thynkCursor)motion.add(window.__thynkCursor);
+
+  // Hero behaves like a precision assembly: calm at rest, then layers separate as the camera moves through it.
+  const hero=qs('.hero');
+  const coreA=qs('.orb-a');
+  const coreB=qs('.orb-b');
+  const heroCopy=qs('.hero-copy');
+  const heroStatus=qs('.hero-status');
+  const scrollCue=qs('.scroll-cue');
+  const updateHeroCore=()=>{
+    if(!hero||!coreA||!coreB)return;
+    const rect=hero.getBoundingClientRect();
+    const p=clamp(-rect.top/Math.max(1,rect.height*.9),0,1);
+    const fade=1-clamp((p-.48)/.42,0,1);
+    coreA.style.setProperty('--core-a-scale',(1+p*.72).toFixed(3));
+    coreA.style.setProperty('--core-a-rot',`${(p*46).toFixed(2)}deg`);
+    coreA.style.setProperty('--core-a-opacity',(Math.max(.05,.52*(1-p*.76))).toFixed(3));
+    coreB.style.setProperty('--core-b-scale',(1+p*1.05).toFixed(3));
+    coreB.style.setProperty('--core-b-rot',`${(-p*72).toFixed(2)}deg`);
+    coreB.style.setProperty('--core-b-x',`${(p*38).toFixed(1)}px`);
+    coreB.style.setProperty('--core-b-y',`${(-p*22).toFixed(1)}px`);
+    coreB.style.setProperty('--core-b-opacity',(Math.max(.05,.68*(1-p*.82))).toFixed(3));
+    hero.style.setProperty('--hero-grid-shift',`${(p*26).toFixed(1)}px`);
+    if(heroCopy)heroCopy.style.opacity=String(fade);
+    if(heroStatus)heroStatus.style.opacity=String(fade);
+    if(scrollCue)scrollCue.style.opacity=String(fade);
+  };
+  addEventListener('scroll',updateHeroCore,{passive:true});
+  addEventListener('resize',updateHeroCore,{passive:true});
+  updateHeroCore();
 
   const constellation=qs('#constellationCanvas');
   if(constellation&&!reduced){
     const ctx=constellation.getContext('2d',{alpha:true});let w=0,h=0,dpr=1;
     const mouse={x:-9999,y:-9999};let particles=[];
-    const count=quality==='high'?64:36;const connect=quality==='high'?145:125;
-    const resize=()=>{dpr=Math.min(devicePixelRatio||1,quality==='high'?1.6:1.25);w=innerWidth;h=innerHeight;const nw=Math.round(w*dpr),nh=Math.round(h*dpr);if(constellation.width!==nw||constellation.height!==nh){constellation.width=nw;constellation.height=nh;constellation.style.width=w+'px';constellation.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0)};if(!particles.length)particles=Array.from({length:count},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:.7+Math.random()*1.6,a:.18+Math.random()*.35}))};
+    const count=quality==='high'?44:26;const connect=quality==='high'?138:118;
+    const resize=()=>{
+      dpr=Math.min(devicePixelRatio||1,quality==='high'?1.45:1.2);w=innerWidth;h=innerHeight;
+      const nw=Math.round(w*dpr),nh=Math.round(h*dpr);
+      if(constellation.width!==nw||constellation.height!==nh){
+        constellation.width=nw;constellation.height=nh;constellation.style.width=w+'px';constellation.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
+      }
+      if(!particles.length)particles=Array.from({length:count},()=>({
+        x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16,
+        r:.6+Math.random()*1.25,a:.12+Math.random()*.22,hot:Math.random()<.14
+      }));
+    };
     resize();addEventListener('resize',resize,{passive:true});
     addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});
     addEventListener('pointerleave',()=>{mouse.x=-9999;mouse.y=-9999},{passive:true});
     motion.add(()=>{
       ctx.clearRect(0,0,w,h);
+      if(scrollY>innerHeight*1.35)return;
       for(let i=0;i<particles.length;i++){
         const p=particles[i];p.x+=p.vx;p.y+=p.vy;
         if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
         const dx=p.x-mouse.x,dy=p.y-mouse.y,ds=dx*dx+dy*dy;
-        if(ds<15000&&ds>1){const d=Math.sqrt(ds),f=(1-d/123)*1.2;p.x+=dx/d*f;p.y+=dy/d*f}
-        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,107,53,${p.a})`;ctx.fill();
+        if(ds<12500&&ds>1){const d=Math.sqrt(ds),f=(1-d/112)*.55;p.x+=dx/d*f;p.y+=dy/d*f}
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.hot?`rgba(255,120,70,${p.a*.95})`:`rgba(176,191,208,${p.a})`;
+        ctx.fill();
         for(let j=i+1;j<particles.length;j++){
           const q=particles[j],x=p.x-q.x,y=p.y-q.y,d2=x*x+y*y;
-          if(d2<connect*connect){const alpha=(1-Math.sqrt(d2)/connect)*.16;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle=`rgba(255,107,53,${alpha})`;ctx.lineWidth=.55;ctx.stroke()}
+          if(d2<connect*connect){
+            const alpha=(1-Math.sqrt(d2)/connect)*.095;
+            ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+            ctx.strokeStyle=`rgba(151,169,190,${alpha})`;ctx.lineWidth=.5;ctx.stroke();
+          }
         }
       }
     });
   }
 
+  // Water only appears around the workflow console, where it represents information flow.
   const liquid=qs('#liquidCanvas');
-  if(liquid&&!reduced){
-    const ctx=liquid.getContext('2d',{alpha:true});let w=0,h=0,dpr=1,ripples=[],last={x:0,y:0};
-    const reactEls=qsa('.liquid-react,.hero-line');let rects=[];
-    const resize=()=>{dpr=Math.min(devicePixelRatio||1,1.4);w=innerWidth;h=innerHeight;liquid.width=Math.round(w*dpr);liquid.height=Math.round(h*dpr);liquid.style.width=w+'px';liquid.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);rects=reactEls.map(el=>({el,rect:el.getBoundingClientRect()}))};
-    resize();addEventListener('resize',resize,{passive:true});
-    const ripple=(x,y,touch=false)=>{ripples.push({x,y,r:3,max:touch?185:95,a:touch?.7:.45,s:touch?2.9:1.45})};
-    addEventListener('pointermove',e=>{if(coarse)return;const dist=Math.hypot(e.clientX-last.x,e.clientY-last.y);if(dist>34){ripple(e.clientX,e.clientY);last={x:e.clientX,y:e.clientY}};rects.forEach(({el,rect})=>{const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2,d=Math.hypot(e.clientX-cx,e.clientY-cy);if(d<230){const f=(230-d)/230,ang=Math.atan2(cy-e.clientY,cx-e.clientX);el.style.transform=`translate3d(${Math.cos(ang)*f*8}px,${Math.sin(ang)*f*8}px,0)`}else el.style.transform=''})},{passive:true});
-    addEventListener('pointerdown',e=>ripple(e.clientX,e.clientY,coarse),{passive:true});
-    motion.add(()=>{ctx.clearRect(0,0,w,h);ripples=ripples.filter(r=>r.a>.01&&r.r<r.max).slice(-42);ripples.forEach(r=>{r.r+=r.s;r.a*=.982;for(let n=0;n<2;n++){ctx.beginPath();ctx.arc(r.x,r.y,r.r*(1-n*.28),0,Math.PI*2);ctx.strokeStyle=`rgba(255,107,53,${r.a*(1-n*.45)})`;ctx.lineWidth=n?0.8:1.25;ctx.stroke()}})});
+  const liquidZone=qs('#workflowShell');
+  if(liquid&&liquidZone&&!reduced){
+    const ctx=liquid.getContext('2d',{alpha:true});let w=0,h=0,dpr=1,ripples=[],last={x:0,y:0},zoneRect=null,zoneActive=false;
+    const resize=()=>{dpr=Math.min(devicePixelRatio||1,1.25);w=innerWidth;h=innerHeight;liquid.width=Math.round(w*dpr);liquid.height=Math.round(h*dpr);liquid.style.width=w+'px';liquid.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);if(zoneActive)zoneRect=liquidZone.getBoundingClientRect()};
+    const syncZone=()=>{if(zoneActive)zoneRect=liquidZone.getBoundingClientRect()};
+    resize();addEventListener('resize',resize,{passive:true});addEventListener('scroll',syncZone,{passive:true});
+    new IntersectionObserver(entries=>entries.forEach(e=>{zoneActive=e.isIntersecting;if(zoneActive)zoneRect=liquidZone.getBoundingClientRect()}),{threshold:.08}).observe(liquidZone);
+    const ripple=(x,y,touch=false)=>{ripples.push({x,y,r:3,max:touch?145:76,a:touch?.48:.3,s:touch?2.2:1.2})};
+    addEventListener('pointermove',e=>{
+      if(coarse||!zoneActive||!zoneRect)return;
+      if(e.clientX<zoneRect.left||e.clientX>zoneRect.right||e.clientY<zoneRect.top||e.clientY>zoneRect.bottom)return;
+      const dist=Math.hypot(e.clientX-last.x,e.clientY-last.y);
+      if(dist>48){ripple(e.clientX,e.clientY);last={x:e.clientX,y:e.clientY}};
+    },{passive:true});
+    addEventListener('pointerdown',e=>{
+      if(!zoneActive||!zoneRect)return;
+      if(e.clientX>=zoneRect.left&&e.clientX<=zoneRect.right&&e.clientY>=zoneRect.top&&e.clientY<=zoneRect.bottom)ripple(e.clientX,e.clientY,coarse);
+    },{passive:true});
+    motion.add(()=>{
+      ctx.clearRect(0,0,w,h);
+      if(!zoneActive)return;
+      ripples=ripples.filter(r=>r.a>.01&&r.r<r.max).slice(-24);
+      ripples.forEach(r=>{r.r+=r.s;r.a*=.978;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.strokeStyle=`rgba(255,122,72,${r.a})`;ctx.lineWidth=1;ctx.stroke()});
+    });
   }
 
   const orbitPills=()=>{
     if(!pills.length)return;
     const active=pills.filter(p=>p.classList.contains('show'));if(!active.length)return;
-    const radius=clamp(innerWidth*.18,118,225), t=performance.now()*.00032;
-    active.forEach((p,i)=>{const a=t+i/active.length*Math.PI*2;const x=Math.cos(a)*radius,y=Math.sin(a)*radius*.58;p.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0)`});
+    const radius=clamp(innerWidth*.17,112,205),t=performance.now()*.00025;
+    active.forEach((p,i)=>{const a=t+i/active.length*Math.PI*2;const x=Math.cos(a)*radius,y=Math.sin(a)*radius*.56;p.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0)`});
   };
   motion.add(orbitPills);
 
   qsa('.magnetic').forEach(el=>{
-    if(coarse)return;
-    el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);el.style.transform=`translate3d(${x*.08}px,${y*.08}px,0)`});
-    el.addEventListener('pointerleave',()=>el.style.transform='');
+    if(coarse||quality!=='high')return;
+    let r=null;
+    el.addEventListener('pointerenter',()=>{r=el.getBoundingClientRect()});
+    el.addEventListener('pointermove',e=>{if(!r)return;const x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);el.style.transform=`translate3d(${x*.045}px,${y*.045}px,0)`});
+    el.addEventListener('pointerleave',()=>{r=null;el.style.transform=''});
   });
 })();
