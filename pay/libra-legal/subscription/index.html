@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Libra Legal | Monthly Website Subscription</title>
+  <meta name="description" content="Secure monthly subscription payment page for the Libra Legal website project.">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0f151d">
+  <style>
+    :root{
+      --bg:#0f151d;
+      --text:#f3f1ed;
+      --muted:#a4a9b0;
+      --line:rgba(220,228,238,.11);
+      --orange:#ff6b35;
+      --orange2:#ff8a5b;
+      --green:#62d3a2;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:28px 18px;
+      background:
+        radial-gradient(circle at 50% 0%,rgba(143,166,193,.13),transparent 34%),
+        radial-gradient(circle at 88% 88%,rgba(255,107,53,.07),transparent 27%),
+        linear-gradient(180deg,#121a24 0%,#0f151d 58%,#0f151d 100%);
+    }
+    .shell{width:min(100%,760px)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px;padding:0 4px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:-.03em}
+    .mark{
+      width:34px;height:34px;border-radius:50%;position:relative;
+      border:1px solid rgba(255,138,91,.38);
+      background:radial-gradient(circle,rgba(255,107,53,.2),transparent 58%);
+    }
+    .mark:after{content:"";position:absolute;inset:11px;border-radius:50%;border:1px solid var(--orange)}
+    .brand span{color:var(--orange)}
+    .secure{font-size:12px;color:#7f8a95;display:flex;align-items:center;gap:8px}
+    .secure i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 14px rgba(98,211,162,.45)}
+    .card{
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:clamp(24px,5vw,46px);
+      background:
+        radial-gradient(circle at 92% 10%,rgba(255,107,53,.085),transparent 28%),
+        linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.012));
+      box-shadow:0 28px 90px rgba(0,0,0,.28);
+      backdrop-filter:blur(18px);
+    }
+    .eyebrow{margin:0 0 12px;color:var(--orange2);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+    h1{font-size:clamp(38px,7vw,62px);line-height:.98;letter-spacing:-.055em;margin:0;max-width:640px}
+    .lead{margin:20px 0 0;color:var(--muted);line-height:1.75;max-width:620px}
+    .summary{margin:34px 0 26px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .row{display:flex;justify-content:space-between;gap:24px;padding:18px 0}
+    .row+.row{border-top:1px solid rgba(220,228,238,.07)}
+    .label{color:#7c8792;font-size:12px}
+    .value{color:#dfe4e8;text-align:right;font-size:13px;font-weight:600}
+    .total{font-size:20px;color:#fff}
+    .pay-area{
+      border:1px solid rgba(255,138,91,.18);
+      border-radius:20px;
+      padding:22px;
+      background:rgba(255,107,53,.035);
+      text-align:center;
+    }
+    .pay-area p{margin:0 0 14px;color:#8f99a4;font-size:12px}
+    form{margin:0}
+    input[type="image"]{
+      max-width:min(100%,330px);
+      height:auto;
+      border-radius:10px;
+      filter:drop-shadow(0 12px 24px rgba(0,0,0,.2));
+      transition:transform .2s ease,filter .2s ease;
+    }
+    input[type="image"]:hover{transform:translateY(-2px);filter:drop-shadow(0 16px 30px rgba(0,0,0,.26))}
+    .notice{
+      margin-top:18px;
+      padding:14px 16px;
+      border:1px solid rgba(220,228,238,.08);
+      border-radius:14px;
+      color:#84909b;
+      font-size:11px;
+      line-height:1.65;
+      background:rgba(255,255,255,.012);
+    }
+    .note{margin:16px 0 0;color:#6f7a85;font-size:11px;line-height:1.65;text-align:center}
+    .footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:18px 4px 0;color:#68737d;font-size:10px}
+    .footer a{color:#9ea7af;text-decoration:none}
+    .footer a:hover{color:#fff}
+    @media(max-width:560px){
+      body{padding:18px 12px}
+      .topbar{align-items:flex-start}
+      .secure{font-size:10px}
+      .card{border-radius:22px}
+      .row{padding:15px 0}
+      .footer{flex-direction:column;gap:8px}
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <div class="brand"><span class="mark" aria-hidden="true"></span><div>THYNK<span>VERSE</span></div></div>
+      <div class="secure"><i aria-hidden="true"></i> Secure subscription via PayFast</div>
+    </div>
+
+    <section class="card" aria-labelledby="payment-title">
+      <p class="eyebrow">Libra Legal · Monthly Subscription</p>
+      <h1 id="payment-title">Website Development</h1>
+      <p class="lead">Monthly subscription payment for the Libra Legal website project. Review the subscription details below, then continue securely through PayFast.</p>
+
+      <div class="summary" aria-label="Subscription summary">
+        <div class="row">
+          <span class="label">Client</span>
+          <span class="value">Libra Legal</span>
+        </div>
+        <div class="row">
+          <span class="label">Service</span>
+          <span class="value">Website Development</span>
+        </div>
+        <div class="row">
+          <span class="label">Billing</span>
+          <span class="value">Monthly Subscription</span>
+        </div>
+        <div class="row">
+          <span class="label">Initial payment</span>
+          <span class="value">R1,500.00</span>
+        </div>
+        <div class="row">
+          <span class="label">Recurring amount</span>
+          <span class="value total">R1,500.00 / month</span>
+        </div>
+      </div>
+
+      <div class="pay-area">
+        <p>You will continue to PayFast to set up the monthly subscription.</p>
+
+        <form name="PayFastPayNowForm" action="https://payment.payfast.io/eng/process" method="post">
+          <input required type="hidden" name="cmd" value="_paynow">
+          <input required type="hidden" name="receiver" pattern="[0-9]" value="37162733">
+          <input required type="hidden" name="amount" value="1500">
+          <input required type="hidden" name="item_name" maxlength="255" value="Website Development">
+          <input type="hidden" name="item_description" maxlength="255" value="Monthly Fee">
+          <input required type="hidden" name="subscription_type" pattern="1" value="1">
+          <input type="hidden" name="recurring_amount" value="1500">
+          <input required type="hidden" name="cycles" pattern="[0-9]" value="0">
+          <input required type="hidden" name="frequency" pattern="[0-9]" value="3">
+          <input type="image" src="https://my.payfast.io/images/buttons/Subscribe/Primary-Large-Subscribe.png" alt="Subscribe for R1,500 per month with PayFast" title="Subscribe with PayFast">
+        </form>
+      </div>
+
+      <div class="notice">
+        This PayFast subscription is configured for R1,500 initially and R1,500 monthly thereafter, with no fixed number of billing cycles. The subscription can be managed or cancelled through PayFast.
+      </div>
+
+      <p class="note">Payment information is submitted directly to PayFast. Thynkverse does not collect card details on this page.</p>
+    </section>
+
+    <div class="footer">
+      <span>Powered &amp; designed by Thynkverse</span>
+      <span><a href="mailto:stan@thynkverse.co.za">stan@thynkverse.co.za</a></span>
+    </div>
+  </main>
+</body>
+</html>
