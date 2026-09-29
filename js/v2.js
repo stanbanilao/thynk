@@ -133,8 +133,8 @@
       const visibility=clamp(1-distance/.78,0,1);
       const eased=visibility*visibility*(3-2*visibility);
       const y=clamp(relative*175,-185,185);
-      const scale=.84+eased*.16;
-      const blur=(1-eased)*10;
+      const scale=1;
+      const blur=0;
       word.classList.toggle('active',eased>.55);
       word.style.setProperty('--forming-opacity',String(eased));
       word.style.setProperty('--forming-y',`${y}px`);
