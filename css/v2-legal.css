@@ -13,3 +13,7 @@
 .legal-body td{border-bottom:1px solid rgba(243,241,237,.06);padding:12px;vertical-align:top}
 .legal-body mark.ph{background:rgba(230,184,90,.14);color:#e6b85a;border-radius:4px;padding:0 3px}
 .footer-legal{display:flex;gap:18px}.footer-legal a{color:inherit}.footer-legal a:hover{color:var(--orange)}
+.legal-nav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 48px}
+.legal-nav a{border:1px solid var(--line);border-radius:999px;padding:9px 18px;color:#b9b5b0;font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.legal-nav a:hover{color:#f3f1ed;border-color:rgba(255,107,53,.5)}
+.legal-nav a.on{color:#0f151d;background:var(--orange);border-color:var(--orange)}
