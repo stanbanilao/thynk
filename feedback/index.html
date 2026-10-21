@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Share Your Experience | Thynkverse</title>
+  <meta name="description" content="Private client feedback for Thynkverse projects and services.">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0f151d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f151d;
+      --bg2:#121a24;
+      --panel:#151e29;
+      --text:#f3f1ed;
+      --muted:#a4a9b0;
+      --line:rgba(220,228,238,.11);
+      --orange:#ff6b35;
+      --orange2:#ff8a5b;
+      --green:#62d3a2;
+      --display:'Space Grotesk',system-ui,sans-serif;
+      --body:'Inter',system-ui,sans-serif;
+      --ease:cubic-bezier(.2,.8,.2,1);
+    }
+    *{box-sizing:border-box}
+    html{background:var(--bg);scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:
+      radial-gradient(circle at 70% 0%,rgba(255,107,53,.08),transparent 28%),
+      radial-gradient(circle at 15% 12%,rgba(135,158,185,.09),transparent 30%),
+      linear-gradient(180deg,#121a24 0%,#0f151d 55%,#0f151d 100%);
+      color:var(--text);font-family:var(--body)}
+    a{color:inherit}
+    .shell{min-height:100vh}
+    .header{height:78px;border-bottom:1px solid var(--line);display:flex;align-items:center;background:rgba(15,21,29,.72);backdrop-filter:blur(18px);position:sticky;top:0;z-index:30}
+    .nav{width:min(1180px,calc(100% - 36px));margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{text-decoration:none;font:600 22px/1 var(--display);letter-spacing:-.055em}.brand b{color:var(--orange);font-weight:600}
+    .nav-link{text-decoration:none;color:#98a1aa;font-size:12px}.nav-link:hover{color:#fff}
+    .hero{padding:110px 0 58px}
+    .container{width:min(980px,calc(100% - 36px));margin:auto}
+    .eyebrow{margin:0 0 14px;color:var(--orange2);font:600 11px var(--display);letter-spacing:.18em;text-transform:uppercase}
+    h1{margin:0;font:600 clamp(48px,7vw,86px)/.95 var(--display);letter-spacing:-.065em;max-width:850px}
+    .lead{max-width:720px;margin:24px 0 0;color:#a2abb4;line-height:1.75;font-size:16px}
+    .trust-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}.chip{border:1px solid var(--line);border-radius:999px;padding:8px 10px;color:#88939d;font:600 9px var(--display);letter-spacing:.09em;text-transform:uppercase;background:rgba(255,255,255,.015)}
+    .survey{padding:32px 0 110px}
+    .card{border:1px solid var(--line);border-radius:28px;padding:clamp(24px,4vw,40px);background:
+      radial-gradient(circle at 90% 6%,rgba(255,107,53,.07),transparent 28%),
+      linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+      box-shadow:0 30px 90px rgba(0,0,0,.22)}
+    .section-title{margin:0 0 6px;font:600 22px var(--display);letter-spacing:-.035em}
+    .section-copy{margin:0 0 24px;color:#838e98;font-size:12px;line-height:1.6}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.full{grid-column:1/-1}
+    label{display:grid;gap:8px;color:#cdd3d8;font-size:12px}
+    input,select,textarea{
+      width:100%;border:1px solid rgba(220,228,238,.12);border-radius:14px;background:#111923;color:#f1f3f5;
+      padding:13px 14px;font:400 13px var(--body);outline:none;transition:border-color .2s,box-shadow .2s
+    }
+    input:focus,select:focus,textarea:focus{border-color:rgba(255,107,53,.48);box-shadow:0 0 0 3px rgba(255,107,53,.07)}
+    textarea{min-height:120px;resize:vertical}
+    .rating{display:flex;flex-wrap:wrap;gap:9px}
+    .rating input{position:absolute;opacity:0;pointer-events:none}
+    .rating label{display:grid;place-items:center;width:54px;height:48px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.015);cursor:pointer;font:600 14px var(--display);color:#8d98a1;transition:.2s}
+    .rating input:checked+label,.rating label:hover{border-color:rgba(255,107,53,.4);background:rgba(255,107,53,.08);color:#fff;transform:translateY(-2px)}
+    .consent{display:grid;gap:10px}.consent label{grid-template-columns:18px 1fr;align-items:start;gap:10px;color:#9ca5ad;line-height:1.55}
+    .consent input{width:16px;height:16px;margin-top:2px;accent-color:var(--orange)}
+    .divider{height:1px;background:var(--line);margin:30px 0}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    .btn{min-height:50px;border-radius:14px;padding:0 18px;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font:600 12px var(--display);cursor:pointer}
+    .btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}.btn.primary:hover{background:#ff7747}
+    .btn.ghost{background:rgba(255,255,255,.02);color:#d9dfe4}
+    .status{margin-top:14px;min-height:18px;color:#7d8892;font-size:11px}
+    .thankyou{display:none;text-align:center;padding:28px 0 4px}.thankyou.show{display:block}.thankyou h2{font:600 clamp(34px,5vw,54px)/1 var(--display);letter-spacing:-.05em;margin:0}.thankyou p{max-width:620px;margin:15px auto 0;color:#919ba4;line-height:1.7}
+    .review-cta{display:none;margin-top:24px}.review-cta.show{display:flex;justify-content:center}
+    .note{margin-top:26px;padding:15px 16px;border:1px solid rgba(220,228,238,.08);border-radius:14px;color:#737e88;font-size:10px;line-height:1.65;background:rgba(255,255,255,.012)}
+    footer{padding:24px 0 32px;color:#5f6a74;font-size:10px;text-align:center}
+    @media(max-width:700px){.hero{padding-top:76px}.grid{grid-template-columns:1fr}.full{grid-column:auto}.card{border-radius:22px}.nav-link{font-size:11px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="header">
+    <nav class="nav">
+      <a class="brand" href="https://www.thynkverse.co.za/">thynk<b>verse</b></a>
+      <a class="nav-link" href="https://www.thynkverse.co.za/">Back to Thynkverse</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <p class="eyebrow">Client feedback</p>
+        <h1>Tell us what it was like to work with Thynkverse.</h1>
+        <p class="lead">Your feedback helps us improve the way we design, build and support real business systems. You can also choose whether we may use part of your feedback as a testimonial.</p>
+        <div class="trust-row">
+          <span class="chip">Takes about 2 minutes</span>
+          <span class="chip">Testimonial permission is optional</span>
+          <span class="chip">Google review optional</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="survey">
+      <div class="container">
+        <div class="card">
+          <form id="feedbackForm">
+            <h2 class="section-title">Your experience</h2>
+            <p class="section-copy">Please share only what you are comfortable with us receiving and potentially publishing if you give permission below.</p>
+
+            <div class="grid">
+              <label>
+                Your name
+                <input id="name" name="name" autocomplete="name" required>
+              </label>
+
+              <label>
+                Company
+                <input id="company" name="company" autocomplete="organization">
+              </label>
+
+              <label class="full">
+                What did Thynkverse help you with?
+                <select id="service" name="service" required>
+                  <option value="">Choose one</option>
+                  <option>Website / Digital Presence</option>
+                  <option>Digital Product / App</option>
+                  <option>Automation / RPA</option>
+                  <option>Systems Integration</option>
+                  <option>Technical Support / Troubleshooting</option>
+                  <option>Other</option>
+                </select>
+              </label>
+
+              <div class="full">
+                <label>Overall experience</label>
+                <div class="rating" aria-label="Overall experience rating">
+                  <input type="radio" name="rating" id="r1" value="1" required><label for="r1">1</label>
+                  <input type="radio" name="rating" id="r2" value="2"><label for="r2">2</label>
+                  <input type="radio" name="rating" id="r3" value="3"><label for="r3">3</label>
+                  <input type="radio" name="rating" id="r4" value="4"><label for="r4">4</label>
+                  <input type="radio" name="rating" id="r5" value="5"><label for="r5">5</label>
+                </div>
+              </div>
+
+              <label class="full">
+                What problem were you trying to solve?
+                <textarea id="problem" name="problem" required></textarea>
+              </label>
+
+              <label class="full">
+                What changed or improved after working with Thynkverse?
+                <textarea id="outcome" name="outcome" required></textarea>
+              </label>
+
+              <label class="full">
+                What stood out about working with us?
+                <textarea id="stoodout" name="stoodout"></textarea>
+              </label>
+
+              <label class="full">
+                Short testimonial
+                <textarea id="testimonial" name="testimonial" placeholder="In one or two sentences, how would you describe your experience?"></textarea>
+              </label>
+            </div>
+
+            <div class="divider"></div>
+
+            <h2 class="section-title">Permission</h2>
+            <p class="section-copy">You stay in control of whether your comments may appear on the Thynkverse website or marketing material.</p>
+
+            <div class="consent">
+              <label><input type="radio" name="permission" value="Name and company" required><span>Yes — you may use my testimonial with my name and company.</span></label>
+              <label><input type="radio" name="permission" value="Company only"><span>Yes — company name only.</span></label>
+              <label><input type="radio" name="permission" value="Anonymous"><span>Yes — anonymously.</span></label>
+              <label><input type="radio" name="permission" value="No publication"><span>No — keep my feedback private and do not publish it.</span></label>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="actions">
+              <button class="btn primary" type="submit">Prepare my feedback</button>
+              <button class="btn ghost" id="copyBtn" type="button">Copy feedback</button>
+            </div>
+            <div class="status" id="status"></div>
+          </form>
+
+          <div class="thankyou" id="thankyou">
+            <p class="eyebrow">Thank you</p>
+            <h2>Your feedback is ready.</h2>
+            <p>Use the button below to send the prepared feedback to Thynkverse. If a Google review link is connected, you will also be able to leave a public Google review separately.</p>
+            <div class="actions" style="justify-content:center;margin-top:24px">
+              <a class="btn primary" id="emailFeedback" href="#">Send feedback to Thynkverse</a>
+              <button class="btn ghost" id="editBtn" type="button">Edit my answers</button>
+            </div>
+            <div class="review-cta" id="reviewCta">
+              <a class="btn ghost" id="googleReview" href="#" target="_blank" rel="noopener">Leave a Google Review ↗</a>
+            </div>
+          </div>
+
+          <div class="note">
+            This page is intentionally unlisted and not indexed by search engines. Google reviews are separate from the private feedback above, and clients are never required to leave a positive review.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 Thynkverse · Different worlds of work. One connected Thynkverse.</footer>
+</div>
+
+<script>
+(() => {
+  const GOOGLE_REVIEW_URL = ""; // Add the exact Google Business review URL when supplied.
+  const form = document.getElementById('feedbackForm');
+  const thankyou = document.getElementById('thankyou');
+  const status = document.getElementById('status');
+  const emailFeedback = document.getElementById('emailFeedback');
+  const copyBtn = document.getElementById('copyBtn');
+  const editBtn = document.getElementById('editBtn');
+  const reviewCta = document.getElementById('reviewCta');
+  const googleReview = document.getElementById('googleReview');
+
+  const getValue = id => document.getElementById(id)?.value.trim() || '';
+  const getChecked = name => document.querySelector('input[name="'+name+'"]:checked')?.value || '';
+
+  const buildText = () => {
+    return [
+      'THYNKVERSE CLIENT FEEDBACK',
+      '',
+      'Name: ' + getValue('name'),
+      'Company: ' + getValue('company'),
+      'Service: ' + getValue('service'),
+      'Rating: ' + getChecked('rating') + '/5',
+      '',
+      'Problem / goal:',
+      getValue('problem'),
+      '',
+      'What changed or improved:',
+      getValue('outcome'),
+      '',
+      'What stood out:',
+      getValue('stoodout'),
+      '',
+      'Short testimonial:',
+      getValue('testimonial'),
+      '',
+      'Publication permission: ' + getChecked('permission')
+    ].join('\n');
+  };
+
+  const prepare = () => {
+    const text = buildText();
+    const company = getValue('company') || getValue('name') || 'Client';
+    const subject = 'Thynkverse Client Feedback — ' + company;
+    emailFeedback.href = 'mailto:stan@thynkverse.co.za?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
+    if (GOOGLE_REVIEW_URL) {
+      googleReview.href = GOOGLE_REVIEW_URL;
+      reviewCta.classList.add('show');
+    }
+    return text;
+  };
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    prepare();
+    form.style.display = 'none';
+    thankyou.classList.add('show');
+    thankyou.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    if (!form.reportValidity()) return;
+    try {
+      await navigator.clipboard.writeText(buildText());
+      status.textContent = 'Feedback copied. You can paste it into email, WhatsApp or another message.';
+    } catch {
+      status.textContent = 'Your browser could not copy automatically. Use Prepare my feedback instead.';
+    }
+  });
+
+  editBtn.addEventListener('click', () => {
+    thankyou.classList.remove('show');
+    form.style.display = '';
+    status.textContent = '';
+    form.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+})();
+</script>
+</body>
+</html>
